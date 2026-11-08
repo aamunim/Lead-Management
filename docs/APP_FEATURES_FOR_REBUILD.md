@@ -1504,7 +1504,7 @@ Section 20–21 assume one total fee per course. Generalise to **fee heads** wit
 | M10 | **Suspending or offboarding an institution** | Must stop use without losing data or breaking other institutions. | States: trial / active / read-only / suspended / closed. Full export before closing. | 0 |
 | M11 | **Communicating with institutions** | Releases, downtime and new features must reach the right people. | Announcements from the Master Admin panel (in-app, email), "What's new" per release, maintenance notices. | 1 |
 | M12 | **Master Admin account security** | One stolen Master Admin login exposes every institution. | Very few Master Admins, mandatory 2-factor login, separate login page, IP / device alerts, full audit, no shared accounts. | 0 |
-| M13 | **One app vs. each institution's own app** | Some institutions will want their own app name and logo on Play Store. | Start with one app showing each institution's branding after login. Separate branded builds later as a paid option, from the same code. | later |
+| M13 | **One app vs. each institution's own app** | Some institutions will want their own app name and logo on Play Store. | **Both options are planned (D12):** one shared app showing each institution's branding after login, and a separate branded build (own name, icon, package, Play Store listing) from the same code as a paid option. Each branded app needs its own store listing, signing key, push setup and call-log permission declaration, so it costs more to run. | 0 (shared), 5 (branded) |
 
 ### 41.2 Developer challenges (technical)
 
@@ -1535,23 +1535,22 @@ Section 20–21 assume one total fee per course. Generalise to **fee heads** wit
 
 | Phase | Contents |
 |---|---|
-| **0: Foundation** | Multi-tenant schema with `institution_id` and nullable `branch_id`, RLS, cross-tenant leak test in CI. Master Admin panel: institutions, approval, states, support entry (audited), 2-factor login. **Type profiles, labels, modules, custom field builder.** Institution setup wizard and checklist. Login (password, Google, OTP). Roles, permissions, users. Per-institution SMS and email setup. English + Bangla UI framework. |
+| **0: Foundation** | Multi-tenant schema with `institution_id` and nullable `branch_id`, RLS, cross-tenant leak test in CI. Master Admin panel: institutions, approval, states, support entry (audited), 2-factor login. **Type profiles for all institution types (D8), labels, modules, custom field builder.** **Branches / campuses (D9).** Institution setup wizard and checklist. Per-institution branding inside the shared app (D12). Login (password, Google, OTP). Roles, permissions, users. Per-institution SMS and email setup. English + Bangla UI framework. |
 | **1: Core CRM** | Leads (with guardians and custom fields), list / board / search / filters, pipeline, follow-ups, manual call log, notes, templates (incl. email), import / export, notifications (inbox, push, email, SMS via outbox), application form builder, academic calendar and admission windows, web version, Master Admin health dashboard and announcements. |
-| **2: Admission and students** | Courses / classes, batches / sessions, **eligibility rules**, **admission test and merit list**, admit, papers, **fee heads and schedules**, waivers and scholarships, payments, receipts, invoices, online payment (optional), student IDs, external board flow, student messages, bulk SMS, SMS billing statements, hostel and transport. |
+| **2: Admission and students** | Courses / classes, batches / sessions, **eligibility rules**, **admission test and merit list**, admit, papers, **fee heads and schedules**, waivers and scholarships, payments, receipts, invoices, **online payment (D11)**, student IDs, external board flow, student messages, bulk SMS, SMS billing statements, hostel and transport. |
 | **3: Android native** | Call-log sync, WhatsApp, caller card, call lock. |
 | **4: AI and team** | Admission chance, admission credit, leaderboard, scorecard, team activity. |
-| **5: Everything else** | Alumni and referrals, Google Drive, Photo Studio, feedback chat, crash reports, branches UI, applicant status page, branded apps per institution. |
+| **5: Everything else** | Alumni and referrals, Google Drive, Photo Studio, feedback chat, crash reports, applicant status page, **separate branded apps per institution (D12)**, guardian / student portal (if wanted later, D10). |
 
-### 42.2 First institution types to support (Proposed)
+### 42.2 Institution types in the first release (Decided: D8)
 
-Start with the types the owner already knows best, and design the rest as profiles only:
+**All types** in 40.2 are supported from the first release: school, college, private university, polytechnic,
+madrasa, English-medium school, coaching centre, training institute, nursing / medical / health institute.
 
-1. **College** (the earlier version's home ground).
-2. **School**.
-3. **Coaching centre / training institute**.
-
-University, polytechnic, madrasa, English-medium and health institutes are added as **profiles** (40.3) once the
-generic building blocks exist; ideally they need no new code.
+- Each type gets a **type profile** (40.3) in phase 0, built only from the generic blocks (40.4–40.14), with no type-specific code.
+- Each profile gets a **seeded test institution** and runs the main flows in CI (41.2 D2).
+- **Risk:** supporting every type at once makes the first release bigger. Mitigation: the blocks a type needs
+  (e.g. merit list, per-credit fees) are switched off by module until they are built and tested; the profile still works for leads and follow-ups.
 
 ### 42.3 Plans and modules (Proposed)
 
@@ -1563,7 +1562,7 @@ generic building blocks exist; ideally they need no new code.
 
 SMS and AI usage are billed on top (39.5). Prices and exact module lists are the owner's decision.
 
-### 42.4 New open questions for the owner
+### 42.4 Questions asked in round 2 (answered in 42.5)
 
 1. Which institution types should the **first release** support? (Proposed in 42.2: college, school, coaching.)
 2. Are **branches / campuses** needed in the first release, or later?
@@ -1573,3 +1572,35 @@ SMS and AI usage are billed on top (39.5). Prices and exact module lists are the
 6. Should the UI be **fully Bangla and English** (40.14), or English labels only as in the original brief?
 7. Plans and pricing: are the three plans in 42.3 close to what you want?
 8. Still open from 39.9: who receives email / SMS, Google sign-in for new people, which SMS gateways, bulk SMS, OTP by SMS / email / both.
+
+### 42.5 Owner decisions, planning round 2 (Decided)
+
+| # | Question (42.4) | Decision |
+|---|---|---|
+| D8 | Institution types in the first release | **All types** (see 42.2). |
+| D9 | Branches / campuses in the first release | **Yes.** Branches move from phase 5 to phase 0 (40.13). |
+| D10 | Guardian / student portal | **Not for now.** Kept as a possible later item. |
+| D11 | Online payment | **Yes.** Set up per institution by the Master Admin, like SMS (39.3). In phase 2 with fees. |
+| D12 | Own branded app per institution | **Keep both options:** the shared app with per-institution branding, and a separate branded app (paid option). |
+| D13 | Full Bangla and English UI | **Yes** (40.14). Each user picks; the institution sets the default. |
+| — | Plans (42.3) | Explained to the owner; **still open**. |
+
+**Online payment details (D11, Proposed):**
+- Gateways: e.g. bKash, Nagad, SSLCommerz (the list to be confirmed), with an adapter per gateway (41.2 D8).
+- Set up per institution in **Master Admin panel → Institutions → \<institution\> → Payments**, with test mode, keys in the Vault, and a test payment button.
+- Used for: application fee (public form), admission fee, monthly / term fees, installments.
+- A successful online payment creates the payment and receipt automatically (section 21); a failed or pending one is shown with its status.
+- Reconciliation: a daily check against the gateway; mismatches go to a list for the officer.
+- Refunds through the gateway where supported; otherwise recorded by hand (section 21).
+
+**Branches details (D9, Proposed):**
+- Settings → Branches: name, address, phone, branch head.
+- Courses, batches, staff and leads can belong to a branch; staff can be limited to branches.
+- Receipts, templates and public forms can show branch details.
+- Reports, leaderboards and the Master Admin dashboard can be split by branch.
+
+### 42.6 Still open after round 2
+
+1. Plans and pricing (42.3).
+2. From 39.9: who receives email / SMS, Google sign-in for new people, which SMS gateways, bulk SMS, OTP by SMS / email / both.
+3. Which online payment gateways to support first.
