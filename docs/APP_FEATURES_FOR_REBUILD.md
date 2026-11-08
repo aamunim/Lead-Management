@@ -51,9 +51,12 @@
 37. [Lessons learned (do not repeat these mistakes)](#37-lessons-learned-do-not-repeat-these-mistakes)
 38. [Open decisions for the owner](#38-open-decisions-for-the-owner)
 39. [Planning round 1: additions, decisions and proposals](#39-planning-round-1-additions-decisions-and-proposals)
+40. [Fitting each institution type](#40-fitting-each-institution-type)
+41. [Challenges for the Master Admin and the developer](#41-challenges-for-the-master-admin-and-the-developer)
+42. [Updated build phases and open questions](#42-updated-build-phases-and-open-questions)
 
-> **Note:** section 39 records what was added and decided while planning. Where it conflicts with an
-> earlier section, **section 39 wins**. Items marked **Proposed** still need the owner's approval.
+> **Note:** sections 39–42 record what was added and decided while planning. Where they conflict with an
+> earlier section, **the later section wins**. Items marked **Proposed** still need the owner's approval.
 
 ---
 
@@ -1273,7 +1276,7 @@ Lives in **Master Admin panel → Institutions → \<institution\> → Messaging
 7. External board flow in phase 2, switchable on/off. UI languages: English and Bangla.
 8. Lead merge at the end of phase 1 or in phase 2.
 
-### 39.8 Build phases (Proposed)
+### 39.8 Build phases (Proposed, replaced by 42.1)
 
 | Phase | Contents |
 |---|---|
@@ -1291,3 +1294,282 @@ Lives in **Master Admin panel → Institutions → \<institution\> → Messaging
 3. Which SMS gateways do the institutions use? (Needed for the presets.)
 4. Are bulk / promotional SMS campaigns needed?
 5. OTP: by SMS, by email, or both?
+
+---
+
+## 40. Fitting each institution type
+
+> **বাংলা সারাংশ:** স্কুল, কলেজ, বিশ্ববিদ্যালয়, পলিটেকনিক, মাদ্রাসা, কোচিং, ট্রেনিং সেন্টার, এদের প্রত্যেকের
+> ভর্তির ধরন আলাদা। তাই সেটআপের সময় প্রতিষ্ঠানের ধরন বাছাই করলে সেই ধরনের উপযোগী শব্দ, ধাপ, ফি,
+> কাগজপত্র আর ফিল্ড আপনা-আপনি বসে যাবে, পরে সব বদলানো যাবে। নতুন কিছু সাধারণ ফিচারও যোগ হয়েছে:
+> ভর্তি পরীক্ষা ও মেধাতালিকা, যোগ্যতার নিয়ম, মাসিক/সেমিস্টার ফি, বৃত্তি ও ছাড়ের নিয়ম, অভিভাবক ও ভাইবোন,
+> শাখা (ক্যাম্পাস), আর মডিউল চালু/বন্ধ। সব অংশ **Proposed**।
+
+### 40.1 The idea: one product, many shapes
+
+Each institution type admits students differently. The product must fit all of them **without a separate
+codebase or hard-coded branches**. The tools for that:
+
+1. **Institution type profile** picked at setup (40.3). It **seeds** sensible defaults; everything stays editable.
+2. **Terminology (labels)** per institution (40.4): "Course" can be "Class", "Program", "Department" or "Technology".
+3. **Modules** switched on or off per institution (40.5).
+4. **Custom fields** on leads and students, with presets per type (40.6).
+5. **Generic building blocks** that cover every type's needs (40.7–40.14), instead of type-specific code.
+
+> Rule for the developer: code checks **settings and modules**, never `institution_type`. The type is only used
+> once, to seed defaults. This keeps one codebase and lets a mixed institution (e.g. school + college) work.
+
+### 40.2 Institution types and what they need
+
+| Type | How admission works | Main differences |
+|---|---|---|
+| **School** (primary / secondary) | Per class (Play–Class 10). Admission test or lottery for some classes. Session usually January–December. | The **guardian** is the main contact (the student is a child). **Monthly tuition** plus admission and session fees. Age rule per class, birth certificate. Shift (morning / day), version (Bangla / English), sibling discount, transport. |
+| **College** (HSC, Degree, Honours, Masters) | HSC: class XI through the central online system, then confirmation. Degree / Honours / Masters: affiliated university (e.g. National University) merit lists. | Group (Science / Humanities / Business Studies). SSC / HSC **GPA, board, roll and registration numbers**. External board flow (section 22). Yearly or session fees. |
+| **Private university** | Several intakes per year (e.g. Spring / Summer / Fall). Admission test and viva. | **Per-credit or per-semester fees**, **result-based waivers**, credit transfer, department and program. Very lead-heavy marketing. |
+| **Polytechnic / technical institute** | Per technology (department), 4-year diploma, shift. | Board registration (e.g. BTEB) as the external flow, semester fees, SSC GPA rules. |
+| **Madrasa** (Alia / Qawmi) | Per class level (e.g. Ebtedayee, Dakhil, Alim; Qawmi levels). | Madrasa board registration as the external flow, residential (**hostel**) fees, often separate boys' and girls' sections. |
+| **English-medium school** | Per grade, admission test and interview. | O / A level board registration (e.g. Edexcel / Cambridge) as the external flow, higher monthly fees, development fees. |
+| **Coaching centre** | Rolling: new batches every few weeks, quick enrolment. | **Short courses, many small batches**, monthly or package fees, high Facebook-ad lead volume, quick follow-up matters most. |
+| **Training / skills institute** | Course with start dates, often online. | Certificates, short courses, installments, corporate clients (one company sends many trainees). |
+| **Nursing / medical / health institute** | Session-based, merit list from a central body. | Strict eligibility (subjects, GPA), many required papers, hostel. |
+
+### 40.3 Institution type profile (seed templates)
+
+At institution setup the Super Admin (or Master Admin) picks one or more types. The profile seeds:
+
+| What is seeded | Example: School | Example: Coaching centre |
+|---|---|---|
+| Labels (40.4) | Class, Section, Session, Roll | Course, Batch, Month, Student no. |
+| Pipeline stages (section 9) | New → Contacted → Visit → Admission test → Result → Ready → Admitted / Lost | New → Called → Demo class → Enrolled / Lost |
+| Required papers (section 17) | Birth certificate, previous school TC, photos, guardian NID | Photo only |
+| Fee structure (40.9) | Admission fee + monthly tuition + session fee | Package fee or monthly fee |
+| Lead custom fields (40.6) | Child's date of birth, previous school, desired class, shift | Current class / job, preferred time |
+| External board flow (section 22) | Off | Off |
+| Message templates (section 15) | Admission test date, result, monthly fee due | Demo class reminder, batch start |
+| Student ID pattern (section 19) | `{YYYY}{CLASS}{000}` | `{CODE}-{000}` |
+| Lead score points (section 14) | Visit and test weigh most | Demo class weighs most |
+
+- Profiles are **versioned data** (rows in a `type_profiles` table), editable by the Master Admin, not code.
+- After seeding, the institution changes anything. "Reset to profile defaults" is offered per area, with a preview.
+- A **mixed institution** (e.g. school and college on one campus) picks several types; the seeds are merged, and
+  courses / classes are grouped by type.
+
+### 40.4 Terminology (labels)
+
+- A per-institution **label dictionary**, in English and Bangla. Keys and examples:
+
+  | Key | Default | School | University | Polytechnic |
+  |---|---|---|---|---|
+  | `course` | Course | Class | Program | Technology |
+  | `batch` | Batch | Session | Intake | Session |
+  | `section` | Section | Section | Section | Group / Shift |
+  | `student_id` | Student ID | Roll / ID | Student ID | Roll |
+  | `lead` | Lead | Enquiry | Applicant | Applicant |
+  | `admission` | Admission | Admission | Enrolment | Admission |
+
+- Every screen, report, export header, template variable name and notification text uses the label, never a fixed word.
+- The Master Admin edits the defaults; each institution can override.
+
+### 40.5 Modules (switch whole features on or off)
+
+Each institution has a list of **modules**. The Master Admin decides which modules an institution may use
+(for example by plan, 42.3); the institution's Super Admin turns allowed modules on or off.
+
+| Module | Sections | Typical users |
+|---|---|---|
+| Core leads and follow-ups | 6–10 | everyone (always on) |
+| Calls and Android call sync | 11 | institutions with a calling team |
+| WhatsApp logging | 12 | most |
+| Campus visits | 14 | schools, colleges, universities |
+| Admission test and merit list | 40.8 | schools, universities, some colleges |
+| Fees, payments, receipts | 20–21 | most |
+| Student IDs | 19 | most |
+| External board flow | 22 | colleges, polytechnics, madrasas, English-medium |
+| Hostel and transport | 40.9 | madrasas, schools, nursing |
+| AI | 23–24 | larger institutions |
+| Credits and leaderboard | 27 | institutions with a calling team |
+| Alumni and referrals | 28 | colleges, universities, coaching |
+| Google Drive files and Photo Studio | 17–18 | institutions that collect papers online |
+| Public application form | 28, 40.11 | everyone |
+| Bulk SMS | 39.4 | everyone (paid per SMS) |
+
+- A switched-off module disappears from menus, Home cards, filters, reports and settings, and its background jobs skip that institution.
+- Data is kept when a module is switched off and comes back when it is switched on again.
+
+### 40.6 Custom fields with presets
+
+- Section 28 already has custom fields for alumni. The same **field builder** is used for **leads** and **students**.
+- Field types: text, long text, number, date, select, multi-select, phone, email, URL, yes/no, **GPA** (0–5, two decimals), **file** (paper).
+- Options: required, show on card, show in list / table, filterable, searchable, include in export, show on public form, order, group.
+- **Presets per type** (seeded by the profile): SSC / HSC GPA, board, roll, registration number, passing year,
+  previous institution, date of birth, birth certificate number, guardian NID, guardian occupation, group, shift, version.
+- Custom fields can be used in **template variables**, **filters**, **eligibility rules** (40.7) and **reports**.
+
+### 40.7 Eligibility rules
+
+- Per course / class: minimum GPA (overall or per subject), required group, age range on a date
+  (e.g. "Class 1: 6+ years on 1 January"), gender, required previous level.
+- When a lead's fields don't meet a rule: a warning on the lead page and a filter "Not eligible".
+  The setting chooses **warn** or **block admission**.
+- Used by the public form to tell applicants early.
+
+### 40.8 Admission test, merit list, waiting list
+
+- **Test sessions:** date, time, venue / room, capacity, courses, fee (optional).
+- Register leads to a session; **admit card** (printable, with photo and roll) and SMS / email with the details.
+- Record attendance and **marks** (manual entry or Excel import), with a viva mark if needed.
+- **Result and merit list** per course: by marks, with tie-break rules; selected / waiting / not selected.
+- **Quota seats** (optional): e.g. staff children, siblings, freedom fighters' quota, area. Each quota has seats.
+- Publish results: SMS / email to each applicant, and an optional public result page (`/result/<slug>`, roll + date of birth).
+- **Waiting list:** when a selected applicant doesn't confirm by a deadline, the next on the list is offered the seat (with a notification to officers).
+- Lottery mode (some schools): a recorded, auditable random draw instead of marks.
+
+### 40.9 Fee structures for every type
+
+Section 20–21 assume one total fee per course. Generalise to **fee heads** with a **schedule**:
+
+| Schedule | Example |
+|---|---|
+| One-time | Admission fee, form fee, ID card |
+| Monthly | School tuition, hostel, transport |
+| Per term / semester | University semester fee |
+| Per credit | Private university: credits × rate |
+| Yearly / session | Session fee, development fee |
+| Package | Coaching centre course package |
+
+- Each course has fee heads with amount, schedule, due day and late fee rule.
+- **Optional heads** chosen per student: hostel, transport (with route), books, uniform, lab.
+- **Monthly / term invoices** are generated by a background job per institution, in its time zone.
+- **Waivers and scholarships (rules):** result-based (e.g. GPA 5.00 → 50 % of tuition), sibling, staff child,
+  quota, merit list rank. Rules apply automatically and need approval above limits (same as section 20).
+- **Online payment** (optional module): a payment gateway such as bKash or SSLCommerz for application and
+  tuition fees, set up per institution by the Master Admin, the same way as SMS (39.3).
+- Due, late and installment reminders (section 21) work for every schedule.
+
+### 40.10 Guardians, families and siblings
+
+- A **guardian** record can link to many leads / students (siblings). Schools treat the guardian as the main contact.
+- Duplicate check (section 6) also matches guardian phones, and shows "sibling of …" instead of a plain duplicate.
+- Sibling discount rule (40.9) uses this link.
+- One message to a guardian can cover all their children (e.g. one fee-due SMS listing each child).
+
+### 40.11 Online application form builder
+
+- The public `/apply/<slug>` form (section 28) becomes **configurable per institution**: which fields (including custom fields), sections, required ones, file uploads (photo, papers), Bangla / English text.
+- Optional **application fee** paid online (40.9).
+- On submit: a lead is created (or matched), with an SMS / email confirmation and an application number.
+- Optional **applicant status page**: application number + phone → current status, test date, result, next step.
+
+### 40.12 Academic calendar and admission windows
+
+- Sessions / intakes with **admission open and close dates** per course.
+- Outside the window, the public form shows "Admission closed" (or takes interest for the next intake).
+- Reports and leaderboards can be filtered **per admission season**, so years can be compared.
+- "Roll over to next session": copy courses, batches and fees to a new session in one step.
+
+### 40.13 Branches and campuses
+
+- An institution can have **branches** (campuses). Optional; off for most.
+- `branch_id` exists on leads, students, courses, batches and users **from day one** (nullable), so it can be turned on later without a migration of every table.
+- Staff can be limited to branches (like course limits in section 4). Reports and leaderboards per branch.
+
+### 40.14 Language of the UI
+
+- The original brief uses English labels. Many school and madrasa staff prefer **Bangla**.
+- Proposed: full **English and Bangla UI**, chosen per user, with the institution's default.
+- All texts in translation files from the start; labels (40.4) have both languages.
+- Bangla digits optional for receipts and public pages.
+
+---
+
+## 41. Challenges for the Master Admin and the developer
+
+> **বাংলা সারাংশ:** অনেক প্রতিষ্ঠান একসাথে চালাতে গেলে Master Admin (ব্যবসা ও পরিচালনা) আর ডেভেলপার
+> (প্রযুক্তি) যেসব সমস্যায় পড়বেন, সেগুলো এখানে আলাদা করে লেখা। প্রতিটির পাশে কেন কঠিন, কীভাবে সামলানো
+> যায়, আর কোন ধাপে করতে হবে তা দেওয়া আছে। সব অংশ **Proposed**।
+
+### 41.1 Master Admin challenges (business and operations)
+
+| # | Challenge | Why it is hard | How to handle it | Phase |
+|---|---|---|---|---|
+| M1 | **Onboarding many institutions** | Each needs setup, courses, fees, staff, SMS, training. Done by hand it does not scale. | Type profiles (40.3), a step-by-step setup checklist with progress, Excel import of courses / staff / old leads, "copy from another institution", short video guides. | 0–1 |
+| M2 | **Verifying new institutions** | Self sign-up invites fake or duplicate institutions and SMS abuse. | Master Admin approval (39.7), EIIN / College Code check against duplicates, no SMS / bulk features until approved, trial limits. | 0 |
+| M3 | **Every institution wants something special** | Saying yes to each one leads to custom code and a product that can't be maintained. | Only settings, labels, modules, custom fields and profiles; a request log with votes across institutions; build only what several need. | always |
+| M4 | **Supporting users inside an institution** | Helping means seeing their data, which raises privacy and trust issues. | "Enter institution" only with a reason, time-limited, read-only by default, fully audited; the institution's Super Admin can see when support entered. | 0 |
+| M5 | **Billing and collections** | Plans, SMS usage, renewals, unpaid accounts, invoices, possibly VAT. | Plan and expiry fields from day one, SMS usage ledger (39.5), monthly statements, reminders before expiry, a clear grace period then **read-only mode** (never delete data for non-payment). Prepaid SMS balance per institution is simpler than postpaid. | 0–2 |
+| M6 | **SMS and email operations** | Gateways run out of balance, change APIs, go down; masked sender IDs usually need approval; emails land in spam. | Balance and error alerts to the Master Admin, a backup gateway per institution, delivery log, domain check (39.3), test buttons. Check sender ID rules with each gateway. | 0–1 |
+| M7 | **Watching the health of all institutions** | Problems in one institution (failed SMS, sync off, AI spend) are invisible until they complain. | Master Admin dashboard: per institution activity, errors, SMS / AI spend, sync health, last login, inactive institutions; alerts. | 1 |
+| M8 | **Busy season peaks** | Admission seasons overlap; many institutions are busy at the same time. | Load test before each season, rate limits per institution, queue fairness (41.2 D7), status page, no big releases during peak weeks. | 1+ |
+| M9 | **Data protection and children's data** | Schools hold minors' data; leaving institutions want their data; laws may change. | Clear terms and privacy policy, export of all an institution's data, deletion after leaving (with a notice period), access logs, minimal data in AI (section 23). Check current Bangladeshi data protection rules before launch. | 0–2 |
+| M10 | **Suspending or offboarding an institution** | Must stop use without losing data or breaking other institutions. | States: trial / active / read-only / suspended / closed. Full export before closing. | 0 |
+| M11 | **Communicating with institutions** | Releases, downtime and new features must reach the right people. | Announcements from the Master Admin panel (in-app, email), "What's new" per release, maintenance notices. | 1 |
+| M12 | **Master Admin account security** | One stolen Master Admin login exposes every institution. | Very few Master Admins, mandatory 2-factor login, separate login page, IP / device alerts, full audit, no shared accounts. | 0 |
+| M13 | **One app vs. each institution's own app** | Some institutions will want their own app name and logo on Play Store. | Start with one app showing each institution's branding after login. Separate branded builds later as a paid option, from the same code. | later |
+
+### 41.2 Developer challenges (technical)
+
+| # | Challenge | Why it is hard | How to handle it | Phase |
+|---|---|---|---|---|
+| D1 | **Tenant isolation everywhere** | Not only tables: storage paths, Realtime channels, Edge Functions, cron jobs, push, client caches, exports, logs. One miss leaks data. | `institution_id` on every row, RLS from the JWT claim, INVOKER functions by default, automated **cross-tenant leak test** in CI covering tables, RPCs, storage and Realtime; client caches keyed by institution and user. | 0 |
+| D2 | **Configuration explosion** | Types × modules × settings × roles create thousands of combinations to test. | Typed settings with JSON schema validation and defaults, settings versioning and migrations, seed test institutions for each type profile, tests that run the main flows on each. | 0+ |
+| D3 | **Labels and two languages** | Hard-coded words creep in everywhere; Bangla text is longer and breaks layouts. | Translation files and label lookup from day one, a lint check for hard-coded UI strings, screenshot tests in both languages. | 0 |
+| D4 | **Performance with many tenants** | Thousands of leads per institution × many institutions; one big tenant can slow others. | Indexes starting with `institution_id`, the speed rules in section 34, per-tenant rate limits, benchmark with large and small tenants, watch Supabase plan limits (connections, function calls, storage). Plan a path to move a very large tenant to its own project if ever needed. | 0+ |
+| D5 | **Database changes for everyone at once** | One migration changes all institutions; old app versions stay installed (37.7). | Backward-compatible RPCs, expand-then-contract migrations, a minimum app version per release, staged rollout (D12). | 0+ |
+| D6 | **Restoring one institution's data** | Supabase backups restore the whole database, not one tenant. | Soft delete + append-only timeline (37.10) for everyday undo; per-institution export snapshots (daily or weekly) for disasters. | 1 |
+| D7 | **Background jobs per institution** | Each job must loop institutions in their own time zone and settings; one slow tenant must not block others. | A job scheduler that picks due institutions, processes in small chunks, with attempts, back-off and per-tenant fairness (37.2). | 1 |
+| D8 | **Many third-party providers** | SMS gateways, email providers, payment gateways, AI, Drive all differ and fail differently. | One adapter interface per kind (send, check balance, parse result), a Custom HTTP adapter, provider errors stored and shown, test buttons, timeouts. | 0–2 |
+| D9 | **Secrets per institution** | Many keys; leaks are costly. | Encrypted storage (e.g. Supabase Vault), only Edge Functions read them, never logged, rotation support, hint-only display. | 0 |
+| D10 | **Login variety** | Password, Google, OTP; linking them to one profile; OTP cost and abuse; Google consent screen verification for production. | Supabase Auth with a custom hook that maps email / phone to one profile and institution; rate limits; CAPTCHA on public OTP requests; plan the Google verification early. | 0 |
+| D11 | **Android permissions and Play policy** | Call-log permission needs approval; WhatsApp listener and overlays are sensitive. | Build native features in phase 3, submit the permission declaration early, keep the app usable without them. | 3 |
+| D12 | **Releasing safely** | A bug ships to every institution at once. | Feature flags per institution, beta institutions first, OTA updates in channels, quick rollback. | 1+ |
+| D13 | **Observability** | Errors must be traced to an institution and user. | Logs and crash reports tagged with institution and user ids, an error dashboard, alerts on spikes. | 1 |
+| D14 | **Importing each institution's old data** | Every institution's Excel looks different. | Column mapping with saved mappings, Bangla aliases, preview, dry run, undo (section 15). | 1 |
+| D15 | **Public pages per institution** | Forms, results, referrals need the right institution, branding and abuse protection. | `/<page>/<slug>` URLs, per-institution branding, rate limits and CAPTCHA; custom domains later. | 1–2 |
+| D16 | **Costs per institution** | AI, SMS, storage and function calls must be traceable to who uses them. | Usage ledgers per institution (39.5, 23.3), budgets and limits, a monthly cost view in the Master Admin panel. | 1+ |
+
+---
+
+## 42. Updated build phases and open questions
+
+### 42.1 Build phases (Proposed; replaces 39.8)
+
+| Phase | Contents |
+|---|---|
+| **0: Foundation** | Multi-tenant schema with `institution_id` and nullable `branch_id`, RLS, cross-tenant leak test in CI. Master Admin panel: institutions, approval, states, support entry (audited), 2-factor login. **Type profiles, labels, modules, custom field builder.** Institution setup wizard and checklist. Login (password, Google, OTP). Roles, permissions, users. Per-institution SMS and email setup. English + Bangla UI framework. |
+| **1: Core CRM** | Leads (with guardians and custom fields), list / board / search / filters, pipeline, follow-ups, manual call log, notes, templates (incl. email), import / export, notifications (inbox, push, email, SMS via outbox), application form builder, academic calendar and admission windows, web version, Master Admin health dashboard and announcements. |
+| **2: Admission and students** | Courses / classes, batches / sessions, **eligibility rules**, **admission test and merit list**, admit, papers, **fee heads and schedules**, waivers and scholarships, payments, receipts, invoices, online payment (optional), student IDs, external board flow, student messages, bulk SMS, SMS billing statements, hostel and transport. |
+| **3: Android native** | Call-log sync, WhatsApp, caller card, call lock. |
+| **4: AI and team** | Admission chance, admission credit, leaderboard, scorecard, team activity. |
+| **5: Everything else** | Alumni and referrals, Google Drive, Photo Studio, feedback chat, crash reports, branches UI, applicant status page, branded apps per institution. |
+
+### 42.2 First institution types to support (Proposed)
+
+Start with the types the owner already knows best, and design the rest as profiles only:
+
+1. **College** (the earlier version's home ground).
+2. **School**.
+3. **Coaching centre / training institute**.
+
+University, polytechnic, madrasa, English-medium and health institutes are added as **profiles** (40.3) once the
+generic building blocks exist; ideally they need no new code.
+
+### 42.3 Plans and modules (Proposed)
+
+| Plan | For | Modules |
+|---|---|---|
+| Starter | small coaching centres, schools | Core leads, follow-ups, templates, public form, fees and payments |
+| Standard | most colleges and schools | Starter + calls, WhatsApp, visits, admission test, student IDs, board flow, reports |
+| Pro | large institutions | Standard + AI, credits and leaderboard, alumni, Drive, branches |
+
+SMS and AI usage are billed on top (39.5). Prices and exact module lists are the owner's decision.
+
+### 42.4 New open questions for the owner
+
+1. Which institution types should the **first release** support? (Proposed in 42.2: college, school, coaching.)
+2. Are **branches / campuses** needed in the first release, or later?
+3. Is a **guardian / student portal** wanted (see fees, receipts, results), and when?
+4. Is **online payment** (bKash, SSLCommerz or other) needed, and in which phase?
+5. Should institutions be able to get **their own branded app** on Play Store?
+6. Should the UI be **fully Bangla and English** (40.14), or English labels only as in the original brief?
+7. Plans and pricing: are the three plans in 42.3 close to what you want?
+8. Still open from 39.9: who receives email / SMS, Google sign-in for new people, which SMS gateways, bulk SMS, OTP by SMS / email / both.
