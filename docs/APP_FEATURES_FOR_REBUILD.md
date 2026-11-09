@@ -58,8 +58,9 @@
 44. [UX and quality checklist](#44-ux-and-quality-checklist)
 45. [Multi-tenant integration challenges](#45-multi-tenant-integration-challenges)
 46. [Renaming terms and modules per institution](#46-renaming-terms-and-modules-per-institution)
+47. [Beyond education: other businesses and industry selection](#47-beyond-education-other-businesses-and-industry-selection)
 
-> **Note:** sections 39–46 record what was added and decided while planning. Where they conflict with an
+> **Note:** sections 39–47 record what was added and decided while planning. Where they conflict with an
 > earlier section, **the later section wins**. Items marked **Proposed** still need the owner's approval.
 
 ---
@@ -1339,6 +1340,8 @@ codebase or hard-coded branches**. The tools for that:
 
 ### 40.3 Institution type profile (seed templates)
 
+> Extended in section 47: the type is now picked in two steps, **industry → type**, and education is one industry among several.
+
 At institution setup the Super Admin (or Master Admin) picks one or more types. The profile seeds:
 
 | What is seeded | Example: School | Example: Coaching centre |
@@ -1883,6 +1886,8 @@ All outside services go through one **integration hub** instead of separate code
 
 ### 46.1 The rule
 
+> Section 47 makes the internal keys industry-neutral (e.g. `client` instead of `student`); the education words below become the education pack's default labels.
+
 - Not every institution has "students". A coaching centre may say **Trainee**, a training institute **Participant**,
   a club or association **Member**, a recruitment or exam centre **Candidate**, a consultancy **Client**.
 - Every important term has a **fixed internal key** (e.g. `student`) that never changes in the database, code,
@@ -2024,3 +2029,138 @@ A changed label must show up **everywhere**, or the app feels half-renamed:
 1. Will the app also be sold to **non-education businesses** (e.g. clinics, real estate, travel agencies, consultancies)?
    If yes, a few more terms and type profiles are needed (e.g. "Patient", "Property", "Booking"), and some
    education-only modules (merit list, board flow) simply stay off for them.
+
+---
+
+## 47. Beyond education: other businesses and industry selection
+
+> **বাংলা সারাংশ:** অ্যাপটি শিক্ষা ছাড়া অন্য ব্যবসাতেও বিক্রি হবে (মালিকের সিদ্ধান্ত)। তাই মূল অংশ হবে
+> যেকোনো ব্যবসার লিড ও গ্রাহক ব্যবস্থাপনা, আর শিক্ষা হবে কয়েকটি "ইন্ডাস্ট্রি প্যাক"-এর একটি। সেটআপের সময়
+> প্রথমে ব্যবসার ধরন (ইন্ডাস্ট্রি), তারপর উপ-ধরন বাছাই করলে শব্দ, স্টেজ, মডিউল, ফিল্ড আর টেমপ্লেট নিজে থেকে
+> বসে যাবে। ভেতরের নামগুলো (key) ব্যবসা-নিরপেক্ষ হবে। কোন কোন ইন্ডাস্ট্রি, কোন মডিউল কার জন্য, চ্যালেঞ্জ আর
+> ধাপ এখানে লেখা আছে।
+
+### 47.1 Owner decisions (Decided)
+
+| # | Decision |
+|---|---|
+| D18 | The app will also be sold to **businesses outside education**. |
+| D19 | During setup, the organisation **selects what kind of organisation it is**, and the app configures itself for it. |
+
+**Wording:** in this document "institution" now means **any customer organisation** (a tenant): a college,
+a clinic, a real-estate company, a travel agency and so on.
+
+### 47.2 What changes in the product (Proposed)
+
+1. **The core becomes a general lead and customer management app.** Education is one **industry pack** among several.
+2. **Internal keys become industry-neutral** (phase 0, because changing them later is expensive). Each industry
+   pack gives them its own labels (section 46):
+
+| Neutral key (new) | Was | Education label | Example labels in other industries |
+|---|---|---|---|
+| `lead` | lead | Lead / Enquiry | Enquiry, Prospect, Patient enquiry, Buyer |
+| `client` | student | Student | Patient, Buyer, Traveller, Candidate, Member, Customer |
+| `contact_person` | guardian | Guardian | Family member, Company contact, Sponsor |
+| `offering` | course | Course / Class | Service, Treatment, Property project, Package, Job order, Product |
+| `cohort` | batch | Batch / Session | Departure date, Project phase, Shift, Event date |
+| `slot_group` | section | Section | Unit type, Room type, Group |
+| `conversion` | admission | Admission | Booking, Sale, Enrolment, Placement, Membership |
+| `client_number` | student_id | Student ID | Patient ID, Booking no., Member no., File no. |
+| `appointment` | campus_visit | Campus visit | Doctor appointment, Site visit, Test drive, Office meeting, Trial session |
+| `assessment` | admission_test | Admission test | Medical test, Interview, Credit check, Skill test |
+| `after_steps` | external_board_flow | Board flow | Visa processing, Loan approval, Registration, Handover |
+| `documents` | papers | Papers | Documents, Reports, Passport & visa papers, KYC |
+| `network` | alumni | Alumni | Past customers, Former patients, Members network |
+| `payment_plan` | fees + installments | Fee + installments | Price + installments, Booking money + EMI, Package price |
+
+3. **Generic building blocks** already in the plan cover most industries once they use neutral keys:
+   offerings with capacity (batches → departures, property units, event seats), documents checklist (papers),
+   steps after conversion (board flow → visa, loan, handover), appointments (campus visits → site visits,
+   doctor appointments, test drives), assessments, payment plans with installments and receipts, client numbers,
+   referrals and network, custom fields, custom records (43.2) and automation (43.2).
+4. **Industry-only modules** are switched on by the pack (40.5): e.g. merit list and board flow for education only.
+
+### 47.3 Industry selection at setup (D19)
+
+**Setup wizard**
+
+1. **Industry:** Education, Healthcare, Real estate, Travel & tourism, Study abroad consultancy, Recruitment / manpower,
+   Automobile, Fitness & wellness, Beauty & salon, Financial services, IT / agency services, Retail / online shop,
+   Events, **Other (general)**.
+2. **Type within the industry:** e.g. Healthcare → clinic, hospital, diagnostic centre, dental, eye care;
+   Education → the nine types in 40.2.
+3. **Preview:** what will be set up: labels (46), pipeline stages, modules (40.5), custom fields (40.6),
+   message templates, documents list, reports. The owner can untick parts.
+4. **Confirm.** Everything stays editable later.
+
+**Rules**
+- Industry packs and types are **data, not code** (`industry_packs`, `type_profiles`), versioned and edited by the Master Admin. A new industry can be added without a release.
+- **Other (general)** gives a clean, neutral setup (Lead → Customer, Product / Service, Sale).
+- An organisation may pick **more than one type** (e.g. a hospital with a nursing institute); the seeds merge (40.3).
+- **Changing the industry later** is allowed with a warning and a preview: labels, stages and modules are re-seeded only where the organisation has not changed them; data is never deleted.
+- The Master Admin can **limit which industries are open** for sign-up (e.g. while a pack is still in beta).
+
+### 47.4 Industry packs (first draft)
+
+| Industry | Lead → Client | Offering | Typical pipeline | Industry modules / special needs |
+|---|---|---|---|---|
+| **Education** (sections 1–46) | Lead → Student | Course, Class, Program | New → Contacted → Visit → Test → Admitted | Admission test, merit list, board flow, sections and seats, guardians, alumni |
+| **Healthcare** (clinic, hospital, diagnostic, dental) | Enquiry → Patient | Service, Treatment, Package, Test | New → Called → Appointment → Visited → Treatment started / Lost | Doctor-wise appointments, reminders, follow-up after treatment, **sensitive health data** (47.6) |
+| **Real estate** (developer, agency) | Enquiry → Buyer | Project, Unit / Property | New → Contacted → Site visit → Negotiation → Booking → Sale / Lost | Unit inventory with status (available / booked / sold), site visits, booking money, installment schedule, handover steps |
+| **Travel & tourism** (incl. Hajj / Umrah) | Enquiry → Traveller | Package, Tour | New → Quoted → Documents → Booked → Travelled | Departures with seats, passport and visa documents, group bookings, payment deadlines |
+| **Study abroad consultancy** | Enquiry → Applicant | Country, University, Program | New → Counselling → Documents → Applied → Offer → Visa → Flown | Application tracking per university, visa steps, document checklist, intakes |
+| **Recruitment / manpower** | Enquiry → Candidate | Job order (employer, country) | New → Screening → Interview → Medical → Visa → Deployed | Employer job orders with vacancies, medical and visa steps, document checklist |
+| **Automobile** (showroom, bike, car) | Enquiry → Buyer | Model, Vehicle | New → Test drive → Quotation → Booking → Delivered | Stock list, test drives, finance / EMI steps |
+| **Fitness & wellness** (gym, yoga) | Enquiry → Member | Membership plan | New → Trial → Joined → Renewal due | Memberships with expiry and **renewal** reminders, trial sessions |
+| **Beauty & salon** | Enquiry → Client | Service, Package | New → Booked → Visited → Repeat | Appointments by staff, repeat-visit reminders |
+| **Financial services** (insurance, loan, microfinance) | Lead → Client | Policy, Loan product | New → Contacted → Documents → Approved → Disbursed / Issued | KYC documents, approval steps, **financial data rules** (47.6) |
+| **IT / agency services** | Lead → Client | Service, Project | New → Meeting → Proposal → Won / Lost | Proposals / quotations, project value |
+| **Retail / online shop** (incl. Facebook-page sellers) | Lead → Customer | Product | New → Ordered → Delivered / Returned | Product list, orders, delivery status, cash on delivery |
+| **Events** | Enquiry → Client | Event package, Venue | New → Quoted → Booked → Held | Event dates with capacity, advance payment |
+| **Other (general)** | Lead → Customer | Product / Service | New → Contacted → Won / Lost | Only the core |
+
+Each pack also seeds: Bangla and English labels (46), message templates, lost reasons, sources, custom fields,
+document lists, report presets, AI prompt wording (47.5) and lead-score rules (section 14).
+
+### 47.5 Core features across industries
+
+| Feature | Works for every industry? | Note |
+|---|---|---|
+| Leads, follow-ups, calls, WhatsApp, notes, templates | Yes | The heart of the product. |
+| Pipeline and board | Yes | Stages per pack. |
+| Appointments / visits | Yes | Campus visit generalised (47.2). |
+| Payments, installments, receipts, online payment | Yes | Payment plans per pack. |
+| Documents checklist and uploads | Yes | Papers generalised. |
+| Steps after conversion | Yes | Board flow generalised (visa, loan, handover …). |
+| AI chance and coaching | Yes, with care | Prompts use the pack's words and its own "history"; it must never give medical, legal or financial advice. |
+| Credits, leaderboard, scorecard | Yes | Sales teams in every industry. |
+| Network / referrals | Yes | Alumni generalised. |
+| Admission test, merit list, external board, sections with seats, student ID series | Education (and some others by choice) | Can be switched on for any pack if useful (e.g. assessment for recruitment). |
+
+### 47.6 Challenges of going multi-industry
+
+| # | Challenge | How to handle it |
+|---|---|---|
+| X1 | **Scope creep:** every industry asks for its own special features. | Same rule as section 43: settings, custom records and automation first; a feature becomes core only when several industries need it. |
+| X2 | **Too generic = hard to use.** A neutral app can feel empty for everyone. | Strong packs: good defaults, templates, reports and words per industry, so each customer feels the app was made for them. |
+| X3 | **Sensitive data in some industries** (health records, financial / KYC, passports). | Per-pack data rules: which fields are marked sensitive, stricter access, no sensitive fields sent to AI, retention limits, audit of who viewed them. Check the relevant Bangladeshi rules before selling a pack. |
+| X4 | **Testing all packs.** | A seeded test organisation per pack, the main flows run in CI for each (41.2 T2), screenshot tests with each pack's labels (46.6). |
+| X5 | **Sales and marketing per industry.** | Landing pages and demo data per pack; a neutral product name and brand (35, 41.1 M13). |
+| X6 | **Support knowledge.** | Help articles per pack; support staff trained pack by pack; launch packs one at a time. |
+| X7 | **Data model pressure.** | Neutral keys from day one (47.2), custom records (43.2) for industry objects that don't fit, extensions (43.2) only when needed. |
+| X8 | **Plans and pricing per industry.** | Plans (42.3) can differ per industry; modules switched by plan and by pack. |
+
+### 47.7 Phases
+
+- **Phase 0:** neutral internal keys (47.2), industry and type selection in setup (47.3), packs stored as data,
+  the **Education** pack and the **Other (general)** pack.
+- **Phase 1–2:** the first non-education packs (chosen by the owner, 47.8), built only from the generic blocks.
+- **Later:** more packs, each launched when its templates, reports and help are ready; industry-specific
+  modules (e.g. property unit inventory, memberships with renewal) when two or more customers need them.
+
+### 47.8 Questions for the owner
+
+1. Which **2–3 industries** should come first after education?
+2. Should any industry be **excluded** (e.g. healthcare, because of sensitive data)?
+3. Will plans and prices **differ by industry**?
+4. Should the product name stay neutral (not "Admission …"), and is there a name in mind?
