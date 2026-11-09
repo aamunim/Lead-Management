@@ -1,4 +1,6 @@
-# Admission Management App: full feature brief for a new multi-institution app
+# Lead Management Platform (working name): full feature brief for a new multi-institution app
+
+> **Name:** "Admission Management App" was the earlier name. Not every customer does admissions, so the product gets a neutral name (D21, section 48.1). "Lead Management Platform" is only a working name.
 
 > **What this is.** A brief for an AI agent or developer who will build a **new, multi-institution
 > (multi-tenant)** admission management app **from scratch**. No existing data is moved into it.
@@ -59,8 +61,9 @@
 45. [Multi-tenant integration challenges](#45-multi-tenant-integration-challenges)
 46. [Renaming terms and modules per institution](#46-renaming-terms-and-modules-per-institution)
 47. [Beyond education: other businesses and industry selection](#47-beyond-education-other-businesses-and-industry-selection)
+48. [Planning round 4: name, plans, messaging, login, SMS and OTP](#48-planning-round-4-name-plans-messaging-login-sms-and-otp)
 
-> **Note:** sections 39–47 record what was added and decided while planning. Where they conflict with an
+> **Note:** sections 39–48 record what was added and decided while planning. Where they conflict with an
 > earlier section, **the later section wins**. Items marked **Proposed** still need the owner's approval.
 
 ---
@@ -1294,6 +1297,8 @@ Lives in **Master Admin panel → Institutions → \<institution\> → Messaging
 
 ### 39.9 Still open
 
+> All five questions below are planned in section 48.
+
 1. Who receives email / SMS: staff only, or also leads, students and guardians?
 2. Google sign-in: only users already added by an admin, or may new people sign in (pending approval)?
 3. Which SMS gateways do the institutions use? (Needed for the presets.)
@@ -1608,6 +1613,8 @@ SMS and AI usage are billed on top (39.5). Prices and exact module lists are the
 - Reports, leaderboards and the Master Admin dashboard can be split by branch.
 
 ### 42.6 Still open after round 2
+
+> Planned in section 48 (plans in 48.2; messaging questions in 48.3–48.7).
 
 1. Plans and pricing (42.3).
 2. From 39.9: who receives email / SMS, Google sign-in for new people, which SMS gateways, bulk SMS, OTP by SMS / email / both.
@@ -2166,3 +2173,169 @@ document lists, report presets, AI prompt wording (47.5) and lead-score rules (s
 2. Should any industry be **excluded** (e.g. healthcare, because of sensitive data)?
 3. Will plans and prices **differ by industry**?
 4. Should the product name stay neutral (not "Admission …"), and is there a name in mind?
+
+---
+
+## 48. Planning round 4: name, plans, messaging, login, SMS and OTP
+
+> **বাংলা সারাংশ:** প্রোডাক্টের নাম বদলাবে, কারণ সব জায়গায় "ভর্তি" হয় না। আর মালিকের অনুরোধে বাকি সব খোলা
+> প্রশ্নের জন্য পুরো পরিকল্পনা: প্ল্যান ও দাম, কে SMS / ইমেইল পাবে, Google লগইন, SMS প্রোভাইডার, বাল্ক SMS,
+> আর OTP। যেখানে কয়েকটা পথ ছিল, সেখানে সবগুলো পথ সেটিং হিসেবে রাখা হয়েছে, যাতে প্রতিষ্ঠান বা Master Admin বাছাই করতে পারেন।
+
+### 48.1 Product name (D21, Decided)
+
+| # | Decision |
+|---|---|
+| D21 | The name **"Admission Management App" will change**, because not every customer does admissions. The product needs a **neutral name** that also fits other industries later (47). |
+| D22 | For questions 48.2–48.7 the owner asked for **a plan covering all the options**. Each is therefore designed as settings, with sensible defaults. The designs are **Proposed** until the owner reviews them. |
+
+**What a good name needs (Proposed):**
+- Neutral: works for colleges today and other businesses later; no "Admission", "College" or "School" in it.
+- Short, easy to say in Bangla and English, easy to spell over the phone.
+- A free `.com` (or `.com.bd`) domain, free Play Store name, and no existing trademark (check before deciding).
+- Works as a brand next to each institution's own logo (D12).
+
+**Name directions to discuss (examples only, not checked for availability):**
+
+| Direction | Examples |
+|---|---|
+| Leads and follow-up | LeadDesk, FollowUp Pro, LeadKhata |
+| Growth and conversion | Growlead, Convertly |
+| Bangla flavour | Shikhor (শিখর, peak), Setu (সেতু, bridge), Jogajog (যোগাযোগ, contact) |
+| Neutral brandable word | Pathway, Nexa, Tally-Lead |
+
+Until a name is chosen the document uses the working name **"Lead Management Platform"**.
+
+### 48.2 Plans and pricing (Proposed)
+
+**Plan structure**
+
+| Plan | For | Main modules (40.5) | Typical limits (to be set) |
+|---|---|---|---|
+| **Free trial** | every new institution | everything in Standard | 14 or 30 days, few users, low SMS / AI allowance |
+| **Starter** | small coaching centres and schools | core leads, follow-ups, calls (manual), templates, public form, fees and payments, receipts | users, active leads, 1 branch |
+| **Standard** | most schools and colleges | Starter + WhatsApp log, visits, admission test, student IDs, board flow, reports, automation, import / export | more users and leads, 2–3 branches |
+| **Pro** | large institutions and groups | Standard + AI, credits and leaderboard, alumni, Drive, Android call sync, custom records, API / webhooks, unlimited branches | high limits |
+| **Enterprise / custom** | very large or special customers | any modules, custom limits, extensions (43), branded app (D12) | agreed per customer |
+
+**Add-ons (any plan):** SMS packs, AI usage, extra users, extra branches, extra storage, custom domain (D16),
+branded app (D12), extensions (43), onboarding / data import service.
+
+**Billing rules**
+- Monthly or yearly (yearly with a discount); prices in ৳ with VAT shown if applicable.
+- The Master Admin can give any institution a **custom price, discount or extra limits** (logged).
+- Upgrade takes effect at once (pro-rated); downgrade at the end of the period, after a check that the institution fits the lower limits.
+- Before expiry: reminders at 15, 7, 3 and 1 days. After expiry: a **grace period** (e.g. 7 days), then **read-only**; data is never deleted for non-payment (41.1 M5).
+- Subscription payment: manual (bank / bKash / Nagad with verification, D14) and online through the **platform's own** SSLCommerz merchant account (separate from institutions' accounts, D17).
+- Invoices and receipts for each subscription payment, downloadable from the institution's Settings → Billing.
+- Usage that is billed (SMS, AI, D15) appears on the same invoice when the platform pays the provider.
+
+**Limits engine**
+- Limits per plan and per institution: users, active leads, branches, storage, SMS per month, AI per month, automation runs, custom fields / records, API calls.
+- At 80 % a warning; at 100 % the action is blocked with a clear message and an upgrade button; OTP and urgent messages are never blocked by limits.
+
+**Owner still decides:** the actual prices, the exact limits, the trial length, and whether prices differ by institution type.
+
+### 48.3 Who receives email and SMS (Proposed)
+
+All recipient types are supported; each is switched per notification kind.
+
+| Recipient | Examples of messages | Rules |
+|---|---|---|
+| **Staff** (users) | assigned lead, follow-up due, discount approval, payment received, daily summary | channel per kind set by the Master Admin (D5); the user can mute non-urgent ones |
+| **Lead** (enquirer) | thank-you after enquiry, visit / test reminder, test result, offer, "we tried to call you" | only if the lead has a phone / email; respects do-not-contact and opt-out |
+| **Student** (client) | welcome, receipt, installment due, class / batch start, ID issued | after admission; respects opt-out for non-essential messages |
+| **Guardian** | same as student for minors; fee due and receipts | for schools the guardian is the default recipient; choose student / guardian / both per kind |
+| **Referrer / alumni** | referral received, reward paid | only if the alumni module is on |
+| **Institution owner / Super Admin** | weekly summary, billing, usage alerts | from the platform |
+
+**Recipient matrix:** in Master Admin panel → Institutions → \<institution\> → Notifications, a table of
+*notification kind × recipient × channel* (inbox / push / email / SMS / WhatsApp link), with defaults from the type profile.
+
+**Consent and safety**
+- Each person (lead, student, guardian) has per-channel flags: SMS ok, email ok, do-not-contact; an opt-out is stored with date and source.
+- **Transactional** messages (receipt, OTP, schedule) are separated from **promotional** ones (offers, campaigns); opt-out stops promotional ones only, unless the person asks to stop all.
+- Minors: for students under 18 (date of birth), non-essential messages go to the guardian by default.
+- Quiet hours and the institution's time zone apply (section 10).
+- Cost is shown in the matrix (SMS parts per month estimate), so the Master Admin sees the effect of switching SMS on.
+
+### 48.4 Google sign-in (Proposed)
+
+Both modes, chosen per institution:
+
+| Mode | Behaviour |
+|---|---|
+| **Invite only** (default) | Only people an admin already added (by email) can sign in with Google. Anyone else sees "Ask your admin to add you". |
+| **Open with approval** | Anyone with a Google account can sign in; they become a **pending** user (section 5) and admins with `users.manage` approve them. |
+| **Domain auto-approve** (option for either mode) | Emails on the institution's own domain (e.g. `@college.edu.bd`) are approved automatically with a default role (e.g. caller). |
+
+- The institution is always found from the email's profile (39.2); a Google account that is not linked to any institution
+  in "open" mode is asked to pick the institution by code / EIIN, then waits for approval.
+- A user can link Google and password on the same profile; removing the last sign-in method is not allowed.
+- If an admin deactivates a user, Google sign-in stops at once (sessions ended).
+
+### 48.5 SMS providers (Proposed)
+
+**Approach:** ship ready adapters for the most common gateways, and cover everything else with **Custom HTTP** (39.3).
+
+| Step | Plan |
+|---|---|
+| 1. Shortlist | Ask the first institutions which gateways they use. Candidates commonly seen in Bangladesh include SSL Wireless, BulkSMSBD, Alpha SMS, MiMSMS, Infobip and the mobile operators' corporate SMS services; an international fallback such as Twilio is possible. **APIs, prices and masking rules must be checked before building.** |
+| 2. First release | 3–4 ready adapters (the most used in the shortlist) + Custom HTTP + the platform's own default gateway. |
+| 3. Later | More adapters when two or more institutions ask for the same gateway. |
+
+**Each adapter supports:** send (single and batch), Unicode (Bangla), masking / non-masking sender ID, balance check (if offered),
+delivery report (push or poll), error mapping to clear messages, and a sandbox / test number.
+
+**Platform default gateway:** used when an institution has none, or as a backup (D15 decides who pays).
+**Routes:** OTP and transactional messages may use a different (faster, non-masked) route than promotional ones.
+
+### 48.6 Bulk SMS campaigns (Proposed)
+
+A **Campaigns** module (on by plan, 48.2).
+
+**Creating a campaign**
+1. **Audience:** any saved filter / segment of leads, students, guardians or alumni (sections 7, 22, 28), or an uploaded list.
+2. **Message:** a template (section 15) with variables; Bangla / English; part count and **cost estimate**; preview for 3 sample people.
+3. **Schedule:** now or later; respects quiet hours; sending speed limit (e.g. N per minute) so gateways and replies are not overloaded.
+4. **Checks before sending:** balance enough; recipients without a phone, opted out, do-not-contact or duplicates removed (shown as counts);
+   large campaigns (above a set size or cost) need **approval** by an admin.
+5. **Send** through the outbox (39.4) with per-message status.
+
+**After sending**
+- Report: sent, delivered, failed, unknown, cost; per-person status; failed numbers can be retried or exported.
+- Effect: leads who called back, moved stage, visited or were admitted within N days (like the template report in section 15).
+- Each campaign message is written to the person's timeline.
+
+**Rules**
+- Promotional campaigns use the promotional route / sender ID; opt-out instructions added where required.
+- Campaign limits per plan and per day; the Master Admin can pause any institution's campaigns.
+- Bangladesh rules for promotional SMS (sender ID, timing, content) must be checked before launch (41.1 M6).
+- Later: the same campaigns for **email**, and WhatsApp when the official API is added (45.3).
+
+### 48.7 OTP (Proposed)
+
+Both **SMS and email**, chosen per institution, with fallback.
+
+| Setting | Options |
+|---|---|
+| Channels | SMS only / email only / **both** (default: SMS first, email as fallback) |
+| Used for | sign-in (39.2), password reset, account deletion confirmation, applicant status page (40.11), changing phone or email, high-risk actions (e.g. voiding a payment) if the institution wants |
+| Code | 6 digits, valid 5 minutes, single use |
+| Limits | per number / email: e.g. 3 per 10 minutes and 10 per day; 5 wrong tries lock for 15 minutes; CAPTCHA on public pages |
+| Delivery | SMS through the institution's gateway on the **OTP route** (48.5), else the platform gateway; email through the institution's email setup (39.3), else platform mail |
+| Autofill | Android SMS code autofill; web `one-time-code` autofill (44.2) |
+| Cost | OTP SMS counted in the usage ledger (39.5); never blocked by monthly limits |
+| Later | WhatsApp OTP when the official API is added (45.3) |
+
+### 48.8 Phases
+
+- **Phase 0:** working name, plans and limits engine, trial, billing basics (manual + platform SSLCommerz), Google sign-in modes, OTP (SMS + email), first SMS adapters + Custom HTTP, recipient matrix for staff.
+- **Phase 1:** recipient matrix for leads, students and guardians; consent / opt-out; campaigns for SMS.
+- **Phase 2:** campaign effect reports; email campaigns; more SMS adapters.
+
+### 48.9 Still open for the owner
+
+1. The final **product name** (48.1).
+2. **Prices, limits and trial length** (48.2).
+3. Which **SMS gateways** the first institutions use (48.5, step 1).
