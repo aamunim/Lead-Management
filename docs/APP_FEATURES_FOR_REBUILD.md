@@ -2046,6 +2046,7 @@ A changed label must show up **everywhere**, or the app feels half-renamed:
 |---|---|
 | D18 | The app will also be sold to **businesses outside education**. |
 | D19 | During setup, the organisation **selects what kind of organisation it is**, and the app configures itself for it. |
+| D20 | **For now, only education.** Other industries come later; the first release sells to educational institutions only. |
 
 **Wording:** in this document "institution" now means **any customer organisation** (a tenant): a college,
 a clinic, a real-estate company, a travel agency and so on.
@@ -2152,15 +2153,16 @@ document lists, report presets, AI prompt wording (47.5) and lead-score rules (s
 
 ### 47.7 Phases
 
-- **Phase 0:** neutral internal keys (47.2), industry and type selection in setup (47.3), packs stored as data,
-  the **Education** pack and the **Other (general)** pack.
-- **Phase 1–2:** the first non-education packs (chosen by the owner, 47.8), built only from the generic blocks.
+- **Phase 0 (D20):** neutral internal keys (47.2) and packs stored as data are still built now, because changing
+  them later is expensive. Only the **Education** pack is open. While only one industry is open, the setup wizard
+  skips the industry step and starts at the education type (40.2); the Master Admin opens more industries later (47.3).
+- **Later (after the education release is stable):** the first non-education packs, built only from the generic blocks.
 - **Later:** more packs, each launched when its templates, reports and help are ready; industry-specific
   modules (e.g. property unit inventory, memberships with renewal) when two or more customers need them.
 
 ### 47.8 Questions for the owner
 
-1. Which **2–3 industries** should come first after education?
+1. ~~Which industries first?~~ Answered: **education only for now** (D20). Questions 2 and 3 below wait until other industries are planned.
 2. Should any industry be **excluded** (e.g. healthcare, because of sensitive data)?
 3. Will plans and prices **differ by industry**?
 4. Should the product name stay neutral (not "Admission …"), and is there a name in mind?
