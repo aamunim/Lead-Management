@@ -54,8 +54,11 @@
 40. [Fitting each institution type](#40-fitting-each-institution-type)
 41. [Challenges for the Master Admin and the developer](#41-challenges-for-the-master-admin-and-the-developer)
 42. [Updated build phases and open questions](#42-updated-build-phases-and-open-questions)
+43. [Custom features without breaking the core database](#43-custom-features-without-breaking-the-core-database)
+44. [UX and quality checklist](#44-ux-and-quality-checklist)
+45. [Multi-tenant integration challenges](#45-multi-tenant-integration-challenges)
 
-> **Note:** sections 39–42 record what was added and decided while planning. Where they conflict with an
+> **Note:** sections 39–45 record what was added and decided while planning. Where they conflict with an
 > earlier section, **the later section wins**. Items marked **Proposed** still need the owner's approval.
 
 ---
@@ -1535,9 +1538,9 @@ Section 20–21 assume one total fee per course. Generalise to **fee heads** wit
 
 | Phase | Contents |
 |---|---|
-| **0: Foundation** | Multi-tenant schema with `institution_id` and nullable `branch_id`, RLS, cross-tenant leak test in CI. Master Admin panel: institutions, approval, states, support entry (audited), 2-factor login. **Type profiles for all institution types (D8), labels, modules, custom field builder.** **Branches / campuses (D9).** Institution setup wizard and checklist. Per-institution branding inside the shared app (D12). Login (password, Google, OTP). Roles, permissions, users. Per-institution SMS and email setup. English + Bangla UI framework. |
-| **1: Core CRM** | Leads (with guardians and custom fields), list / board / search / filters, pipeline, follow-ups, manual call log, notes, templates (incl. email), import / export, notifications (inbox, push, email, SMS via outbox), application form builder, academic calendar and admission windows, web version, Master Admin health dashboard and announcements. |
-| **2: Admission and students** | Courses / classes, batches / sessions, **eligibility rules**, **admission test and merit list**, admit, papers, **fee heads and schedules**, waivers and scholarships, payments, receipts, invoices, **online payment (D11)**, student IDs, external board flow, student messages, bulk SMS, SMS billing statements, hostel and transport. |
+| **0: Foundation** | Multi-tenant schema with `institution_id` and nullable `branch_id`, RLS, cross-tenant leak test in CI. Master Admin panel: institutions, approval, states, support entry (audited), 2-factor login. **Type profiles for all institution types (D8), labels, modules, custom field builder.** **Branches / campuses (D9).** Institution setup wizard and checklist. Per-institution branding inside the shared app (D12). Login (password, Google, OTP). Roles, permissions, users. Per-institution SMS and email setup. English + Bangla UI framework. **Event log and extension framework (43).** **Design system with light / dark tokens (44).** **Integration hub (45.2).** |
+| **1: Core CRM** | Leads (with guardians and custom fields), list / board / search / filters, pipeline, follow-ups, manual call log, notes, templates (incl. email), import / export, notifications (inbox, push, email, SMS via outbox), application form builder, academic calendar and admission windows, web version, Master Admin health dashboard and announcements. **Automation rules (43.2).** |
+| **2: Admission and students** | Courses / classes, batches / sessions, **eligibility rules**, **admission test and merit list**, admit, papers, **fee heads and schedules**, waivers and scholarships, payments, receipts, invoices, **online payment (D11)**, student IDs, external board flow, student messages, bulk SMS, SMS billing statements, hostel and transport. **Custom records, webhooks and API (43.2).** |
 | **3: Android native** | Call-log sync, WhatsApp, caller card, call lock. |
 | **4: AI and team** | Admission chance, admission credit, leaderboard, scorecard, team activity. |
 | **5: Everything else** | Alumni and referrals, Google Drive, Photo Studio, feedback chat, crash reports, applicant status page, **separate branded apps per institution (D12)**, guardian / student portal (if wanted later, D10). |
@@ -1604,3 +1607,245 @@ SMS and AI usage are billed on top (39.5). Prices and exact module lists are the
 1. Plans and pricing (42.3).
 2. From 39.9: who receives email / SMS, Google sign-in for new people, which SMS gateways, bulk SMS, OTP by SMS / email / both.
 3. Which online payment gateways to support first.
+
+---
+
+## 43. Custom features without breaking the core database
+
+> **বাংলা সারাংশ:** কোনো প্রতিষ্ঠান বিশেষ ফিচার চাইলে মূল ডাটাবেস না বদলে পাঁচটি স্তরে তা যোগ করা যাবে:
+> সেটিং, কাস্টম রেকর্ড, অটোমেশন নিয়ম, webhook/API, আর আলাদা এক্সটেনশন। মূল টেবিলে কোনো প্রতিষ্ঠানের জন্য
+> আলাদা কলাম যোগ হবে না। সব অংশ **প্রস্তাবিত**; মালিক যোগ করতে বলেছেন।
+
+### 43.1 The rule
+
+The core database and core code are **never changed for one institution**. Custom needs are met in layers
+outside the core, from the simplest to the most special.
+
+### 43.2 Five layers
+
+| Layer | How | Example | Code needed? |
+|---|---|---|---|
+| **1. Settings** | Settings, labels, modules, custom fields (section 40) | "Add a 'blood group' field to our lead form" | No |
+| **2. Custom records** | The institution defines a new record type (name, fields, link to lead / student). Forms, lists, filters and export are generated automatically. | Hostel room allocation, scholarship application, library card | No |
+| **3. Automation rules** | "When … if … then …" rules. Triggers: lead created, stage changed, payment received, date reached, field changed. Actions: send SMS / email / push, assign, set a field, create a follow-up, add a tag, call a webhook. | "When the stage changes and the course is BBA, SMS the guardian and create a follow-up" | No |
+| **4. Webhooks and API** | Outgoing webhooks on events, and a per-institution API with scoped API keys (read / write per area), rate-limited and audited. | Connect to the institution's own ERP or accounting software | Only on the institution's side |
+| **5. Extensions** | A separate small module built by our developers, switched on only for chosen institutions. | Bus GPS tracking, a special merit-list formula | Yes, outside the core |
+
+Most requests should be met by layers 1–3 without any code.
+
+### 43.3 Rules that keep the core safe
+
+1. **No per-institution columns in core tables.** Custom data lives in generic tables
+   (e.g. `custom_field_values`, `custom_records` with `jsonb` data), with suitable indexes (GIN / expression indexes).
+2. **Extensions are isolated:**
+   - their own schema (e.g. `ext_transport`) and their own migrations folder
+   - they never write to core tables directly; only through versioned RPCs and events
+   - switching off or removing an extension never breaks the core app
+3. **Event log from day one:** every important action (lead created, stage changed, payment received …) is
+   written to a `domain_events` table. Automation, webhooks and extensions listen to these events, so the core
+   code does not change for them.
+4. **Core schema changes are additive only** (expand, then contract later); see 41.2 D5.
+5. **Limits per institution:** number of custom fields, custom record types and records, and automation runs per
+   day, so one institution can't slow down the others.
+6. **Security:** custom tables and extension tables also have `institution_id` and RLS; the cross-tenant leak
+   test covers them; exports and backups include them.
+7. **Stable contracts:** event payloads and API versions are documented and versioned, so extensions and outside
+   systems don't break when the core changes.
+
+### 43.4 How a new request is handled
+
+1. First check whether settings, custom records or automation can do it. If yes, no code is written.
+2. If **several institutions** want the same thing, build it into the core as a module for everyone.
+3. If **only one institution** wants it, build it as an extension, and it can be charged separately.
+
+### 43.5 Phases
+
+- **Phase 0:** event log, extension framework and conventions, custom fields.
+- **Phase 1:** automation rules.
+- **Phase 2:** custom records, webhooks and API.
+- **Later, on demand:** individual extensions.
+
+---
+
+## 44. UX and quality checklist
+
+> **বাংলা সারাংশ:** ডার্ক মোড, কিবোর্ডের নিচে ফিল্ড ঢাকা না পড়া, বাংলা লেখা ঠিকভাবে দেখানো, কম দামি ফোনে
+> দ্রুত চলা, ধীর নেট, লাখের নিয়মে টাকা লেখা, ফোনে নিরাপত্তা আর টেস্টিং: প্রতিটি নতুন স্ক্রিন বানানোর পর
+> এই তালিকা ধরে যাচাই হবে। সব অংশ **প্রস্তাবিত**; মালিক যোগ করতে বলেছেন।
+
+Every new screen is checked against this list before it ships. ✅ = already in the plan, ⚠️ = partly, ❌ = new.
+
+### 44.1 Look: theme and screens
+
+| Item | Status | What to do |
+|---|---|---|
+| Dark mode | ⚠️ | In section 34, but changing the theme restarts the app. **Switch without a restart.** |
+| Institution brand colour | ❌ | Check automatically that the brand colour keeps text readable in both light and dark themes. |
+| Large system font | ❌ | Text must not be cut off or overlap when the phone's font size is large. |
+| Bangla text clipping | ❌ | Bangla vowel signs above and below (e.g. ু, ৃ) are clipped when the line height is tight. Use a Bangla-safe line height. |
+| Notch, camera hole, navigation bar | ❌ | Respect safe areas; buttons never hide behind the system bars (Android edge-to-edge). |
+| Small phones, tablets, landscape | ❌ | Layouts work from 5-inch phones to tablets; the web is responsive. |
+
+### 44.2 Keyboard and input
+
+| Item | Status | What to do |
+|---|---|---|
+| **Keyboard covering fields** | ❌ | The focused field scrolls above the keyboard on every screen, including bottom sheets and popups. |
+| Save button | ❌ | On long forms, the Save button stays visible just above the keyboard. |
+| "Next" key | ❌ | Next moves to the next field; Done on the last field saves. |
+| Right keyboard type | ❌ | Number pad for phones, email keyboard for email, numeric for money. |
+| **Bangla digits in numbers** | ❌ | "০১৭১১…" typed or pasted in Bangla digits becomes "01711…". +880, spaces and dashes are cleaned too. |
+| Bangla search | ❌ | Searching names typed in Bangla (Avro, Gboard) works. |
+| OTP autofill | ❌ | The OTP from SMS fills in automatically. |
+| Dismiss keyboard | ❌ | Tapping outside or scrolling closes the keyboard. |
+
+### 44.3 Forms
+
+| Item | Status | What to do |
+|---|---|---|
+| Validation messages | ⚠️ | Plain-language messages right under the field. |
+| Leaving without saving | ❌ | Back asks "Discard changes?". |
+| Draft autosave | ❌ | Text is not lost when a call comes in or the app is closed. |
+| **Double tap on Save** | ❌ | Never creates two leads or two payments. **Critical for money:** use idempotency keys on the server. |
+| Date and time pickers | ❌ | In Bangla and English, in the institution's time zone. |
+
+### 44.4 Loading, empty and error states
+
+| Item | Status | What to do |
+|---|---|---|
+| Loading | ⚠️ | Skeletons instead of blank screens; cached data first (section 34). |
+| Empty state | ❌ | "No leads yet" with an action: Add lead / Import. |
+| Errors | ⚠️ | Never fail silently (37.1): say what happened and offer Retry. |
+| Pull to refresh, Undo | ⚠️ | Pull to refresh on every list; Undo after deletes. |
+| Long tasks | ⚠️ | Progress (%) and Cancel for import and bulk actions. |
+
+### 44.5 Navigation
+
+- **Android Back button:** closes an open sheet or popup first, then goes back; on Home, confirm before exiting. ❌
+- **Keep position:** returning from a lead keeps the list position. ⚠️ ("Keep in place" in section 7)
+- **Deep links:** a notification opens the exact lead or payment. ✅
+
+### 44.6 Network and device (very important in Bangladesh)
+
+- **Offline and slow networks:** offline queues exist; add timeouts and retries tuned for slow 3G. ⚠️
+- **Low-end phones:** test on 2–3 GB RAM Android phones; long lists must stay smooth (virtualised lists). ❌
+- **Mobile data cost:** compress images, avoid needless downloads. ❌
+- **Battery:** background sync must not drain the battery. ❌
+- **App size:** keep it as small as possible. ❌
+- **Wrong phone clock:** all time logic uses server time. ❌
+
+### 44.7 Accessibility
+
+- Touch targets at least 48 dp. ❌
+- Never use colour alone: hot / warm / cold also have an icon or text. ⚠️ (🔥🙂❄️ exist)
+- Screen-reader labels on buttons; enough contrast between text and background. ❌
+- One-hand use: callers' main actions near the bottom of the screen. ⚠️
+
+### 44.8 Language and money
+
+- Bangla / English switch **without a restart**. ✅ (40.14)
+- **Money in the lakh format:** ১,০০,০০০ / 1,00,000, not 100,000. ❌
+- Date formats and optional Bangla digits. ⚠️
+
+### 44.9 Security on the phone
+
+- Optional app lock with PIN or fingerprint. ❌
+- Auto sign-out after inactivity (institution setting). ❌
+- "Sign out of all other devices". ❌
+- Caches cleared on sign-out. ✅
+
+### 44.10 Quality process
+
+- **Design system:** colours, fonts and spacing defined once as tokens (light / dark / brand), so dark mode and branding work on every screen. ❌
+- **Automated tests:** Maestro (phone) and Playwright (web) for the main flows. ❌
+- **Screenshot tests:** every screen in light / dark × Bangla / English. ⚠️ (partly in 41.2)
+- **Test phone list:** one low-end, one mid-range, one small-screen phone. ❌
+
+---
+
+## 45. Multi-tenant integration challenges
+
+> **বাংলা সারাংশ:** প্রতিটি প্রতিষ্ঠানের নিজস্ব SMS, ইমেইল, পেমেন্ট গেটওয়ে (SSLCommerz, bKash, Nagad ইত্যাদি),
+> AI, Google Drive, পুশ, কাস্টম ডোমেইন ও SSL সার্টিফিকেট, webhook আর অন্যান্য বাইরের সার্ভিস থাকলে জটিলতা অনেক গুণ
+> বাড়ে। এখানে একটি সাধারণ "ইন্টিগ্রেশন হাব" কাঠামো, প্রতিটি সার্ভিসের আলাদা চ্যালেঞ্জ আর সমাধান, আর সব
+> সার্ভিসে প্রযোজ্য চ্যালেঞ্জগুলো লেখা আছে। সব অংশ **প্রস্তাবিত**।
+
+### 45.1 Why integrations get hard in a multi-tenant app
+
+- **Institutions × providers × environments.** 100 institutions, each with its own SMS, email, payment and AI
+  setup, in sandbox and live mode, is hundreds of separate connections, each able to fail on its own.
+- Every connection has its **own credentials, limits, costs, callbacks and failure modes**, and a mistake can
+  send one institution's message, money or data through another institution's account.
+- Providers change their APIs, prices and rules without asking, and some (especially local gateways) have
+  thin documentation and no proper sandbox.
+- The Master Admin sets them up (39.1 D4), but the **institution** feels the problem when something breaks.
+
+### 45.2 Integration hub (one structure for every provider)
+
+All outside services go through one **integration hub** instead of separate code per feature.
+
+| Part | What it does |
+|---|---|
+| **Provider catalogue** | List of supported providers per kind (SMS, email, payment, AI, storage, push, …) with their settings form, docs link and capabilities (balance check, refunds, delivery reports …). |
+| **Connection per institution** | `integration_connections(institution_id, kind, provider, mode sandbox/live, status, settings, priority)`. Several per kind allowed (primary + backup). |
+| **Secrets** | Stored encrypted (e.g. Supabase Vault), readable only by Edge Functions, shown as a hint; rotation with a "valid from" date so the old key keeps working until the new one is tested. |
+| **Adapter interface** | One adapter per provider with the same functions per kind (e.g. SMS: `send`, `balance`, `parse_status`; payment: `create`, `verify`, `refund`, `parse_callback`). A **Custom HTTP** adapter for SMS / email covers unlisted providers. |
+| **Outbox and queue** | Every outgoing call is queued with attempts, back-off, "given up" (37.2) and an idempotency key. |
+| **Webhook router** | Incoming callbacks use a URL that names the connection, e.g. `/hooks/<provider>/<connection_id>`; the signature is checked with **that connection's** secret before anything is trusted. |
+| **Circuit breaker and failover** | After repeated failures a connection is paused and the backup is used (where allowed, e.g. SMS); the Master Admin is alerted. |
+| **Health and tests** | A "Test" button per connection, a periodic health check, last success / last error, shown in the Master Admin panel (39.3). |
+| **Usage and cost ledger** | Per institution, per provider, per day: count, cost, failures (39.5). |
+| **Audit** | Who changed which connection and when; secrets never appear in logs. |
+
+### 45.3 Each integration: specific challenges
+
+| Integration | Multi-tenant challenges | How to handle them |
+|---|---|---|
+| **SMS gateways** | Different APIs and error formats per gateway; masked sender IDs usually need approval per institution; balance runs out; Bangla (Unicode) parts cost more; OTP must work even when bulk is blocked; delivery reports come late or never. | Adapters + Custom HTTP; sender ID status per connection; low-balance alerts; part count and cost before sending; separate priority queue for OTP; a backup gateway; mark delivery as "unknown" after a timeout. |
+| **Transactional email** | **Shared sending reputation:** one institution's spam-like mail can hurt every institution on the same domain / IP; SPF / DKIM / DMARC per institution domain; bounces and complaints; replies must reach the right person. | Each institution sends from **its own domain** (verified) or from its own sub-domain of the platform; platform default mail only with low limits; process bounces / complaints per institution and pause bad senders; Reply-To set to the institution's address. |
+| **Payment gateways** (e.g. SSLCommerz, bKash, Nagad, Rocket, cards) | Each institution needs **its own merchant account** (trade licence, bank account, verification), or the platform must act as an aggregator, which has legal and licensing implications; sandbox differs from live; callbacks (IPN) can be late, repeated or missing; **amount tampering** on the client; refunds differ per gateway or are not supported; fees (MDR) and settlement days differ; daily reconciliation. | Default: **each institution's own merchant account**, money settles straight to the institution; the platform never holds the money. Always **verify the payment server-to-server** before marking it paid; amount and invoice come from the server, never the client; idempotent callbacks; daily reconciliation report; refunds through the gateway where supported, otherwise recorded by hand. Legal check before any aggregator model. |
+| **Login: Google and OTP** | One Google OAuth client for the whole product needs Google's app verification; branded apps (D12) need their own OAuth / app identifiers; OTP SMS cost and abuse. | Plan Google verification early; per-app OAuth settings for branded builds; OTP rate limits and CAPTCHA (41.2 D10). |
+| **Push notifications** | Shared app: one Firebase / Expo project for all; branded apps: **one Firebase project and credentials per app**; tokens must be tied to institution + user + app. | Push connection per app build, token table with `institution_id` and `app_id`, receipts per app (section 25). |
+| **AI (Claude / Gemini)** | Keys per institution (section 23) or platform keys; budgets per institution; provider outages; personal data must not be sent. | AI connections in the hub, per-institution budgets and usage ledger, anonymisation (section 23), failover only with a visible note (37.5). |
+| **Google Drive (Apps Script)** | Each institution deploys its own script: easy to break (wrong deployment, quota limits, the Google account owner leaves the institution). | Health check and clear error messages; setup guide; option to use platform storage (Supabase Storage) instead; files listed in the database so they can be moved. |
+| **PDF / photo services** (iLovePDF, remove.bg) | Monthly quotas per account; several accounts per institution (section 17). | Same hub: several connections in priority order, monthly counters, fallback to "no compression" with a warning. |
+| **Custom domains and SSL certificates** | Institutions may want `admission.college.edu.bd` for public forms; each needs DNS verification and an **SSL (HTTPS) certificate** that renews automatically; certificate expiry breaks the page. | Start with platform sub-paths / sub-domains (one wildcard certificate). Custom domains later, through a host that issues and renews certificates automatically; DNS check and expiry alerts in the Master Admin panel. |
+| **Outgoing webhooks** (43.2) | The institution's endpoint may be slow, down or wrong; payloads must be signed; retries must not flood them. | Signed payloads (secret per webhook), timeouts, back-off retries, auto-disable after many failures with a notice, delivery log with "resend". |
+| **Incoming API** (43.2) | API keys per institution must never reach another institution's data; abuse and heavy use. | Keys scoped to one institution and to areas, rate limits, audit, key rotation. |
+| **WhatsApp** | Today: opening WhatsApp and logging (section 12). An official WhatsApp Business API later would need a verified business account and approved templates **per institution**, with per-message costs. | Keep the current approach; if the official API is added, treat it as a hub connection per institution, like SMS. |
+| **External boards and government portals** (e.g. National University, education boards) | Usually no public API; steps are done on the portal by hand. | Keep the manual external board flow (section 22); import results from files where possible. |
+| **Accounting / ERP / school management software** | Every institution uses something different, or nothing. | Webhooks, API and Excel export (43.2); no direct integration unless several institutions use the same system. |
+| **Maps and addresses** | Map links in templates; optional geocoding costs money. | Store a map link per institution / branch; no paid map API unless needed. |
+
+### 45.4 Challenges common to every integration
+
+| # | Challenge | How to handle it |
+|---|---|---|
+| I1 | **Wrong institution's account used** (e.g. College A's SMS sent from College B's gateway) | The connection is always looked up from the record's `institution_id` on the server, never from the client; tests that send through two institutions and check each used its own account. |
+| I2 | **Secrets leaking** (logs, error messages, screenshots) | Vault storage, hint-only display, log scrubbing, rotation, no secrets in chat or code (37.12). |
+| I3 | **Sandbox vs live mix-ups** | Mode stored per connection and shown clearly; live payment and bulk SMS blocked until a test in live mode passes; sandbox data marked. |
+| I4 | **Callbacks: late, duplicated, forged** | Signature check per connection, idempotency, server-to-server verification, a "pending" state with a timeout and a reconcile job. |
+| I5 | **Provider outage or API change** | Circuit breaker, backup connections, versioned adapters, a contract test per adapter run daily in sandbox. |
+| I6 | **Rate limits and fairness** | Per-institution and per-provider limits in the queue, so one institution's bulk send doesn't block others' OTP. |
+| I7 | **Costs and billing** | Usage ledger per institution and provider (39.5); budgets and alerts; cost shown before bulk actions. |
+| I8 | **Testing without real money or SMS** | Sandbox connections, a "fake" adapter for each kind in development and CI, test institutions. |
+| I9 | **Onboarding effort** | Setup wizards per provider, "copy from another institution", checklists with status, short guides; the Master Admin sees what is missing per institution. |
+| I10 | **Support: who fixes it?** | Clear split: the platform fixes adapter bugs; the institution (or Master Admin on its behalf) fixes its account, balance or merchant issues with the provider; the error message says which. |
+| I11 | **Data protection** | Only the data a provider needs is sent (e.g. phone and text for SMS); AI gets anonymised data; each provider listed in the privacy policy. |
+| I12 | **Time zones and schedules** | Sending windows and quiet hours per institution time zone (section 10). |
+| I13 | **Branded apps multiply everything** (D12) | Each branded app has its own push, OAuth, store listing and permissions; keep them in the hub as "app" connections, and charge for it. |
+| I14 | **Leaving institutions** | On closing an institution, disable its connections, revoke API keys and webhooks, and delete its secrets. |
+
+### 45.5 Phases
+
+- **Phase 0:** integration hub (catalogue, connections, secrets, adapters, outbox, webhook router, health, ledger), SMS and email adapters, Google / OTP login.
+- **Phase 1:** push per app, webhooks out, sandbox / fake adapters in CI.
+- **Phase 2:** payment gateways and reconciliation, incoming API, PDF / photo services, Drive.
+- **Later:** custom domains, official WhatsApp API, branded-app connections.
+
+### 45.6 Open questions for the owner
+
+1. Payment money: **each institution's own merchant account** (proposed), or the platform collects and pays out (needs a legal check)?
+2. Which payment gateways first (e.g. SSLCommerz, bKash, Nagad)?
+3. Who pays gateway and SMS fees: the institution directly, or through the platform's bill?
+4. Should institutions be able to use their **own domain** for public pages, and in which phase?
