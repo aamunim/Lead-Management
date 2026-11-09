@@ -1529,6 +1529,7 @@ Section 20–21 assume one total fee per course. Generalise to **fee heads** wit
 | D14 | **Importing each institution's old data** | Every institution's Excel looks different. | Column mapping with saved mappings, Bangla aliases, preview, dry run, undo (section 15). | 1 |
 | D15 | **Public pages per institution** | Forms, results, referrals need the right institution, branding and abuse protection. | `/<page>/<slug>` URLs, per-institution branding, rate limits and CAPTCHA; custom domains later. | 1–2 |
 | D16 | **Costs per institution** | AI, SMS, storage and function calls must be traceable to who uses them. | Usage ledgers per institution (39.5, 23.3), budgets and limits, a monthly cost view in the Master Admin panel. | 1+ |
+| D17 | Where online payment money goes (45.6 question 1) | **Each institution's own merchant account.** Money settles straight to the institution's bank account; the platform never holds it. |
 
 ---
 
@@ -1844,7 +1845,7 @@ All outside services go through one **integration hub** instead of separate code
 - **Phase 2:** **manual payments + SSLCommerz** first (D14), reconciliation, incoming API, PDF / photo services, Drive; more gateways later.
 - **Later:** official WhatsApp API, branded-app connections.
 
-### 45.6 Open questions for the owner (answered in 45.7, except 1)
+### 45.6 Open questions for the owner (all answered in 45.7)
 
 1. Payment money: **each institution's own merchant account** (proposed), or the platform collects and pays out (needs a legal check)?
 2. Which payment gateways first (e.g. SSLCommerz, bKash, Nagad)?
@@ -1863,4 +1864,7 @@ All outside services go through one **integration hub** instead of separate code
 - With **manual payments**, an officer can mark a bKash / Nagad send-money as "to verify"; a second person (or the officer, by setting) confirms it after checking the statement. This avoids fake transaction IDs.
 - For D15 the usage ledger (39.5) records both cases, so the bill shows only what the platform paid.
 
-**Still open:** question 1 in 45.6: does online payment money go to **each institution's own merchant account** (proposed), or does the platform collect and pay out?
+**What D17 means in practice:**
+- Each institution opens its own SSLCommerz merchant account (trade licence, bank account, verification) before online payment is switched on. The setup checklist (41.1 M1) shows this step.
+- The Master Admin enters that institution's merchant credentials in **Master Admin panel → Institutions → \<institution\> → Payments** (sandbox first, then live, 45.4 I3).
+- Refunds, chargebacks and settlement questions are between the institution and SSLCommerz; the app shows the status and the reconciliation report (45.3).
