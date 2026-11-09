@@ -1840,12 +1840,27 @@ All outside services go through one **integration hub** instead of separate code
 
 - **Phase 0:** integration hub (catalogue, connections, secrets, adapters, outbox, webhook router, health, ledger), SMS and email adapters, Google / OTP login.
 - **Phase 1:** push per app, webhooks out, sandbox / fake adapters in CI.
-- **Phase 2:** payment gateways and reconciliation, incoming API, PDF / photo services, Drive.
-- **Later:** custom domains, official WhatsApp API, branded-app connections.
+- **Phase 1:** custom domains with automatic SSL certificates (D16).
+- **Phase 2:** **manual payments + SSLCommerz** first (D14), reconciliation, incoming API, PDF / photo services, Drive; more gateways later.
+- **Later:** official WhatsApp API, branded-app connections.
 
-### 45.6 Open questions for the owner
+### 45.6 Open questions for the owner (answered in 45.7, except 1)
 
 1. Payment money: **each institution's own merchant account** (proposed), or the platform collects and pays out (needs a legal check)?
 2. Which payment gateways first (e.g. SSLCommerz, bKash, Nagad)?
 3. Who pays gateway and SMS fees: the institution directly, or through the platform's bill?
 4. Should institutions be able to use their **own domain** for public pages, and in which phase?
+
+### 45.7 Owner decisions, planning round 3 (Decided)
+
+| # | Question (45.6) | Decision |
+|---|---|---|
+| D14 | Which payment methods first | **Manual payments + SSLCommerz.** Manual = cash, bank, bKash / Nagad / Rocket send-money etc. recorded by staff with a transaction ID (section 21). Online = SSLCommerz through the integration hub (45.2). Other gateways later. |
+| D15 | Who pays gateway and SMS fees | **Both options.** The Master Admin chooses per institution: the institution pays the provider **directly** (its own account), or the platform pays and **adds it to the institution's bill** (39.5). |
+| D16 | Own domain for public pages | **Yes.** An institution may add its own domain **at any time** (during setup or later). Support for it is therefore built in phase 1 (moved from "Later"), with DNS verification and automatic SSL certificates. |
+
+**Notes (Proposed):**
+- With **manual payments**, an officer can mark a bKash / Nagad send-money as "to verify"; a second person (or the officer, by setting) confirms it after checking the statement. This avoids fake transaction IDs.
+- For D15 the usage ledger (39.5) records both cases, so the bill shows only what the platform paid.
+
+**Still open:** question 1 in 45.6: does online payment money go to **each institution's own merchant account** (proposed), or does the platform collect and pay out?
