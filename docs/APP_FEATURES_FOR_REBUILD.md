@@ -57,8 +57,9 @@
 43. [Custom features without breaking the core database](#43-custom-features-without-breaking-the-core-database)
 44. [UX and quality checklist](#44-ux-and-quality-checklist)
 45. [Multi-tenant integration challenges](#45-multi-tenant-integration-challenges)
+46. [Renaming terms and modules per institution](#46-renaming-terms-and-modules-per-institution)
 
-> **Note:** sections 39–45 record what was added and decided while planning. Where they conflict with an
+> **Note:** sections 39–46 record what was added and decided while planning. Where they conflict with an
 > earlier section, **the later section wins**. Items marked **Proposed** still need the owner's approval.
 
 ---
@@ -1372,6 +1373,7 @@ At institution setup the Super Admin (or Master Admin) picks one or more types. 
 
 - Every screen, report, export header, template variable name and notification text uses the label, never a fixed word.
 - The Master Admin edits the defaults; each institution can override.
+- **The full list of renamable terms, where they appear and the rules are in section 46.**
 
 ### 40.5 Modules (switch whole features on or off)
 
@@ -1868,3 +1870,157 @@ All outside services go through one **integration hub** instead of separate code
 - Each institution opens its own SSLCommerz merchant account (trade licence, bank account, verification) before online payment is switched on. The setup checklist (41.1 M1) shows this step.
 - The Master Admin enters that institution's merchant credentials in **Master Admin panel → Institutions → \<institution\> → Payments** (sandbox first, then live, 45.4 I3).
 - Refunds, chargebacks and settlement questions are between the institution and SSLCommerz; the app shows the status and the reconciliation report (45.3).
+
+---
+
+## 46. Renaming terms and modules per institution
+
+> **বাংলা সারাংশ:** সব প্রতিষ্ঠানে "Student" থাকে না: কোথাও Trainee, Member, Participant, Candidate, Client।
+> তাই "Student" সহ প্রায় সব প্রধান শব্দ, মডিউল, মেনু, স্ট্যাটাস আর কাগজের শিরোনাম প্রতিটি প্রতিষ্ঠান নিজের
+> মতো বদলাতে পারবে, বাংলা আর ইংরেজি দুই ভাষায়। ভেতরের নাম (key) বদলাবে না, শুধু দেখানো নাম বদলাবে।
+> এখানে কোন কোন শব্দ বদলানো যাবে, কোথায় কোথায় দেখাবে আর নিয়মগুলো লেখা আছে। অংশ ৪০.৪-এর বিস্তার।
+> সব অংশ **প্রস্তাবিত**; মালিক যোগ করতে বলেছেন।
+
+### 46.1 The rule
+
+- Not every institution has "students". A coaching centre may say **Trainee**, a training institute **Participant**,
+  a club or association **Member**, a recruitment or exam centre **Candidate**, a consultancy **Client**.
+- Every important term has a **fixed internal key** (e.g. `student`) that never changes in the database, code,
+  API or exports' technical names, and a **display label** that each institution can change freely.
+- Labels exist in **English and Bangla**, and in the forms a sentence needs (46.4).
+- Defaults come from the type profile (40.3); the institution's Super Admin changes them in
+  **Settings → Terminology**; the Master Admin can change the product-wide defaults.
+
+### 46.2 Terms that can be renamed
+
+**People**
+
+| Key | Default | Examples by institution |
+|---|---|---|
+| `lead` | Lead | Enquiry, Applicant, Prospect, Inquiry |
+| `student` | Student | Trainee, Learner, Participant, Member, Candidate, Client, Pupil |
+| `guardian` | Guardian | Parent, Sponsor, Employer, Company, Family |
+| `alumnus` | Alumni | Former student, Ex-trainee, Past member, Graduate |
+| `referrer` | Referrer | Ambassador, Partner |
+
+**Study and offer**
+
+| Key | Default | Examples by institution |
+|---|---|---|
+| `course` | Course | Class, Program, Department, Technology, Package, Service, Plan |
+| `batch` | Batch | Session, Intake, Cohort, Semester, Term |
+| `section` | Section | Group, Shift, Room, Slot |
+| `branch` | Branch | Campus, Centre, Office |
+| `external_board` | External board | University, Education board, Authority, Exam body |
+| `board_id` | Board ID | NU Admission ID, Registration no. (already per institution in section 22) |
+
+**Admission journey**
+
+| Key | Default | Examples by institution |
+|---|---|---|
+| `admission` | Admission | Enrolment, Registration, Joining, Booking, Membership |
+| `admitted` (status) | Admitted | Enrolled, Joined, Registered, Confirmed |
+| `admission_cancelled` (status) | Admission cancelled | Enrolment cancelled, Withdrawn |
+| `lost` (status) | Lost | Not interested, Dropped, Closed |
+| `campus_visit` | Campus visit | Visit, Demo class, Counselling session, Office visit |
+| `admission_test` | Admission test | Entrance exam, Assessment, Interview, Placement test |
+| `merit_list` | Merit list | Result, Selection list |
+| `papers` | Papers | Documents, Certificates, Files |
+| `student_id` | Student ID | Roll, Registration no., Membership no., Trainee ID |
+
+**Money**
+
+| Key | Default | Examples by institution |
+|---|---|---|
+| `fee` | Fee | Tuition, Charge, Price, Subscription |
+| `installment` | Installment | Instalment, Monthly payment, Due |
+| `receipt` | Receipt | Money receipt, Invoice, Voucher |
+| `discount` | Discount | Waiver, Scholarship, Concession |
+
+**Staff roles** (role names are already free text in section 4; these are the defaults)
+
+| Key | Default | Examples by institution |
+|---|---|---|
+| `caller` | Caller | Counsellor, Telecaller, Agent, Admission executive |
+| `team_lead` | Team Lead | Supervisor, Coordinator |
+| `admission_officer` | Admission Officer | Registrar, Front desk, Enrolment officer |
+
+**Modules, tabs and menus** (each module's name follows its main term, and can also be renamed on its own)
+
+| Key | Default | Examples |
+|---|---|---|
+| `module.leads` | Leads | Enquiries, Applicants |
+| `module.students` | Students | Trainees, Members, Participants |
+| `module.alumni` | Alumni | Former students, Network |
+| `module.admission_contribution` | Admission Contribution | Enrolment Contribution |
+| `module.admission_flow` | Admission flow | Registration steps, Board steps |
+| `module.leaderboard` | Leaderboard | Ranking, Star performers |
+| `module.scorecard` | Weekly scorecard | Weekly report |
+| `module.referrals` | Referral inbox | Referrals |
+
+**Printed and public titles**
+
+| Key | Default | Examples |
+|---|---|---|
+| `doc.receipt_title` | Money Receipt | Payment Receipt, Invoice |
+| `doc.admit_card_title` | Admit Card | Exam Card, Entry Pass |
+| `doc.application_form_title` | Application Form | Registration Form, Enquiry Form |
+| `doc.id_card_title` | ID Card | Member Card, Trainee Card |
+
+Already editable elsewhere and **not** duplicated here: pipeline stage names (section 9), lists such as sources,
+lost reasons and tags (section 16), required papers (section 17), custom fields (40.6), custom record types (43.2).
+
+### 46.3 Where labels must appear
+
+A changed label must show up **everywhere**, or the app feels half-renamed:
+
+- Phone app and website: menus, tabs, titles, buttons, chips, filters, sort names, empty states, help texts, error messages, confirmation dialogs.
+- Home cards, reports, charts and their legends, leaderboards, scorecards, Master Admin dashboard (with the key next to the label).
+- Notifications (inbox, push, email, SMS) written by the system.
+- Message templates: the variable list in the editor shows the label next to the fixed variable (e.g. `{student_id}` "Trainee ID").
+- Receipts, admit cards, ID cards and other prints (46.2 titles).
+- Public pages: application form, applicant status page, results page, referral page.
+- Excel / CSV export column headers (with a choice to use fixed technical names for integrations).
+- AI: prompts use the institution's labels, so AI answers use the same words (section 23).
+- Onboarding checklist and setup wizard.
+
+### 46.4 Grammar: singular, plural and Bangla forms
+
+- English: **singular and plural** per label (Trainee / Trainees; Class / Classes).
+- Bangla: the base form and the forms most sentences need, e.g. **শিক্ষার্থী / শিক্ষার্থীরা / শিক্ষার্থীদের / শিক্ষার্থীর**
+  (or প্রশিক্ষণার্থী / প্রশিক্ষণার্থীরা / প্রশিক্ষণার্থীদের / প্রশিক্ষণার্থীর). The editor fills the usual
+  forms automatically and lets the admin correct them.
+- Texts are written so the label stands on its own where possible (e.g. "Students: 25" rather than a sentence
+  that bends the word), which keeps grammar safe in both languages.
+
+### 46.5 Settings → Terminology (screen)
+
+- A table: term, key, default, English (singular / plural), Bangla (forms), with a **live preview**
+  (e.g. a sample lead card, receipt and SMS using the new words).
+- "Reset to type profile" per term or for all.
+- Length limit per label so menus and buttons don't break.
+- Changes apply at once for everyone (settings cache refresh) and are written to the change log.
+- The Master Admin can see each institution's labels and can lock a label if needed (e.g. a legal title on receipts).
+
+### 46.6 Rules for the developer
+
+1. **No user-facing word is hard-coded.** Every text comes from the translation files, and every renamable term
+   through a label lookup, e.g. `t('student.plural')`.
+2. A lint check rejects hard-coded terms such as "Student" or "শিক্ষার্থী" in UI code.
+3. Database tables, columns, RPCs, API fields, event names and template variable keys keep the **fixed keys**;
+   only display text changes. Renaming never needs a migration.
+4. **Tests with unusual labels:** a test institution uses long and unusual labels in both languages
+   (e.g. "Professional Development Participant"), and screenshot tests (44.10) catch broken layouts.
+5. Search also matches the default word, so a user who types "student" still finds the Students module
+   when it is called "Trainees".
+
+### 46.7 Phase
+
+- **Phase 0:** label system with all keys in 46.2, English + Bangla forms, Settings → Terminology, type-profile defaults.
+- Every later feature adds its terms to the label list before it ships.
+
+### 46.8 Question for the owner
+
+1. Will the app also be sold to **non-education businesses** (e.g. clinics, real estate, travel agencies, consultancies)?
+   If yes, a few more terms and type profiles are needed (e.g. "Patient", "Property", "Booking"), and some
+   education-only modules (merit list, board flow) simply stay off for them.
