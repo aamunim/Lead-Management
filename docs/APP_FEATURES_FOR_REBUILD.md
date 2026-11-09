@@ -1502,7 +1502,7 @@ Section 20–21 assume one total fee per course. Generalise to **fee heads** wit
 | M5 | **Billing and collections** | Plans, SMS usage, renewals, unpaid accounts, invoices, possibly VAT. | Plan and expiry fields from day one, SMS usage ledger (39.5), monthly statements, reminders before expiry, a clear grace period then **read-only mode** (never delete data for non-payment). Prepaid SMS balance per institution is simpler than postpaid. | 0–2 |
 | M6 | **SMS and email operations** | Gateways run out of balance, change APIs, go down; masked sender IDs usually need approval; emails land in spam. | Balance and error alerts to the Master Admin, a backup gateway per institution, delivery log, domain check (39.3), test buttons. Check sender ID rules with each gateway. | 0–1 |
 | M7 | **Watching the health of all institutions** | Problems in one institution (failed SMS, sync off, AI spend) are invisible until they complain. | Master Admin dashboard: per institution activity, errors, SMS / AI spend, sync health, last login, inactive institutions; alerts. | 1 |
-| M8 | **Busy season peaks** | Admission seasons overlap; many institutions are busy at the same time. | Load test before each season, rate limits per institution, queue fairness (41.2 D7), status page, no big releases during peak weeks. | 1+ |
+| M8 | **Busy season peaks** | Admission seasons overlap; many institutions are busy at the same time. | Load test before each season, rate limits per institution, queue fairness (41.2 T7), status page, no big releases during peak weeks. | 1+ |
 | M9 | **Data protection and children's data** | Schools hold minors' data; leaving institutions want their data; laws may change. | Clear terms and privacy policy, export of all an institution's data, deletion after leaving (with a notice period), access logs, minimal data in AI (section 23). Check current Bangladeshi data protection rules before launch. | 0–2 |
 | M10 | **Suspending or offboarding an institution** | Must stop use without losing data or breaking other institutions. | States: trial / active / read-only / suspended / closed. Full export before closing. | 0 |
 | M11 | **Communicating with institutions** | Releases, downtime and new features must reach the right people. | Announcements from the Master Admin panel (in-app, email), "What's new" per release, maintenance notices. | 1 |
@@ -1513,23 +1513,22 @@ Section 20–21 assume one total fee per course. Generalise to **fee heads** wit
 
 | # | Challenge | Why it is hard | How to handle it | Phase |
 |---|---|---|---|---|
-| D1 | **Tenant isolation everywhere** | Not only tables: storage paths, Realtime channels, Edge Functions, cron jobs, push, client caches, exports, logs. One miss leaks data. | `institution_id` on every row, RLS from the JWT claim, INVOKER functions by default, automated **cross-tenant leak test** in CI covering tables, RPCs, storage and Realtime; client caches keyed by institution and user. | 0 |
-| D2 | **Configuration explosion** | Types × modules × settings × roles create thousands of combinations to test. | Typed settings with JSON schema validation and defaults, settings versioning and migrations, seed test institutions for each type profile, tests that run the main flows on each. | 0+ |
-| D3 | **Labels and two languages** | Hard-coded words creep in everywhere; Bangla text is longer and breaks layouts. | Translation files and label lookup from day one, a lint check for hard-coded UI strings, screenshot tests in both languages. | 0 |
-| D4 | **Performance with many tenants** | Thousands of leads per institution × many institutions; one big tenant can slow others. | Indexes starting with `institution_id`, the speed rules in section 34, per-tenant rate limits, benchmark with large and small tenants, watch Supabase plan limits (connections, function calls, storage). Plan a path to move a very large tenant to its own project if ever needed. | 0+ |
-| D5 | **Database changes for everyone at once** | One migration changes all institutions; old app versions stay installed (37.7). | Backward-compatible RPCs, expand-then-contract migrations, a minimum app version per release, staged rollout (D12). | 0+ |
-| D6 | **Restoring one institution's data** | Supabase backups restore the whole database, not one tenant. | Soft delete + append-only timeline (37.10) for everyday undo; per-institution export snapshots (daily or weekly) for disasters. | 1 |
-| D7 | **Background jobs per institution** | Each job must loop institutions in their own time zone and settings; one slow tenant must not block others. | A job scheduler that picks due institutions, processes in small chunks, with attempts, back-off and per-tenant fairness (37.2). | 1 |
-| D8 | **Many third-party providers** | SMS gateways, email providers, payment gateways, AI, Drive all differ and fail differently. | One adapter interface per kind (send, check balance, parse result), a Custom HTTP adapter, provider errors stored and shown, test buttons, timeouts. | 0–2 |
-| D9 | **Secrets per institution** | Many keys; leaks are costly. | Encrypted storage (e.g. Supabase Vault), only Edge Functions read them, never logged, rotation support, hint-only display. | 0 |
-| D10 | **Login variety** | Password, Google, OTP; linking them to one profile; OTP cost and abuse; Google consent screen verification for production. | Supabase Auth with a custom hook that maps email / phone to one profile and institution; rate limits; CAPTCHA on public OTP requests; plan the Google verification early. | 0 |
-| D11 | **Android permissions and Play policy** | Call-log permission needs approval; WhatsApp listener and overlays are sensitive. | Build native features in phase 3, submit the permission declaration early, keep the app usable without them. | 3 |
-| D12 | **Releasing safely** | A bug ships to every institution at once. | Feature flags per institution, beta institutions first, OTA updates in channels, quick rollback. | 1+ |
-| D13 | **Observability** | Errors must be traced to an institution and user. | Logs and crash reports tagged with institution and user ids, an error dashboard, alerts on spikes. | 1 |
-| D14 | **Importing each institution's old data** | Every institution's Excel looks different. | Column mapping with saved mappings, Bangla aliases, preview, dry run, undo (section 15). | 1 |
-| D15 | **Public pages per institution** | Forms, results, referrals need the right institution, branding and abuse protection. | `/<page>/<slug>` URLs, per-institution branding, rate limits and CAPTCHA; custom domains later. | 1–2 |
-| D16 | **Costs per institution** | AI, SMS, storage and function calls must be traceable to who uses them. | Usage ledgers per institution (39.5, 23.3), budgets and limits, a monthly cost view in the Master Admin panel. | 1+ |
-| D17 | Where online payment money goes (45.6 question 1) | **Each institution's own merchant account.** Money settles straight to the institution's bank account; the platform never holds it. |
+| T1 | **Tenant isolation everywhere** | Not only tables: storage paths, Realtime channels, Edge Functions, cron jobs, push, client caches, exports, logs. One miss leaks data. | `institution_id` on every row, RLS from the JWT claim, INVOKER functions by default, automated **cross-tenant leak test** in CI covering tables, RPCs, storage and Realtime; client caches keyed by institution and user. | 0 |
+| T2 | **Configuration explosion** | Types × modules × settings × roles create thousands of combinations to test. | Typed settings with JSON schema validation and defaults, settings versioning and migrations, seed test institutions for each type profile, tests that run the main flows on each. | 0+ |
+| T3 | **Labels and two languages** | Hard-coded words creep in everywhere; Bangla text is longer and breaks layouts. | Translation files and label lookup from day one, a lint check for hard-coded UI strings, screenshot tests in both languages. | 0 |
+| T4 | **Performance with many tenants** | Thousands of leads per institution × many institutions; one big tenant can slow others. | Indexes starting with `institution_id`, the speed rules in section 34, per-tenant rate limits, benchmark with large and small tenants, watch Supabase plan limits (connections, function calls, storage). Plan a path to move a very large tenant to its own project if ever needed. | 0+ |
+| T5 | **Database changes for everyone at once** | One migration changes all institutions; old app versions stay installed (37.7). | Backward-compatible RPCs, expand-then-contract migrations, a minimum app version per release, staged rollout (T12). | 0+ |
+| T6 | **Restoring one institution's data** | Supabase backups restore the whole database, not one tenant. | Soft delete + append-only timeline (37.10) for everyday undo; per-institution export snapshots (daily or weekly) for disasters. | 1 |
+| T7 | **Background jobs per institution** | Each job must loop institutions in their own time zone and settings; one slow tenant must not block others. | A job scheduler that picks due institutions, processes in small chunks, with attempts, back-off and per-tenant fairness (37.2). | 1 |
+| T8 | **Many third-party providers** | SMS gateways, email providers, payment gateways, AI, Drive all differ and fail differently. | One adapter interface per kind (send, check balance, parse result), a Custom HTTP adapter, provider errors stored and shown, test buttons, timeouts. | 0–2 |
+| T9 | **Secrets per institution** | Many keys; leaks are costly. | Encrypted storage (e.g. Supabase Vault), only Edge Functions read them, never logged, rotation support, hint-only display. | 0 |
+| T10 | **Login variety** | Password, Google, OTP; linking them to one profile; OTP cost and abuse; Google consent screen verification for production. | Supabase Auth with a custom hook that maps email / phone to one profile and institution; rate limits; CAPTCHA on public OTP requests; plan the Google verification early. | 0 |
+| T11 | **Android permissions and Play policy** | Call-log permission needs approval; WhatsApp listener and overlays are sensitive. | Build native features in phase 3, submit the permission declaration early, keep the app usable without them. | 3 |
+| T12 | **Releasing safely** | A bug ships to every institution at once. | Feature flags per institution, beta institutions first, OTA updates in channels, quick rollback. | 1+ |
+| T13 | **Observability** | Errors must be traced to an institution and user. | Logs and crash reports tagged with institution and user ids, an error dashboard, alerts on spikes. | 1 |
+| T14 | **Importing each institution's old data** | Every institution's Excel looks different. | Column mapping with saved mappings, Bangla aliases, preview, dry run, undo (section 15). | 1 |
+| T15 | **Public pages per institution** | Forms, results, referrals need the right institution, branding and abuse protection. | `/<page>/<slug>` URLs, per-institution branding, rate limits and CAPTCHA; custom domains later. | 1–2 |
+| T16 | **Costs per institution** | AI, SMS, storage and function calls must be traceable to who uses them. | Usage ledgers per institution (39.5, 23.3), budgets and limits, a monthly cost view in the Master Admin panel. | 1+ |
 
 ---
 
@@ -1552,7 +1551,7 @@ Section 20–21 assume one total fee per course. Generalise to **fee heads** wit
 madrasa, English-medium school, coaching centre, training institute, nursing / medical / health institute.
 
 - Each type gets a **type profile** (40.3) in phase 0, built only from the generic blocks (40.4–40.14), with no type-specific code.
-- Each profile gets a **seeded test institution** and runs the main flows in CI (41.2 D2).
+- Each profile gets a **seeded test institution** and runs the main flows in CI (41.2 T2).
 - **Risk:** supporting every type at once makes the first release bigger. Mitigation: the blocks a type needs
   (e.g. merit list, per-credit fees) are switched off by module until they are built and tested; the profile still works for leads and follow-ups.
 
@@ -1590,7 +1589,7 @@ SMS and AI usage are billed on top (39.5). Prices and exact module lists are the
 | — | Plans (42.3) | Explained to the owner; **still open**. |
 
 **Online payment details (D11, Proposed):**
-- Gateways: e.g. bKash, Nagad, SSLCommerz (the list to be confirmed), with an adapter per gateway (41.2 D8).
+- Gateways: e.g. bKash, Nagad, SSLCommerz (the list to be confirmed), with an adapter per gateway (41.2 T8).
 - Set up per institution in **Master Admin panel → Institutions → \<institution\> → Payments**, with test mode, keys in the Vault, and a test payment button.
 - Used for: application fee (public form), admission fee, monthly / term fees, installments.
 - A successful online payment creates the payment and receipt automatically (section 21); a failed or pending one is shown with its status.
@@ -1645,7 +1644,7 @@ Most requests should be met by layers 1–3 without any code.
 3. **Event log from day one:** every important action (lead created, stage changed, payment received …) is
    written to a `domain_events` table. Automation, webhooks and extensions listen to these events, so the core
    code does not change for them.
-4. **Core schema changes are additive only** (expand, then contract later); see 41.2 D5.
+4. **Core schema changes are additive only** (expand, then contract later); see 41.2 T5.
 5. **Limits per institution:** number of custom fields, custom record types and records, and automation runs per
    day, so one institution can't slow down the others.
 6. **Security:** custom tables and extension tables also have `institution_id` and RLS; the cross-tenant leak
@@ -1805,7 +1804,7 @@ All outside services go through one **integration hub** instead of separate code
 | **SMS gateways** | Different APIs and error formats per gateway; masked sender IDs usually need approval per institution; balance runs out; Bangla (Unicode) parts cost more; OTP must work even when bulk is blocked; delivery reports come late or never. | Adapters + Custom HTTP; sender ID status per connection; low-balance alerts; part count and cost before sending; separate priority queue for OTP; a backup gateway; mark delivery as "unknown" after a timeout. |
 | **Transactional email** | **Shared sending reputation:** one institution's spam-like mail can hurt every institution on the same domain / IP; SPF / DKIM / DMARC per institution domain; bounces and complaints; replies must reach the right person. | Each institution sends from **its own domain** (verified) or from its own sub-domain of the platform; platform default mail only with low limits; process bounces / complaints per institution and pause bad senders; Reply-To set to the institution's address. |
 | **Payment gateways** (e.g. SSLCommerz, bKash, Nagad, Rocket, cards) | Each institution needs **its own merchant account** (trade licence, bank account, verification), or the platform must act as an aggregator, which has legal and licensing implications; sandbox differs from live; callbacks (IPN) can be late, repeated or missing; **amount tampering** on the client; refunds differ per gateway or are not supported; fees (MDR) and settlement days differ; daily reconciliation. | Default: **each institution's own merchant account**, money settles straight to the institution; the platform never holds the money. Always **verify the payment server-to-server** before marking it paid; amount and invoice come from the server, never the client; idempotent callbacks; daily reconciliation report; refunds through the gateway where supported, otherwise recorded by hand. Legal check before any aggregator model. |
-| **Login: Google and OTP** | One Google OAuth client for the whole product needs Google's app verification; branded apps (D12) need their own OAuth / app identifiers; OTP SMS cost and abuse. | Plan Google verification early; per-app OAuth settings for branded builds; OTP rate limits and CAPTCHA (41.2 D10). |
+| **Login: Google and OTP** | One Google OAuth client for the whole product needs Google's app verification; branded apps (D12) need their own OAuth / app identifiers; OTP SMS cost and abuse. | Plan Google verification early; per-app OAuth settings for branded builds; OTP rate limits and CAPTCHA (41.2 T10). |
 | **Push notifications** | Shared app: one Firebase / Expo project for all; branded apps: **one Firebase project and credentials per app**; tokens must be tied to institution + user + app. | Push connection per app build, token table with `institution_id` and `app_id`, receipts per app (section 25). |
 | **AI (Claude / Gemini)** | Keys per institution (section 23) or platform keys; budgets per institution; provider outages; personal data must not be sent. | AI connections in the hub, per-institution budgets and usage ledger, anonymisation (section 23), failover only with a visible note (37.5). |
 | **Google Drive (Apps Script)** | Each institution deploys its own script: easy to break (wrong deployment, quota limits, the Google account owner leaves the institution). | Health check and clear error messages; setup guide; option to use platform storage (Supabase Storage) instead; files listed in the database so they can be moved. |
@@ -1859,6 +1858,7 @@ All outside services go through one **integration hub** instead of separate code
 | D14 | Which payment methods first | **Manual payments + SSLCommerz.** Manual = cash, bank, bKash / Nagad / Rocket send-money etc. recorded by staff with a transaction ID (section 21). Online = SSLCommerz through the integration hub (45.2). Other gateways later. |
 | D15 | Who pays gateway and SMS fees | **Both options.** The Master Admin chooses per institution: the institution pays the provider **directly** (its own account), or the platform pays and **adds it to the institution's bill** (39.5). |
 | D16 | Own domain for public pages | **Yes.** An institution may add its own domain **at any time** (during setup or later). Support for it is therefore built in phase 1 (moved from "Later"), with DNS verification and automatic SSL certificates. |
+| D17 | Where online payment money goes (45.6 question 1) | **Each institution's own merchant account.** Money settles straight to the institution's bank account; the platform never holds it. |
 
 **Notes (Proposed):**
 - With **manual payments**, an officer can mark a bKash / Nagad send-money as "to verify"; a second person (or the officer, by setting) confirms it after checking the statement. This avoids fake transaction IDs.
