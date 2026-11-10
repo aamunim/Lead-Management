@@ -19,6 +19,7 @@ Read in this order before working on any milestone:
 15. `GLOSSARY.md` — English ↔ Bangla terms and style; the release language review.
 16. `LOCALE.md` — locale settings, lakh money, dates in the institution's time zone, ASCII digits, server clock.
 17. `LABELS.md` — neutral keys (reference table) and the label dictionary: layers, Bangla forms, usage, rules.
-18. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-19. `../PLAN_BN.md` — the plan chapters the milestone points to.
-20. `PROGRESS.md` — which milestones are done.
+18. `DESIGN_SYSTEM.md` — tokens (light / dark / brand, Bangla-safe typography), theme, components, form behaviours and the automatic checks.
+19. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+20. `../PLAN_BN.md` — the plan chapters the milestone points to.
+21. `PROGRESS.md` — which milestones are done.

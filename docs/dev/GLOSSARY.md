@@ -60,6 +60,10 @@ Each institution can rename these. The defaults below are what an education inst
 | Time zone | টাইম জোন | |
 | Working days / hours | কর্মদিবস / কাজের সময় | |
 | Quiet hours | নিরব সময় | |
+| Hot / Warm / Cold (lead) | হট / ওয়ার্ম / কোল্ড | Proposed loan words as used in sales teams; alternative গরম / উষ্ণ / ঠান্ডা — owner to choose |
+| Appearance, Light, Dark | দেখতে কেমন, লাইট, ডার্ক | |
+| Undo | ফিরিয়ে আনুন | |
+| Discard changes? | পরিবর্তন বাদ দেবেন? | |
 | AM / PM | — | Bangla uses day periods: রাত (0–4), ভোর (4–6), সকাল (6–12), দুপুর (12–15), বিকাল (15–18), সন্ধ্যা (18–20), রাত (20–24), before the time: বিকাল ৩:০৫ |
 | Loading… | লোড হচ্ছে… | |
 | No internet connection | ইন্টারনেট সংযোগ নেই | |

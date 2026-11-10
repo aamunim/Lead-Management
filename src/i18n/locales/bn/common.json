@@ -14,6 +14,8 @@
     "subtitle": "$t(labels:module.leads.singular), ফলো-আপ আর আপনার টিম, সব এক জায়গায়।",
     "openLanguage": "ভাষা বদলান",
     "openSamples": "ফরম্যাট ও লোকেলের নমুনা",
-    "openTerminology": "এই অ্যাপের শব্দগুলো"
+    "openTerminology": "এই অ্যাপের শব্দগুলো",
+    "openAppearance": "দেখতে কেমন (লাইট / ডার্ক)",
+    "openGallery": "কম্পোনেন্ট গ্যালারি (ডেভেলপার)"
   }
 }

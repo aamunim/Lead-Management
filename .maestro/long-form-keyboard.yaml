@@ -1,0 +1,34 @@
+# Maestro flow (0A.13, Android, run on a small-screen device or emulator, e.g. 5-inch 720×1280):
+# a long form keeps the focused field AND the Save button above the keyboard; Next moves down the form.
+# Run on a development build or preview APK (dev tools on): maestro test .maestro/long-form-keyboard.yaml
+appId: com.leadora.leads
+---
+- launchApp
+- tapOn:
+    id: "open-gallery"
+- scrollUntilVisible:
+    element:
+      id: "gallery-open-form"
+- tapOn:
+    id: "gallery-open-form"
+- tapOn:
+    id: "lf-name-input"
+- inputText: "Rahim"
+- pressKey: Enter            # Next → email
+- inputText: "rahim@example.com"
+- assertVisible:
+    id: "long-form-save"     # Save stays above the keyboard
+- scrollUntilVisible:
+    element:
+      id: "lf-comment-input"
+- tapOn:
+    id: "lf-comment-input"
+- inputText: "Called twice, call again on Sunday"
+- assertVisible:
+    id: "lf-comment-input"   # the focused field is not hidden by the keyboard
+- assertVisible:
+    id: "long-form-save"
+- back                       # closes the keyboard
+- back                       # asks before discarding
+- assertVisible:
+    id: "confirm-dialog"

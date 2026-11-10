@@ -56,12 +56,12 @@ export default function SamplesScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container} style={{ backgroundColor: colors.background }}>
-      <AppText style={styles.title} accessibilityRole="header" testID="samples-title">{t('title')}</AppText>
+      <AppText variant="headline" accessibilityRole="header" testID="samples-title">{t('title')}</AppText>
       <AppText style={{ color: colors.muted }}>{t('intro')}</AppText>
       <View style={styles.row}>
         <Link href="/language" testID="samples-language"><AppText style={styles.link}>{tCommon('home.openLanguage')}</AppText></Link>
         {language === 'bn' ? (
-          <Pressable style={styles.toggle} onPress={() => setBanglaPreview(!banglaPreview)} testID="samples-bangla-digits">
+          <Pressable accessibilityRole="switch" accessibilityState={{ checked: banglaPreview }} style={styles.toggle} onPress={() => setBanglaPreview(!banglaPreview)} testID="samples-bangla-digits">
             <Switch value={banglaPreview} onValueChange={setBanglaPreview} />
             <AppText>{t('banglaDigits.preview')}</AppText>
           </Pressable>
@@ -102,7 +102,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   const colors = useColors();
   return (
     <View style={[styles.section, { borderColor: colors.border }]}>
-      <AppText style={styles.sectionTitle}>{title}</AppText>
+      <AppText variant="titleSmall">{title}</AppText>
       {children}
     </View>
   );
@@ -112,8 +112,8 @@ function Sample({ label, text, testID }: { label?: string; text: string; testID?
   const colors = useColors();
   return (
     <View style={styles.sample}>
-      {label ? <AppText style={[styles.sampleLabel, { color: colors.muted }]}>{label}</AppText> : null}
-      <AppText style={styles.sampleText} testID={testID}>{text}</AppText>
+      {label ? <AppText variant="caption" style={{ color: colors.muted }}>{label}</AppText> : null}
+      <AppText testID={testID}>{text}</AppText>
     </View>
   );
 }
@@ -123,18 +123,14 @@ function Stored({ value, testID }: { value: string | null; testID: string }) {
   const colors = useColors();
   if (!value) return null;
   // The stored value is shown as it is saved: ASCII digits (never converted for display).
-  return <AppText style={{ color: colors.muted, fontSize: 13 }} testID={testID}>{t('fields.stored', { value })}</AppText>;
+  return <AppText variant="caption" style={{ color: colors.muted }} testID={testID}>{t('fields.stored', { value })}</AppText>;
 }
 
 const styles = StyleSheet.create({
   container: { padding: 16, gap: 16, maxWidth: 640, width: '100%', alignSelf: 'center' },
-  title: { fontSize: 22, fontWeight: '600' },
   row: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 12 },
   link: { textDecorationLine: 'underline', paddingVertical: 12 },
   toggle: { flexDirection: 'row', alignItems: 'center', gap: 8, minHeight: 48 },
   section: { borderTopWidth: 1, paddingTop: 12, gap: 10 },
-  sectionTitle: { fontSize: 17, fontWeight: '600' },
   sample: { gap: 2 },
-  sampleLabel: { fontSize: 13 },
-  sampleText: { fontSize: 16 },
 });

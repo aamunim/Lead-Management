@@ -88,7 +88,7 @@ describe('hard-coded UI string lint', () => {
   it('blocks literals in visible props', () => {
     assert.deepEqual(rules('export const A = () => <Button title="Save" />;'), ['visible_prop']);
     assert.deepEqual(rules(`export const A = () => <TextInput placeholder={'Name'} />;`), ['visible_prop']);
-    assert.deepEqual(rules('export const A = () => <Pressable accessibilityLabel="Close" />;'), ['visible_prop']);
+    assert.deepEqual(rules('export const A = () => <Pressable accessibilityRole="button" accessibilityLabel="Close" />;'), ['visible_prop']);
   });
   it('allows non-visible props such as testID and style values', () => {
     assert.deepEqual(rules('export const A = () => <View testID="home-root" pointerEvents="none" />;'), []);
@@ -111,6 +111,18 @@ describe('hard-coded UI string lint', () => {
     assert.deepEqual(rules('const now = new Date();', 'src/lib/x.ts'), ['phone_clock']);
     assert.deepEqual(rules('const d = new Date(value);', 'src/lib/x.ts'), []);
     assert.deepEqual(rules('const now = Date.now();', 'src/lib/server-time.ts'), []);
+  });
+  it('design system: pressables need a role, icon buttons a label (0A.13)', () => {
+    assert.deepEqual(rules('export const A = () => <Pressable onPress={f}><AppText>{t("x")}</AppText></Pressable>;'), ['a11y_role']);
+    assert.deepEqual(rules('export const A = () => <Pressable accessibilityRole="button" onPress={f} />;'), []);
+    assert.deepEqual(rules('export const A = () => <IconButton icon="edit" onPress={f} />;'), ['a11y_label']);
+  });
+  it('design system: font sizes and colours only from tokens (0A.13)', () => {
+    assert.deepEqual(rules('const s = StyleSheet.create({ t: { fontSize: 22 } });'), ['raw_font_size']);
+    assert.deepEqual(rules("const s = { color: '#b00020' };"), ['raw_color']);
+    assert.deepEqual(rules("const s = { backgroundColor: 'rgba(0,0,0,0.4)' };"), ['raw_color']);
+    assert.deepEqual(rules("const s = { fontSize: 22, color: '#fff' };", 'src/ui/components/X.tsx'), ['raw_color']);
+    assert.deepEqual(rules("export const C = '#3557D4';", 'src/ui/tokens/color.ts'), []);
   });
   it('honours a reasoned exemption on the line, or for a developer-only file', () => {
     assert.deepEqual(rules('// i18n-exempt: brand name, never translated\nexport const A = () => <Text>Leadora</Text>;'), []);

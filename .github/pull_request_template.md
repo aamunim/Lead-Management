@@ -28,6 +28,18 @@
 - [ ] New permissions, labels, settings and translations (en + bn) registered; `npm run check:i18n` passes; new terms follow `docs/dev/GLOSSARY.md`.
 - [ ] Bangla texts changed? Read by the owner or a native reader before release (docs/dev/ENVIRONMENTS_AND_RELEASES.md rule 8).
 - [ ] Errors are shown in the UI with Retry; no silent blanks.
-- [ ] Screens pass the UX checklist (roadmap Section 9.4): light/dark, bn/en, keyboard, large font, low-end phone.
+- [ ] Screens pass the per-screen checklist below (Ch 47; automated parts: `npm run check:i18n`, `npm run test:ui`).
 - [ ] Performance checked for lists and pages touched ("never slower").
 - [ ] `npm run check` passes locally.
+
+## Per-screen release checklist (Ch 47, docs/dev/DESIGN_SYSTEM.md) — tick for every new or changed screen
+- [ ] **Theme:** built from `@/ui` components and `useTheme()` tokens only; checked in light and dark; brand colour readable (no raw colours / font sizes — lint).
+- [ ] **Keyboard:** focused field and Save stay above the keyboard (FormScreen / BottomSheet); Next / Done; right keyboard per field; tap outside or scroll closes it.
+- [ ] **Bangla text:** every word from translations / labels; no clipped vowel signs; long words and the weird-labels institution checked (gallery harness).
+- [ ] **Forms:** errors under the field; Back asks before discarding; draft survives a call / app kill; Save cannot run twice (idempotency key sent to the RPC).
+- [ ] **States:** skeleton while loading; empty state with an action; error with Retry (never silent); pull-to-refresh on lists; Undo after delete; progress + Cancel for long tasks.
+- [ ] **Navigation:** Android Back closes sheets and dialogs first; the list keeps its place when coming back.
+- [ ] **Network and phone:** works on slow 3G and a 2–3 GB RAM phone; "now" from the server clock; long lists virtualised.
+- [ ] **Accessibility:** 48 dp targets; screen-reader labels on icon buttons (lint); no colour-only meaning; large system font does not cut or overlap text.
+- [ ] **Money:** lakh grouping through `useFormat()`; amounts and phones stored with ASCII digits.
+- [ ] **Phone security:** no secrets or personal data in logs; cached data cleared on sign-out.

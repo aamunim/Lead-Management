@@ -1,19 +1,20 @@
 import { NotoSansBengali_400Regular, NotoSansBengali_600SemiBold } from '@expo-google-fonts/noto-sans-bengali';
 import { useFonts } from 'expo-font';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { Stack } from 'expo-router';
 import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import '@/i18n';
 import { BANGLA_FONT_FAMILY } from '@/i18n/language';
 import { loadLabels } from '@/lib/labels';
 import { initLanguage } from '@/lib/language';
 import { initLocale } from '@/lib/locale';
+import { DialogProvider, SnackbarProvider } from '@/ui/components';
+import { initAppearance, ThemeProvider, useTheme } from '@/ui/theme';
 
-// Root layout. Translations are ready on the first render (bundled); the language is resolved right after
-// (device copy first, then the server). The rest of the shell (labels, theme) arrives in 0A.12–0A.14.
+// Root layout. Translations are ready on the first render (bundled); language, locale, labels and the appearance
+// are resolved right after (device copy first, then the server). Theme and keyboard handling wrap every screen.
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [fontsLoaded, fontError] = useFonts([
     {
       fontFamily: BANGLA_FONT_FAMILY,
@@ -25,6 +26,7 @@ export default function RootLayout() {
   ]);
 
   useEffect(() => {
+    void initAppearance();
     void initLanguage().catch(() => undefined);
     void initLocale().catch(() => undefined);
     void loadLabels().catch(() => undefined);
@@ -34,8 +36,19 @@ export default function RootLayout() {
   if (!fontsLoaded && !fontError) return null;
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }} />
-    </ThemeProvider>
+    <KeyboardProvider>
+      <ThemeProvider>
+        <DialogProvider>
+          <SnackbarProvider>
+            <Screens />
+          </SnackbarProvider>
+        </DialogProvider>
+      </ThemeProvider>
+    </KeyboardProvider>
   );
+}
+
+function Screens() {
+  const { colors } = useTheme();
+  return <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }} />;
 }

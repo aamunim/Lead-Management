@@ -1,0 +1,73 @@
+{
+  "title": "Component gallery",
+  "intro": "Every component in every state, for checking light / dark, Bangla / English and long words. Developers only.",
+  "sections": {
+    "palette": "Colours",
+    "typography": "Text",
+    "buttons": "Buttons",
+    "fields": "Fields",
+    "pickers": "Date and time",
+    "chips": "Chips and choices",
+    "states": "Loading, empty, error, progress",
+    "overlays": "Snackbar, dialog, sheet",
+    "form": "Forms"
+  },
+  "brand": {
+    "label": "Try a brand colour",
+    "help": "Hex code, e.g. #FFF59D",
+    "accentOnly": "Not readable as text: used as an accent only; text uses a safe tone of it.",
+    "ok": "Readable: used as the main colour."
+  },
+  "typography": {
+    "sample": "Follow up with the $t(labels:contact_person.singular) tomorrow at 10:00.",
+    "marks": "Words with marks above and below: $t(labels:assessment.singular), $t(labels:merit_list.singular)"
+  },
+  "buttons": {
+    "primary": "Save",
+    "tonal": "Add note",
+    "outlined": "Call",
+    "text": "Skip",
+    "danger": "Delete",
+    "loading": "Saving",
+    "disabled": "Not allowed",
+    "icon": "Edit"
+  },
+  "fields": {
+    "name": "Full name",
+    "email": "Email",
+    "note": "Note",
+    "password": "Password",
+    "otp": "Code from SMS",
+    "nameError": "Write a name with at least 2 letters.",
+    "nameHelp": "As written on the certificate.",
+    "phone": "Mobile number",
+    "amount": "Amount",
+    "date": "Date of birth",
+    "dateTime": "Next follow-up"
+  },
+  "states": {
+    "emptyTitle": "No $t(labels:lead.plural) yet",
+    "emptyBody": "Add your first $t(labels:lead.singular) or import a list.",
+    "emptyAction": "Add $t(labels:lead.singular)",
+    "progress": "Importing $t(labels:lead.plural)"
+  },
+  "overlays": {
+    "showSnackbar": "Delete a note (with Undo)",
+    "deleted": "Note deleted.",
+    "restored": "Note restored.",
+    "showDialog": "Ask before deleting",
+    "dialogTitle": "Delete this note?",
+    "dialogBody": "You can undo for a few seconds after deleting.",
+    "showSheet": "Open a sheet with fields",
+    "sheetTitle": "Quick note"
+  },
+  "form": {
+    "open": "Open a long form (keyboard, draft, Save bar)",
+    "title": "Long form",
+    "submitted": "Saved {{n}} time(s).",
+    "address": "Address",
+    "city": "City",
+    "school": "Previous institution",
+    "comment": "Comment"
+  }
+}

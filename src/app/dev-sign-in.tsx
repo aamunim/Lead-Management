@@ -1,10 +1,14 @@
 import { Redirect } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
+import { AppText } from '@/components/AppText';
 
 import { devSignInEnabled } from '@/dev/flags';
 import { currentClaims, signOut, switchInstitution, type SessionClaims } from '@/lib/session';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
+import { Button, TextField } from '@/ui/components';
+import { useTheme } from '@/ui/theme';
 
 // DEVELOPER TOOL ONLY (0A.03-T8). Hidden unless EXPO_PUBLIC_DEV_SIGNIN=1 and not a production build.
 // Its texts are developer-facing and intentionally not translated; the real login screens come in 0B (Ch 10).
@@ -25,6 +29,7 @@ export default function DevSignIn() {
   const [claims, setClaims] = useState<SessionClaims>({});
   const [institutions, setInstitutions] = useState<Institution[]>([]);
   const [message, setMessage] = useState('');
+  const { colors, space } = useTheme();
 
   if (!devSignInEnabled) return <Redirect href="/" />;
 
@@ -45,40 +50,33 @@ export default function DevSignIn() {
     }
   };
 
+  const signIn = run(async () => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+  });
+
   return (
-    <View style={styles.container}>
-      {!isSupabaseConfigured && <Text style={styles.error}>{DEV_TEXT.notConfigured}</Text>}
-      <TextInput style={styles.input} placeholder={DEV_TEXT.email} autoCapitalize="none" keyboardType="email-address"
-        value={email} onChangeText={setEmail} />
-      <TextInput style={styles.input} placeholder={DEV_TEXT.password} secureTextEntry value={password}
-        onChangeText={setPassword} />
-      <Pressable style={styles.button} onPress={run(async () => {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-      })}>
-        <Text>{DEV_TEXT.signIn}</Text>
-      </Pressable>
-      <Text selectable testID="dev-claims">{JSON.stringify({
+    <View style={[styles.container, { backgroundColor: colors.background, gap: space.md, padding: space.lg }]}>
+      {!isSupabaseConfigured && <AppText style={{ color: colors.error }}>{DEV_TEXT.notConfigured}</AppText>}
+      <TextField label={DEV_TEXT.email} placeholder={DEV_TEXT.email} kind="email" value={email} onChangeText={setEmail} />
+      <TextField label={DEV_TEXT.password} placeholder={DEV_TEXT.password} kind="password" value={password} onChangeText={setPassword}
+        last onDone={signIn} />
+      <Button label={DEV_TEXT.signIn} onPress={signIn} />
+      <AppText selectable testID="dev-claims">{JSON.stringify({
         active_institution_id: claims.active_institution_id ?? null,
         access_version: claims.access_version ?? null,
         user_kind: claims.user_kind ?? null,
-      })}</Text>
+      })}</AppText>
       {institutions.map((institution) => (
-        <Pressable key={institution.id} style={styles.button} onPress={run(() => switchInstitution(institution.id))}>
-          <Text>{`${DEV_TEXT.switchTo} ${institution.name}`}</Text>
-        </Pressable>
+        <Button key={institution.id} variant="outlined" label={`${DEV_TEXT.switchTo} ${institution.name}`}
+          onPress={run(() => switchInstitution(institution.id))} />
       ))}
-      <Pressable style={styles.button} onPress={run(signOut)}>
-        <Text>{DEV_TEXT.signOut}</Text>
-      </Pressable>
-      {message.length > 0 && <Text style={styles.error}>{message}</Text>}
+      <Button variant="text" label={DEV_TEXT.signOut} onPress={run(signOut)} />
+      {message.length > 0 && <AppText style={{ color: colors.error }}>{message}</AppText>}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, gap: 12, padding: 16, justifyContent: 'center' },
-  input: { borderWidth: 1, borderColor: '#999', borderRadius: 8, padding: 12, minHeight: 48 },
-  button: { borderWidth: 1, borderColor: '#999', borderRadius: 8, padding: 12, minHeight: 48, justifyContent: 'center' },
-  error: { color: '#b00020' },
+  container: { flex: 1, justifyContent: 'center', maxWidth: 560, width: '100%', alignSelf: 'center' },
 });

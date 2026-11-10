@@ -43,7 +43,7 @@ describe('labels on the web build', () => {
     await p.getByTestId('sample-add').waitFor();
     assert.equal(await text(p, 'sample-add'), 'Add Student');
     assert.equal(await text(p, 'sample-count'), 'Students: 25');
-    await p.getByTestId('terminology-search').fill('admission test');
+    await p.getByTestId('terminology-search-field-input').fill('admission test');
     assert.equal(await p.getByTestId('label-assessment').count(), 1);
     assert.equal(await p.getByTestId('label-lead').count(), 0);
     await p.close();
@@ -62,7 +62,7 @@ describe('labels on the web build', () => {
     await p.waitForFunction(() => document.querySelector('[data-testid="sample-add"]')?.textContent === 'Add Trainee');
     assert.equal(await text(p, 'sample-count'), 'Trainees: 25');
     assert.equal(await text(p, 'label-module.clients-word'), 'Trainees');
-    await p.getByTestId('terminology-search').fill('student');
+    await p.getByTestId('terminology-search-field-input').fill('student');
     assert.equal(await p.getByTestId('label-module.clients').count(), 1, 'searching the default word finds the renamed module');
     await chooseLanguage(p, 'bn');
     await p.goto(`${web.base}/terminology`);

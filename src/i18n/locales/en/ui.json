@@ -1,0 +1,51 @@
+{
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "undo": "Undo",
+    "close": "Close",
+    "discard": "Discard",
+    "keepEditing": "Keep editing",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "clear": "Clear"
+  },
+  "states": {
+    "loading": "Loading…",
+    "errorTitle": "Something went wrong",
+    "emptyTitle": "Nothing here yet",
+    "refreshing": "Updating…"
+  },
+  "form": {
+    "unsavedTitle": "Discard changes?",
+    "unsavedBody": "You have changes that are not saved.",
+    "draftRestored": "Your unsaved draft was restored.",
+    "saving": "Saving…",
+    "saved": "Saved.",
+    "required": "Required",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "otpHelp": "The code from the SMS fills in by itself."
+  },
+  "progress": {
+    "percent": "{{percent}}% done",
+    "cancelled": "Cancelled.",
+    "working": "Working…"
+  },
+  "temperature": {
+    "hot": "Hot",
+    "warm": "Warm",
+    "cold": "Cold"
+  },
+  "sheet": {
+    "handle": "Drag to close"
+  },
+  "appearance": {
+    "title": "Appearance",
+    "description": "Choose light or dark, or follow the phone's setting. It changes at once.",
+    "system": "Same as phone",
+    "light": "Light",
+    "dark": "Dark"
+  }
+}

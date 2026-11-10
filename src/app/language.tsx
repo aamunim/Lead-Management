@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { ChoiceList, Screen } from '@/ui/components';
+import { useTheme } from '@/ui/theme';
 import { useTranslation } from '@/i18n';
 import { SUPPORTED_LANGUAGES, type Language } from '@/i18n/language';
 import { useErrorText } from '@/i18n/errors';
@@ -15,6 +16,7 @@ type Feedback = { kind: 'saved' | 'savedOnDevice' } | { kind: 'error'; text: str
 export default function LanguageScreen() {
   const { t } = useTranslation('language');
   const errorText = useErrorText();
+  const { colors } = useTheme();
   const { language, choice, institutionDefault, signedIn } = useLanguageState();
   const [feedback, setFeedback] = useState<Feedback>(null);
 
@@ -37,40 +39,19 @@ export default function LanguageScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <AppText style={styles.title} accessibilityRole="header" testID="language-title">{t('title')}</AppText>
-      <AppText style={styles.description}>{t('description')}</AppText>
+    <Screen title={t('title')} intro={t('description')} testID="language">
       <AppText testID="language-current">{t('current', { language: t(`names.${language}`) })}</AppText>
-      {options.map((option) => {
-        const selected = option.value === choice || (option.value === language && choice === null && !institutionDefault);
-        return (
-          <Pressable
-            key={option.value ?? 'institution'}
-            accessibilityRole="radio"
-            accessibilityState={{ selected }}
-            style={[styles.option, selected && styles.selected]}
-            onPress={() => void pick(option.value)}
-            testID={`language-option-${option.value ?? 'institution'}`}
-          >
-            <AppText style={styles.optionText}>{option.label}</AppText>
-          </Pressable>
-        );
-      })}
+      <ChoiceList
+        accessibilityLabel={t('title')}
+        selected={choice ?? (institutionDefault ? null : language)}
+        onSelect={(value) => void pick(value)}
+        choices={options.map((option) => ({ value: option.value, label: option.label, testID: `language-option-${option.value ?? 'institution'}` }))}
+      />
       {feedback && (
-        <AppText testID="language-feedback" style={feedback.kind === 'error' ? styles.error : undefined}>
+        <AppText testID="language-feedback" style={feedback.kind === 'error' ? { color: colors.error } : undefined}>
           {feedback.kind === 'error' ? feedback.text : t(feedback.kind)}
         </AppText>
       )}
-    </View>
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, gap: 12, justifyContent: 'center', maxWidth: 560, width: '100%', alignSelf: 'center' },
-  title: { fontSize: 22, fontWeight: '600' },
-  description: { fontSize: 16 },
-  option: { minHeight: 48, borderWidth: 1, borderColor: '#999', borderRadius: 8, padding: 12, justifyContent: 'center' },
-  selected: { borderWidth: 2, borderColor: '#1b6ef3' },
-  optionText: { fontSize: 16 },
-  error: { color: '#b00020' },
-});

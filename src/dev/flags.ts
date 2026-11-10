@@ -5,3 +5,6 @@ const appEnv = (Constants.expoConfig?.extra as { appEnv?: string } | undefined)?
 
 /** Dev sign-in (0A.03-T8): only when explicitly enabled and never in production. */
 export const devSignInEnabled = process.env.EXPO_PUBLIC_DEV_SIGNIN === '1' && appEnv !== 'production';
+
+/** Developer tools such as the component gallery (0A.13-T8): every build except production. */
+export const devToolsEnabled = appEnv !== 'production';

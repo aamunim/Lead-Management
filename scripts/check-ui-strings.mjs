@@ -6,6 +6,10 @@
 // - renamable terms anywhere in string literals:    'Student', 'শিক্ষার্থী' … (they come from labels, 0A.12)
 // - toLocaleString / toLocaleDateString / Intl.* outside src/lib/format.ts (lakh grouping, time zone, digits; 0A.11)
 // - the phone clock (Date.now(), new Date() without arguments) outside src/lib/server-time.ts (Ch 47.7)
+// Design system (0A.13, Ch 47.8 / 47.11):
+// - Pressable / Touchable* without accessibilityRole; IconButton without label (screen readers)
+// - fontSize / lineHeight outside src/ui/ (use <AppText variant=…>: Bangla-safe line height, follows font size)
+// - colour literals (#hex, rgb()) outside src/ui/tokens/ (use useTheme().colors: light / dark / brand)
 // Exemption: a comment `i18n-exempt: <reason>` on the same or the previous line; for a developer-only file,
 // `i18n-exempt-file: <reason>` anywhere in it.
 import { readdirSync, readFileSync, statSync } from 'node:fs';
@@ -19,6 +23,8 @@ export const VISIBLE_PROPS = new Set([
   'title', 'placeholder', 'label', 'accessibilityLabel', 'accessibilityHint', 'aria-label', 'alt', 'headerTitle',
   'headerBackTitle', 'tabBarLabel', 'drawerLabel', 'subtitle', 'description', 'message', 'helperText', 'errorText',
 ]);
+const PRESSABLES = new Set(['Pressable', 'TouchableOpacity', 'TouchableHighlight', 'TouchableWithoutFeedback']);
+const TYPE_PROPS = new Set(['fontSize', 'lineHeight']);
 const FORMAT_FILE = 'src/lib/format.ts';
 const CLOCK_FILE = 'src/lib/server-time.ts';
 const LOCALE_METHODS = new Set(['toLocaleString', 'toLocaleDateString', 'toLocaleTimeString', 'toLocaleUpperCase', 'toLocaleLowerCase']);
@@ -60,7 +66,25 @@ export function checkSource(fileName, sourceText) {
     ts.isExternalModuleReference(node.parent);
 
   const file = fileName.replace(/\\/g, '/');
+  const inUi = file.startsWith('src/ui/');
+  const inTokens = file.startsWith('src/ui/tokens/');
   const visit = (node) => {
+    if (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) {
+      const tag = node.tagName.getText(sourceFile);
+      const attrs = new Set(node.attributes.properties.filter(ts.isJsxAttribute).map((a) => a.name.getText(sourceFile)));
+      const spreads = node.attributes.properties.some(ts.isJsxSpreadAttribute);
+      if (PRESSABLES.has(tag) && !attrs.has('accessibilityRole') && !attrs.has('role') && !spreads) {
+        report(node, 'a11y_role', `<${tag}> needs accessibilityRole (or use Button / IconButton from '@/ui/components')`);
+      }
+      if (tag === 'IconButton' && !attrs.has('label') && !spreads) report(node, 'a11y_label', '<IconButton> needs a label');
+    }
+    if (!inUi && ts.isPropertyAssignment(node) && TYPE_PROPS.has(node.name.getText(sourceFile))) {
+      report(node, 'raw_font_size', `${node.name.getText(sourceFile)}: use <AppText variant=…> (typography tokens)`);
+    }
+    if (!inTokens && (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node))
+        && /^(#[0-9a-f]{3,8}|rgba?\(.*\)|hsla?\(.*\))$/i.test(node.text.trim())) {
+      report(node, 'raw_color', `${node.text}: use useTheme().colors`);
+    }
     if (file !== FORMAT_FILE) {
       if (ts.isPropertyAccessExpression(node) && LOCALE_METHODS.has(node.name.text)) {
         report(node, 'raw_locale_format', `${node.name.text}: use the formatters from '@/lib/locale' (useFormat)`);
