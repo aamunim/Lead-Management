@@ -30,6 +30,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ (inputs.profile == 'production' || inputs.profile == 'production-apk') && 'production' || 'staging' }}
     env:
+      # Public per-environment values (GitHub environment VARIABLES, not secrets): the app's server address and
+      # publishable key, baked into the app / web bundle (0A.14). Never a service-role key here.
+      EXPO_PUBLIC_SUPABASE_URL: ${{ vars.EXPO_PUBLIC_SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_KEY: ${{ vars.EXPO_PUBLIC_SUPABASE_KEY }}
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
       BRAND_APP_NAME: ${{ inputs.brand_app_name }}
@@ -40,6 +44,7 @@ jobs:
       - name: Check required secrets
         run: |
           [ -n "$EXPO_TOKEN" ] || { echo "::error::EXPO_TOKEN secret is missing"; exit 1; }
+          [ -n "$EXPO_PUBLIC_SUPABASE_URL" ] && [ -n "$EXPO_PUBLIC_SUPABASE_KEY" ] || { echo "::error::EXPO_PUBLIC_SUPABASE_URL / EXPO_PUBLIC_SUPABASE_KEY environment variables are missing (the app could not reach its server)"; exit 1; }
           [ -n "$GOOGLE_SERVICES_JSON_BASE64" ] || { echo "::error::GOOGLE_SERVICES_JSON_BASE64 secret is missing (Firebase is required for push)"; exit 1; }
 
       - name: Write google-services.json from the secret

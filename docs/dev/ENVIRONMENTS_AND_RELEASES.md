@@ -26,6 +26,13 @@ Protect `production` with required reviewers.
 | `FTP_HOST`, `FTP_USER`, `FTP_PASSWORD`, `FTP_REMOTE_DIR` | deploy-web | Hosting control panel |
 | Android keystore | build-android (EAS credentials) | Managed by EAS credentials; back it up offline |
 
+And two environment **variables** (public values, not secrets; Settings → Environments → Variables):
+
+| Variable | Used by | Where to get it |
+|---|---|---|
+| `EXPO_PUBLIC_SUPABASE_URL` | build-android, app-update, deploy-web | Supabase project → Settings → API → Project URL |
+| `EXPO_PUBLIC_SUPABASE_KEY` | build-android, app-update, deploy-web | Supabase project → Settings → API keys → **publishable** key (never the secret / service-role key) |
+
 Later secrets (Apps Script secret, provider keys) are **not** GitHub secrets: institution and provider keys are
 entered in the app / Master Admin panel and stored in the Supabase Vault (0A.07, 0B.11).
 

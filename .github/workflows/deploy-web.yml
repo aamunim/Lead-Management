@@ -21,6 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.target }}
     env:
+      # Public per-environment values (GitHub environment VARIABLES, not secrets): the app's server address and
+      # publishable key, baked into the app / web bundle (0A.14). Never a service-role key here.
+      EXPO_PUBLIC_SUPABASE_URL: ${{ vars.EXPO_PUBLIC_SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_KEY: ${{ vars.EXPO_PUBLIC_SUPABASE_KEY }}
       FTP_HOST: ${{ secrets.FTP_HOST }}
       FTP_USER: ${{ secrets.FTP_USER }}
       FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
@@ -32,6 +36,7 @@ jobs:
         run: |
           missing=""
           for v in FTP_HOST FTP_USER FTP_PASSWORD FTP_REMOTE_DIR; do [ -n "${!v}" ] || missing="$missing $v"; done
+          for v in EXPO_PUBLIC_SUPABASE_URL EXPO_PUBLIC_SUPABASE_KEY; do [ -n "${!v}" ] || missing="$missing $v (variable)"; done
           if [ -n "$missing" ]; then echo "::error::Missing secrets in environment '${{ inputs.target }}':$missing"; exit 1; fi
       - uses: actions/setup-node@v4
         with:

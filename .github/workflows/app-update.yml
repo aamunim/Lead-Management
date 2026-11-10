@@ -37,6 +37,10 @@ jobs:
     # GitHub environments "staging" and "production" hold the secrets; protect "production" with required reviewers.
     environment: ${{ inputs.target }}
     env:
+      # Public per-environment values (GitHub environment VARIABLES, not secrets): the app's server address and
+      # publishable key, baked into the app / web bundle (0A.14). Never a service-role key here.
+      EXPO_PUBLIC_SUPABASE_URL: ${{ vars.EXPO_PUBLIC_SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_KEY: ${{ vars.EXPO_PUBLIC_SUPABASE_KEY }}
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
       SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
@@ -50,6 +54,7 @@ jobs:
           for v in SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD SUPABASE_PROJECT_REF EXPO_TOKEN; do
             [ -n "${!v}" ] || missing="$missing $v"
           done
+          for v in EXPO_PUBLIC_SUPABASE_URL EXPO_PUBLIC_SUPABASE_KEY; do [ -n "${!v}" ] || missing="$missing $v (variable)"; done
           if [ -n "$missing" ]; then echo "::error::Missing secrets in environment '${{ inputs.target }}':$missing"; exit 1; fi
 
       - uses: supabase/setup-cli@v1
