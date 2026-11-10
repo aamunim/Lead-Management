@@ -1255,6 +1255,7 @@ This block turns the Block 0A skeleton into a platform that can sign up, configu
 - [ ] 0B.05-T10 Downgrade fit check: list of what to reduce; **Proposed:** excess is made read-only/archived, never deleted (Ch 9.9 row 5).
 - [ ] 0B.05-T11 Add-on catalog as data (SMS packs, AI usage, extra users/branches/storage, custom domain, branded app, extensions, setup/import service) — **Proposed** (Ch 9.4); purchase flows come with billing (0B.16) and later phases.
 - [ ] 0B.05-T12 Seed one test institution per plan for CI (Ch 9.9 row 1).
+- [ ] 0B.05-T13 Plan prices, limits and trial length are **Master Admin settings**, editable at any time without a release (D30, D31); prices can differ per institution type (D32).
 
 **Tests**
 - RPC-as-real-role: creating the (N+1)th user beyond the limit fails server-side even when the client skips the check.
@@ -1611,6 +1612,8 @@ This block turns the Block 0A skeleton into a platform that can sign up, configu
 - [ ] 0B.13-T9 Low-balance alerts to institution and Master Admin; status text "Balance exhausted — recharge with the provider" for direct-pay institutions (Ch 42.10 row 8).
 - [ ] 0B.13-T10 Daily sandbox contract test per adapter; failure alerts the platform.
 - [ ] 0B.13-T11 Legal check before bulk SMS goes live: promotional SMS rules (sender ID, time, content) (Ch 53.4 row 2) — recorded as a launch gate for Campaigns (Block 1B).
+- [ ] 0B.13-T12 **Switch gateway at any time (D33, D34):** for an institution and for the platform default, add the new connection, verify it with Test SMS / sandbox, then make it "primary" in one action; the old one becomes backup or is disabled; queued messages go through the new primary; delivery logs and the ledger keep the gateway that actually sent each message; every switch is audited.
+- [ ] 0B.13-T13 **Masking (D35):** masked sender ID per institution and gateway with approval status (applied / approved / rejected); until approved, send on the non-masked route; OTP may use a separate non-masked fast route.
 
 **Tests**
 - Unit: part counting for pure Bangla, pure English, mixed text; Custom HTTP rejects `http://`, `10.x`, `169.254.x` targets.
@@ -1720,10 +1723,10 @@ This block turns the Block 0A skeleton into a platform that can sign up, configu
 
 **Plan chapters:** Ch 9 (9.6, 9.7 ledger use, 9.8, 9.9 rows 6–10, 9.10 phase 0), Ch 5 (5.7), Ch 42 (42.6 last bullet: platform merchant).
 
-**Decisions:** D7, D14, D15, D17, D22.
+**Decisions:** D7, D14, D15, D17, D22, D29, D30, D31, D32.
 
 **Build**
-- **Data:** `subscriptions(institution_id, plan_id, plan_version, period monthly | yearly, price, discount, starts_at, expires_at, grace_days)`; `billing_overrides` (special price/discount/limits, logged); `platform_invoices(number sequential platform-wide, institution_id, lines, vat, total, status)`; `platform_payments(method manual | sslcommerz, trx_id, verified_by, gateway_ref, status)`; `platform_receipts`.
+- **Data:** `promo_codes`, `offers`, `plan_price_versions` (D29) in addition to: `subscriptions(institution_id, plan_id, plan_version, period monthly | yearly, price, discount, starts_at, expires_at, grace_days)`; `billing_overrides` (special price/discount/limits, logged); `platform_invoices(number sequential platform-wide, institution_id, lines, vat, total, status)`; `platform_payments(method manual | sslcommerz, trx_id, verified_by, gateway_ref, status)`; `platform_receipts`.
 - **Server:** prorated upgrade (immediate), downgrade at period end with fit check (0B.05); reminder job 15/7/3/1 days before expiry; expiry job → grace (e.g. 7 days) → `read_only` (0B.07), payment → `active`; manual payment entry and verification by Billing role; SSLCommerz adapter for the platform's own merchant account (create, server-to-server verify, IPN via router, idempotent, pending + reconciliation); invoice generation including platform-paid SMS/AI usage lines from the ledger (D15); VAT line when applicable.
 - **App & web:** Master Admin → Plan & billing tab (plan, expiry, dues, overrides, extend expiry, record/verify manual payment, invoices); Billing role screens; institution Settings → Billing (plan, expiry, limit usage with 80 % warnings, this month's SMS/AI use, invoices/receipts download, pay online or submit manual payment).
 - **Settings & permissions:** `billing.view`, `billing.pay` (sensitive, two-step); `platform.billing.*`.
@@ -1740,7 +1743,12 @@ This block turns the Block 0A skeleton into a platform that can sign up, configu
 - [ ] 0B.16-T9 Invoices and receipts (PDF) downloadable from Settings → Billing; platform-paid usage on the same invoice.
 - [ ] 0B.16-T10 **Proposed:** prepaid SMS balance (SMS packs) per institution as the preferred model.
 - [ ] 0B.16-T11 Institution billing view per Ch 9.8 (no gateway buy price unless Master Admin enables it); other staff see only the limit message.
-- [ ] 0B.16-T12 Owner/legal tasks: VAT and invoice rules in Bangladesh (Ch 53.4 row 6); confirm prices/limits/trial (Ch 53.2 row 2).
+- [ ] 0B.16-T12 Owner/legal tasks: VAT and invoice rules in Bangladesh (Ch 53.4 row 6). Prices, limits and trial are entered by the Master Admin in settings (D30, D31).
+- [ ] 0B.16-T13 **Price versions (D29):** changing a plan price creates a new version; new customers get it, running subscriptions keep their price until renewal unless the Master Admin applies it earlier; notice to the institution before a price rise (Ch 9.10).
+- [ ] 0B.16-T14 **Promo codes / coupons (D29):** percent or fixed amount; valid from–to; max total uses and max per institution; plans / periods / add-ons it applies to; first purchase only (option); institution types (option); Master Admin can stop a code at once.
+- [ ] 0B.16-T15 **Time-limited offers (D29):** automatic discount for everyone (or chosen institution types) between two dates, shown on the Billing page and as a banner; add-on discounts (e.g. SMS packs).
+- [ ] 0B.16-T16 **Price calculation on the server, in this order:** plan price version → period discount (yearly) → institution special price → promo code or offer → VAT; stacking rule set by the Master Admin (default: one code or offer, whichever is better); never below zero; each discount on its own invoice line; everything audited.
+- [ ] 0B.16-T17 Master Admin screens: Plans & prices (versions, per-type prices, trial), Offers & promo codes (create, pause, usage), offer report (uses, discount given, new institutions); institution Billing page shows running offers and accepts a promo code with the saving shown before payment.
 
 **Tests**
 - Unit: proration, reminder schedule, grace → read-only transitions with a fake clock.
@@ -6451,6 +6459,13 @@ Every chapter of the plan must appear here. If a row is empty, something has bee
 | Appendix A (keys used here) | 3–5 | `call_sync` 3.04; `call_lock`, `double_call` 3.02; `activity` 4.03; `reports` 4.02; `ai_chance` 4.05; `ai_credit` 4.07; `ai_providers` 4.04; `credits`, `credit_extras` 4.08; `scorecard` 4.09; `alumni` 5.01/5.03; `public_forms` 5.02/5.04; `photo_presets` 5.05; `min_app_version` 3.10 | Keys registered in Phase 0 (Block 0B); schemas/screens filled here. |
 
 ## 12. Open decisions found while writing this roadmap
+
+> **Owner answers, round 6 (decided):** the proposed defaults in the table below are **accepted** (D28).
+> Also decided: secret scan and the migration deploy-type check stay in CI (D27); the five-plan structure with
+> **changeable prices, discounts and promotional offers** (D29); prices and limits set by the Master Admin in settings (D30);
+> custom trial length (D31); prices may differ by institution type (D32); institution and platform SMS gateways can be
+> switched at any time (D33, D34); SMS masking (D35); Android package **`com.leadora.leads`** (D36).
+> **Still open:** the final product name (Q1); the actual price numbers (entered later in settings); the pilot institutions' SMS gateways (Q3).
 
 These came up while turning the plan into milestones. Each is also written at the milestone's owner checkpoint.
 

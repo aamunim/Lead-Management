@@ -33,7 +33,7 @@ entered in the app / Master Admin panel and stored in the Supabase Vault (0A.07,
 
 | Workflow | Trigger | What it does |
 |---|---|---|
-| `ci.yml` | every PR and push to `main` | Typecheck, config check, unit tests, web build; migrations applied to a fresh database; secret scan (**Proposed**); "migration PR must declare a database deploy" (**Proposed**). Later milestones add the schema lint, DEFINER audit, RPC-as-role tests, leak test, role matrix, i18n lint and screenshot tests. |
+| `ci.yml` | every PR and push to `main` | Typecheck, config check, unit tests, web build; migrations applied to a fresh database; secret scan and "migration PR must declare a database deploy" (both approved, D27). Later milestones add the schema lint, DEFINER audit, RPC-as-role tests, leak test, role matrix, i18n lint and screenshot tests. |
 | `app-update.yml` | manual | Database + app / App only / Database only to staging or production: `supabase db push`, optional `functions deploy`, then `eas update` on the channel. |
 | `build-android.yml` | manual | Local EAS build on the runner for a chosen profile; writes `google-services.json` from the secret; fails if Firebase is missing from the config or the built package; uploads the APK / AAB as an artifact. Brand inputs prepare branded apps (D12, Phase 5). |
 | `deploy-web.yml` | manual | Web export and FTPS upload: new assets first, `index.html` last. **Proposed:** move to atomic hosting with automatic custom-domain SSL in 1B. |

@@ -5,7 +5,7 @@
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "leadplatform",
+    "scheme": "leadora",
     "userInterfaceStyle": "automatic",
     "android": {
       "adaptiveIcon": {
@@ -15,7 +15,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.leadplatform.app"
+      "package": "com.leadora.leads"
     },
     "web": {
       "output": "single",

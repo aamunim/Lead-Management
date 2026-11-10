@@ -58,7 +58,7 @@ jobs:
       # - role-matrix test                                                   (0A.17 / 0A.20)
 
   secret-scan:
-    name: Secret scan (Proposed, 0A.02-T8)
+    name: Secret scan (D27)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -72,7 +72,7 @@ jobs:
         run: ./gitleaks detect --source . --redact --verbose --exit-code 1
 
   deploy-type:
-    name: Migration changes declare a database deploy (Proposed, 0A.02-T10)
+    name: Migration changes declare a database deploy (D27)
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
