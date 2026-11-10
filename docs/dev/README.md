@@ -11,6 +11,7 @@ Read in this order before working on any milestone:
 7. `SCHEMA_LINT.md` — the schema lint rules, exceptions, DEFINER registry, guard trigger and the real-role test harness.
 8. `LEAK_TEST.md` — the cross-tenant leak test: fixtures, viewers, probes, allow-list, self-test.
 9. `ISOLATION.md` — every place institution data must stay separate, its status, and the storage / Realtime / Edge Function / log / error conventions.
-10. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-11. `../PLAN_BN.md` — the plan chapters the milestone points to.
-12. `PROGRESS.md` — which milestones are done.
+10. `SECRETS.md` — per-institution keys in Vault: write-only, hint only, Edge-only read, rotation, log redaction.
+11. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+12. `../PLAN_BN.md` — the plan chapters the milestone points to.
+13. `PROGRESS.md` — which milestones are done.

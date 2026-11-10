@@ -16,26 +16,34 @@ export function maskPhone(text: string): string {
   return text.replace(BD_PHONE, (_m, operator: string, _middle: string, last: string) => `0${operator}•••••${last}`);
 }
 
-export function redactString(text: string): string {
+/**
+ * Known secret values (e.g. a provider key read for this request) are removed wherever they appear — a provider's
+ * error message may echo the key back, and no pattern could recognise an arbitrary key (Ch 4.13 #9, I2).
+ */
+export function redactString(text: string, knownSecrets: Iterable<string> = []): string {
+  let out = text;
+  for (const secret of knownSecrets) {
+    if (secret && secret.length >= 4) out = out.split(secret).join('[redacted-secret]');
+  }
   return maskPhone(
-    text.replace(BEARER, 'Bearer [redacted]').replace(JWT, '[redacted-jwt]').replace(PROVIDER_KEY, '[redacted-key]'),
+    out.replace(BEARER, 'Bearer [redacted]').replace(JWT, '[redacted-jwt]').replace(PROVIDER_KEY, '[redacted-key]'),
   );
 }
 
 /** Deep copy with secrets removed and personal numbers masked. Safe to pass anything (errors, requests, rows). */
-export function redact(value: unknown, depth = 0): unknown {
+export function redact(value: unknown, depth = 0, knownSecrets: Iterable<string> = []): unknown {
   if (depth > 8) return '[truncated]';
-  if (typeof value === 'string') return redactString(value);
+  if (typeof value === 'string') return redactString(value, knownSecrets);
   if (value === null || typeof value !== 'object') return value;
   if (value instanceof Error) {
-    return { name: value.name, message: redactString(value.message) };
+    return { name: value.name, message: redactString(value.message, knownSecrets) };
   }
-  if (Array.isArray(value)) return value.map((item) => redact(item, depth + 1));
+  if (Array.isArray(value)) return value.map((item) => redact(item, depth + 1, knownSecrets));
   const out: Record<string, unknown> = {};
   for (const [key, item] of Object.entries(value as Record<string, unknown>)) {
     if (SECRET_KEY.test(key)) out[key] = '[redacted]';
     else if (NATIONAL_ID_KEY.test(key)) out[key] = '[redacted-id]';
-    else out[key] = redact(item, depth + 1);
+    else out[key] = redact(item, depth + 1, knownSecrets);
   }
   return out;
 }

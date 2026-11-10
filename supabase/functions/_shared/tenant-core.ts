@@ -6,6 +6,8 @@ import { ERRORS, toErrorInfo, type ErrorInfo } from './errors.ts';
 import { createLogger, type Logger } from './logger.ts';
 
 export type TenantContext = {
+  /** Reads a secret of the ACTIVE institution (never another) and registers it for log redaction. */
+  secret?: (ref: string) => Promise<string | null>;
   userId: string;
   institutionId: string;
   accessVersion: number | null;
@@ -22,12 +24,15 @@ export type SessionCheck = (accessToken: string) => Promise<{
 
 export type TenantResult = { ok: true; context: TenantContext } | { ok: false; error: ErrorInfo; log: Logger };
 
+export type SecretReader = (institutionId: string, ref: string) => Promise<string | null>;
+
 export async function resolveTenant(
   authorizationHeader: string | null,
   checkSession: SessionCheck,
   functionName: string,
   requestId: string,
   sink?: (line: string) => void,
+  readSecret?: SecretReader,
 ): Promise<TenantResult> {
   const budget = new Budget();
   const baseLog = createLogger({ function: functionName, request_id: requestId }, sink);
@@ -43,9 +48,17 @@ export async function resolveTenant(
     return { ok: false, error: info, log: baseLog };
   }
   const log = baseLog.with({ institution_id: data.institution_id, user_id: data.user_id });
+  const institutionId = data.institution_id;
   return {
     ok: true,
     context: {
+      secret: readSecret
+        ? async (ref: string) => {
+            const value = await readSecret(institutionId, ref);
+            if (value) log.registerSecret(value);
+            return value;
+          }
+        : undefined,
       userId: data.user_id,
       institutionId: data.institution_id,
       accessVersion: data.access_version,

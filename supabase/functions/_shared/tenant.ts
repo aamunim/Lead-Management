@@ -12,11 +12,18 @@ export function withTenant(name: string, handler: (req: Request, ctx: TenantCont
     const requestId = req.headers.get('x-request-id') ?? crypto.randomUUID();
     const url = Deno.env.get('SUPABASE_URL') ?? '';
     const key = Deno.env.get('SUPABASE_ANON_KEY') ?? Deno.env.get('SUPABASE_PUBLISHABLE_KEY') ?? '';
+    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? Deno.env.get('SUPABASE_SECRET_KEY') ?? '';
     const result = await resolveTenant(req.headers.get('authorization'), async (token) => {
       // The client acts AS the caller (their JWT), so RLS and current_session() run with their rights.
       const client = createClient(url, key, { global: { headers: { Authorization: `Bearer ${token}` } } });
       return await client.rpc('current_session');
-    }, name, requestId);
+    }, name, requestId, undefined, async (institutionId, ref) => {
+      // Secrets are read with the service role, and only for the institution resolved from the session above.
+      const service = createClient(url, serviceKey, { auth: { persistSession: false } });
+      const { data, error } = await service.rpc('secret_read_for_service', { p_institution_id: institutionId, p_ref: ref });
+      if (error) throw error;
+      return (data as string | null) ?? null;
+    });
     if (!result.ok) return json(errorResponseBody(result.error, requestId), result.error.httpStatus);
     try {
       result.context.log.info('request.start', { method: req.method });

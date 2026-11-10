@@ -167,11 +167,20 @@ begin
       -- R9 tenant check present
       elsif exists (select 1 from app.definer_registry d where d.function_name = r.obj
                     and d.tenant_check = 'filters_active_institution')
-        and r.prosrc !~ '(auth_institution_id|require_active_session)\(' then
+        and r.prosrc !~ '(auth_institution_id|require_active_session|secret_target_institution)\(' then
         rule := 'definer_tenant_check'; object := r.obj;
         message := 'DEFINER function must filter by app.auth_institution_id() / app.require_active_session().';
         return next;
       end if;
+    end if;
+
+    -- R9b service_role_only DEFINER functions: never executable by app roles
+    if r.prosecdef and exists (select 1 from app.definer_registry d where d.function_name = r.obj
+                               and d.tenant_check = 'service_role_only')
+       and (has_function_privilege('authenticated', r.oid, 'execute') or has_function_privilege('anon', r.oid, 'execute')) then
+      rule := 'definer_service_only'; object := r.obj;
+      message := 'Registered as service_role_only but authenticated or anon can execute it.';
+      return next;
     end if;
 
     -- R12 heavy functions disable JIT (lesson 4)

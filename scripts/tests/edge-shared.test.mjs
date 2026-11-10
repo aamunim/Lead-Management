@@ -99,3 +99,31 @@ describe('tenant middleware core', () => {
     assert.equal(JSON.parse(lines.at(-1)).institution_id, 'inst-a');
   });
 });
+
+describe('secrets never reach logs (0A.07-T6)', () => {
+  const PLANTED = 'zq81-PLANTED-provider-key-value-9931';
+  it('a secret read for the request is removed from every later log line, even inside provider errors', async () => {
+    const lines = [];
+    const okSession = async () => ({ data: { user_id: 'u1', institution_id: 'inst-a', access_version: 1, user_kind: 'staff' }, error: null });
+    const reads = [];
+    const result = await resolveTenant('Bearer x', okSession, 'sms-send', 'r1', (l) => lines.push(l), async (inst, ref) => {
+      reads.push([inst, ref]);
+      return PLANTED;
+    });
+    const key = await result.context.secret('sms.primary.api_key');
+    assert.equal(key, PLANTED);
+    assert.deepEqual(reads, [['inst-a', 'sms.primary.api_key']], 'reads only the active institution\'s secret');
+    result.context.log.error('provider.failed', {
+      error: new Error(`401 Unauthorized: invalid api_key=${PLANTED}`),
+      response: { body: `{"error":"bad key ${PLANTED}"}` },
+    });
+    assert.ok(lines.length > 0);
+    assert.ok(lines.every((l) => !l.includes(PLANTED)), 'no log line contains the planted key');
+    assert.match(lines.at(-1), /\[redacted-secret\]/);
+  });
+  it('the error response body carries only code, message key, action and request id', async () => {
+    const body = JSON.stringify(errorResponseBody(toErrorInfo(new Error(`bad key ${PLANTED}`)), 'r2'));
+    assert.ok(!body.includes(PLANTED));
+    assert.deepEqual(Object.keys(JSON.parse(body).error).sort(), ['action', 'code', 'message_key', 'request_id']);
+  });
+});

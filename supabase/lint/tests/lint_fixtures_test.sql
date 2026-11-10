@@ -89,6 +89,15 @@ insert into app.definer_registry (function_name, reason, added_in) values
 select pg_temp.check(pg_temp.found('definer_tenant_check', 'public.fixture_definer_no_check'),
                      'R9 definer_tenant_check: DEFINER without an institution filter is caught');
 
+create function public.fixture_service_reader() returns int language sql security definer set search_path = '' as $$
+  select 1
+$$;
+insert into app.definer_registry (function_name, reason, added_in, tenant_check) values
+  ('public.fixture_service_reader', 'fixture: claims to be service-only but is granted to app users', 'test', 'service_role_only');
+grant execute on function public.fixture_service_reader() to authenticated;
+select pg_temp.check(pg_temp.found('definer_service_only', 'public.fixture_service_reader'),
+                     'R9b definer_service_only: a service-only function callable by app users is caught');
+
 create function public.fixture_no_search_path() returns int language sql as $$ select 1 $$;
 select pg_temp.check(pg_temp.found('search_path', 'public.fixture_no_search_path'),
                      'R10 search_path: function without a pinned search_path is caught');
