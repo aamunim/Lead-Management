@@ -49,8 +49,8 @@ token; `x-settings-version` → settings and labels refresh.
 
 - **App lock** (phone app only): 4–6 digit PIN, kept as a salted SHA-256 hash in the phone's secure store (never on
   the server), plus fingerprint when the phone has one. Locks on start and after 30 s in the background; five wrong
-  PINs sign out. Turned off and forgotten on sign-out.
-- **Idle sign-out:** institution setting `idle_signout_minutes` (0 = off; key name to confirm in 0B); any touch or
+  PINs sign out. Turned off and forgotten on sign-out. The 30 s limit is an owner decision (D39).
+- **Idle sign-out:** institution setting `idle_signout_minutes` (default 0 = off, owner decision D38; key name to confirm in 0B); any touch or
   key press counts as activity; the sign-in screen says why.
 - **Sign out of all other devices:** Profile → revokes every other session of the account.
 
