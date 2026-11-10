@@ -88,6 +88,6 @@ One migration changes every institution at once, and old app versions stay on ph
 
 ## 8. App identity and secrets (Ch 3.8)
 
-- Working name "Lead Management Platform" (D21, final name still open). **Android package `com.leadora.leads` (decided, D36)** and deep-link scheme `leadora`. None of them contains "admission", "college", "school" or "student" — `npm run check:config` enforces this. The package id cannot change after the first Play Store release; the Firebase Android app must be registered with exactly this package.
+- Product name **Leadora** (D37). **Android package `com.leadora.leads` (D36)** and deep-link scheme `leadora`. None of them contains "admission", "college", "school" or "student" — `npm run check:config` enforces this. The package id cannot change after the first Play Store release; the Firebase Android app must be registered with exactly this package.
 - `runtimeVersion` is pinned in `app.json`; changing it requires a new store build.
 - Never commit: Expo token, Supabase access token, DB password, project ref, FTP credentials, `google-services.json`, keystore, `.env`, Apps Script secret, any API key. They live in the CI secret store and the Supabase Vault (`.gitignore` already blocks the common files).

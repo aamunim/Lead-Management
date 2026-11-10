@@ -1,12 +1,23 @@
 {
   "$schema": "./schemas/product.schema.json",
-  "productName": "Lead Management Platform",
-  "isWorkingName": true,
-  "nameDecision": "D21: final product name still open; Android package decided as com.leadora.leads (D36)",
-  "platforms": ["android", "web"],
-  "languages": ["en", "bn"],
+  "productName": "Leadora",
+  "isWorkingName": false,
+  "nameDecision": "D37: product name Leadora; D36: Android package com.leadora.leads",
+  "platforms": [
+    "android",
+    "web"
+  ],
+  "languages": [
+    "en",
+    "bn"
+  ],
   "defaultLanguage": "bn",
   "androidPackage": "com.leadora.leads",
   "deepLinkScheme": "leadora",
-  "forbiddenWordsInIdentifiers": ["admission", "college", "school", "student"]
+  "forbiddenWordsInIdentifiers": [
+    "admission",
+    "college",
+    "school",
+    "student"
+  ]
 }

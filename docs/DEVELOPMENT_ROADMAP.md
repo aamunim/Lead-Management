@@ -1,7 +1,7 @@
-# Lead Management Platform — Development Roadmap
+# Leadora — Development Roadmap
 
 > **Version 1 · based on the consolidated plan `PLAN_BN` (version 2, 53 chapters, decisions D1–D26).**
-> "Lead Management Platform" is a working name (D21).
+> Product name: **Leadora** (D37); Android package `com.leadora.leads` (D36).
 
 ## 1. About this roadmap
 
@@ -210,12 +210,12 @@ Production login methods, Master Admin panel, setup wizard, type profiles, modul
 **Build**
 - **Data:** Supabase project folder with `supabase/migrations/` (core) and a separate `supabase/extensions/<ext_name>/migrations/` convention (Ch 43.4); no tables yet.
 - **Server:** Edge Functions folder (Deno) with a shared module skeleton; thin "platform adapter" layer for Supabase-specific parts (auth hook, Edge Functions) — **Proposed** (Ch 3.9 #4).
-- **App & web:** Expo SDK 58, React Native 0.88, expo-router with file routes in `src/app`, React Compiler, typed routes; neutral working name "Lead Management Platform" (D21), own Android package and deep-link scheme with no "Admission", "College" or "School" in them; `runtimeVersion` pinned.
+- **App & web:** Expo SDK 58, React Native 0.88, expo-router with file routes in `src/app`, React Compiler, typed routes; product name "Leadora" (D37; was the working name "Lead Management Platform"), own Android package and deep-link scheme with no "Admission", "College" or "School" in them; `runtimeVersion` pinned.
 - **Settings & permissions:** none.
 
 **Tasks**
 - [ ] 0A.01-T1 Initialise the Expo app (SDK 58, RN 0.88, expo-router, `src/app`, React Compiler, typed routes) building for Android and web.
-- [ ] 0A.01-T2 Set the app identity: working name "Lead Management Platform" (D21), neutral Android package id and deep-link scheme, pinned `runtimeVersion`; record that the final name/package is an open question (Ch 48.11, Ch 53).
+- [ ] 0A.01-T2 Set the app identity: product name "Leadora" (D37), neutral Android package id and deep-link scheme, pinned `runtimeVersion`; record that the final name/package is an open question (Ch 48.11, Ch 53).
 - [ ] 0A.01-T3 Initialise the Supabase project structure: core migrations folder, Edge Functions folder, seed folder, and the extension layout (own schema `ext_<name>`, own migrations folder).
 - [ ] 0A.01-T4 Add the library baseline listed in Ch 3.2 only as needed later (xlsx, expo-print, view-shot, MediaPipe, expo-audio are added by the milestones that use them; list them in the guide).
 - [ ] 0A.01-T5 Write the developer guide "Architecture rules" covering the 14 principles of Ch 2.3: nothing hard-coded (Ch 2.4 list), one product many forms, code reads settings and modules and never `institution_type` (type used only in seeding), core never changes for one institution, data always separated, server trusts profile/session not client, nothing is lost (soft delete, append-only), no secrets in code or chat, provider errors never hidden, show errors not blanks, ask before risky actions, all options as settings (D22), neutral internal names, never slower.
@@ -1116,7 +1116,7 @@ This block turns the Block 0A skeleton into a platform that can sign up, configu
 - [ ] 0B.02-T6 Panel shell with the Ch 5.3 menu (**Proposed** structure) and per-institution tabs Overview, Messaging, Notifications, Payments, Integrations, Domain, Plan & billing, Labels, Audit (tabs filled by later milestones).
 - [ ] 0B.02-T7 Platform users screen: invite, deactivate, change role; no shared accounts (one person per account, enforced by invite-by-email).
 - [ ] 0B.02-T8 Seed script for the first Master Admin (CLI only, never via public UI).
-- [ ] 0B.02-T9 Product-level config: working name "Lead Management Platform" (D21) held in one config value used by panel, login, emails and privacy page, so the final neutral name is a config change; record the **Proposed** naming criteria (neutral, short, bn/en friendly, `.com`/`.com.bd` + Play name + trademark free) and the rule that name, Android package and deep-link scheme are fixed before the first store build (Ch 1.7 row 3).
+- [ ] 0B.02-T9 Product-level config: product name "Leadora" (D37) held in one config value used by panel, login, emails and privacy page, so the final neutral name is a config change; record the **Proposed** naming criteria (neutral, short, bn/en friendly, `.com`/`.com.bd` + Play name + trademark free) and the rule that name, Android package and deep-link scheme are fixed before the first store build (Ch 1.7 row 3).
 
 **Tests**
 - RLS: a tenant Super Admin JWT gets zero rows from every platform table and cannot call platform RPCs.
@@ -6465,7 +6465,7 @@ Every chapter of the plan must appear here. If a row is empty, something has bee
 > **changeable prices, discounts and promotional offers** (D29); prices and limits set by the Master Admin in settings (D30);
 > custom trial length (D31); prices may differ by institution type (D32); institution and platform SMS gateways can be
 > switched at any time (D33, D34); SMS masking (D35); Android package **`com.leadora.leads`** (D36).
-> **Still open:** the final product name (Q1); the actual price numbers (entered later in settings); the pilot institutions' SMS gateways (Q3).
+> Product name decided: **Leadora** (D37). **Still open:** the actual price numbers (entered later in settings); the pilot institutions' SMS gateways (Q3) — until then 0B.13 builds Custom HTTP and the platform gateway first, and the ready-made adapters follow when gateways are known.
 
 These came up while turning the plan into milestones. Each is also written at the milestone's owner checkpoint.
 

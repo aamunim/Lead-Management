@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Lead Management Platform",
-    "slug": "lead-management-platform",
+    "name": "Leadora",
+    "slug": "leadora",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -41,8 +41,6 @@
       "android",
       "web"
     ],
-    "extra": {
-      "workingName": true
-    }
+    "extra": {}
   }
 }

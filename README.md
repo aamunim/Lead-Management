@@ -1,7 +1,7 @@
-# Lead Management Platform (working name)
+# Leadora
 
 A multi-institution lead and admission management platform for educational institutions in Bangladesh
-(Android app + website, one codebase). "Lead Management Platform" is a working name; the final name is open (D21).
+(Android app + website, one codebase). Android package `com.leadora.leads`.
 
 ## Documents
 - `docs/PLAN_BN.md` / `.docx` — the full product plan (Bangla, 53 chapters).

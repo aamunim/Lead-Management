@@ -1,5 +1,5 @@
 {
-  "name": "lead-management-platform",
+  "name": "leadora",
   "version": "0.1.0",
   "main": "expo-router/entry",
   "dependencies": {
@@ -40,5 +40,5 @@
     "test": "node --test \"scripts/tests/*.test.mjs\""
   },
   "private": true,
-  "description": "Multi-institution lead and admission management platform (working name)."
+  "description": "Leadora: multi-institution lead and admission management platform."
 }
