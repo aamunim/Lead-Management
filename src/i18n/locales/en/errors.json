@@ -25,6 +25,10 @@
   "branches_disabled": "$t(labels:branch.plural) are not turned on for your institution.",
   "role_invalid": "This change to the role is not allowed. Check the permissions and try again.",
   "mfa_required": "Sign in again with the second step (code) to change sensitive permissions.",
+  "permission_escalation": "You cannot give access you do not have yourself, or change someone with more access than you.",
+  "last_super_admin": "This is the last Super Admin. Give the role to someone else first.",
+  "self_lockout": "This would remove your own access to manage users. Ask another admin to do it.",
+  "role_has_members": "People still have this role. Choose a role to move them to first.",
   "actions": {
     "sign_in": "Sign in",
     "choose_institution": "Choose institution",

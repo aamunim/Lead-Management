@@ -20,7 +20,7 @@ describe('tenancy core through real Supabase Auth', () => {
     const claims = claimsOf(session);
     assert.equal(claims.active_institution_id, INST_A);
     assert.equal(claims.user_kind, 'staff');
-    assert.equal(claims.access_version, 1);
+    assert.ok(Number.isInteger(claims.access_version) && claims.access_version >= 1, "access version is a positive integer (other tests may bump it)");
     const { data, error } = await client.from('institutions').select('id');
     assert.equal(error, null);
     assert.deepEqual(data.map((r) => r.id), [INST_A]);

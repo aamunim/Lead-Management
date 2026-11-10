@@ -157,7 +157,8 @@ begin
     where n.nspname = any (lint.our_schemas()) and p.prokind = 'f'
   loop
     -- R10 search_path pinned (prevents search-path hijacking; forces schema-qualified calls the sweep can see)
-    if not exists (select 1 from unnest(coalesce(r.proconfig, '{}')) cfg where cfg like 'search_path=%') then
+    if not exists (select 1 from unnest(coalesce(r.proconfig, '{}')) cfg where cfg like 'search_path=%')
+       and not lint.is_allowed('search_path', r.obj) then
       rule := 'search_path'; object := r.obj; message := 'Function must declare "set search_path = ''''".'; return next;
     end if;
 
@@ -183,6 +184,16 @@ begin
        and (has_function_privilege('authenticated', r.oid, 'execute') or has_function_privilege('anon', r.oid, 'execute')) then
       rule := 'definer_service_only'; object := r.obj;
       message := 'Registered as service_role_only but authenticated or anon can execute it.';
+      return next;
+    end if;
+
+    -- R17 every write RPC checks permission with can() (0A.17-T8, Ch 11.16 #6): a public DEFINER function that inserts,
+    -- updates or deletes must call app.can() or a helper built on it (*_write_allowed, holds_all_of_*, is_platform_admin).
+    if r.prosecdef and r.obj like 'public.%' and has_function_privilege('authenticated', r.oid, 'execute') and r.prosrc ~* '\m(insert\s+into|update\s+public\.|delete\s+from)\M'
+       and r.prosrc !~ '(app\.can|_write_allowed|app\.holds_all_of_[a-z]+|app\.is_platform_admin)\('
+       and not lint.is_allowed('write_needs_can', r.obj) then
+      rule := 'write_needs_can'; object := r.obj;
+      message := 'Write RPC without a permission check: call app.can() (or allow-list it with a reason).';
       return next;
     end if;
 

@@ -24,6 +24,7 @@ Read in this order before working on any milestone:
 20. `TEST_DEVICES.md` — the three test phones and the manual pre-release pass.
 21. `ORG_UNITS.md` — branches and the org-unit tree: model, rules, branch gate, null branch, branch vs group.
 22. `PERMISSIONS.md` — module manifests, the permission registry, roles, flags, templates and the rollout of new permissions.
-23. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-24. `../PLAN_BN.md` — background. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**: when the two differ, the roadmap wins. When a detail is in neither the roadmap nor this developer guide, take it from the plan chapter the milestone points to. Owner decisions are recorded in the roadmap (section 12), not in the plan.
-25. `PROGRESS.md` — which milestones are done.
+23. `ACCESS.md` — role assignments, `can()`, `user_access`, RLS for record tables, access version, safeguards.
+24. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+25. `../PLAN_BN.md` — background. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**: when the two differ, the roadmap wins. When a detail is in neither the roadmap nor this developer guide, take it from the plan chapter the milestone points to. Owner decisions are recorded in the roadmap (section 12), not in the plan.
+26. `PROGRESS.md` — which milestones are done.

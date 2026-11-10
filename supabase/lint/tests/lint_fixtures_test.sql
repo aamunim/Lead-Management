@@ -160,6 +160,17 @@ select pg_temp.check(pg_temp.found('phone_ascii', 'public.fixture_phone.mobile_p
 alter table public.fixture_phone add constraint fixture_phone_ascii check (app.is_ascii_phone(mobile_phone));
 select pg_temp.check(not pg_temp.found('phone_ascii', 'public.fixture_phone.mobile_phone'), '...and passes with the check');
 
+-- Write RPCs must check permission (0A.17).
+create function public.fixture_write_rpc() returns void language plpgsql security definer set search_path = '' as $$
+begin
+  perform app.require_active_session();
+  delete from public.fixture_good;
+end $$;
+grant execute on function public.fixture_write_rpc() to authenticated;
+insert into app.definer_registry (function_name, reason, added_in, reviewer, tenant_check)
+  values ('public.fixture_write_rpc', 'fixture for the write_needs_can rule', 'test', 'test', 'filters_active_institution');
+select pg_temp.check(pg_temp.found('write_needs_can', 'public.fixture_write_rpc'), 'a write RPC without can() is caught');
+
 -- The report fails the run when there is any finding.
 select pg_temp.check((select count(*) from lint.findings()) > 0, 'there are findings now');
 do $$

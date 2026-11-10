@@ -22,6 +22,7 @@ It runs in CI after every migration (`npm run lint:schema`) and fails the build 
 | `rls_initplan` | Session helpers in policies are wrapped in `(select …)`. | Evaluated once per query, not once per row (Ch 47.9). |
 | `institution_type` | Only allow-listed seeding code reads `institution_type` (SQL bodies and `src/`). | Behaviour comes from settings and modules (G9, Ch 2.7). |
 | `definer_service_only` | DEFINER functions registered as `service_role_only` are not executable by `authenticated` or `anon`. | Edge-only readers such as `secret_read_for_service` (0A.07). |
+| `write_needs_can` | A public SECURITY DEFINER function the app can call that inserts / updates / deletes calls `app.can()` (or a helper built on it). | A write RPC without a permission check makes the whole access system meaningless (Ch 11.16 #6). See `ACCESS.md`. |
 | `phone_ascii` | Every `phone` / `*_phone` column has `CHECK (app.is_ascii_phone(col))` (plus the `app.normalize_phone_columns` trigger). | Mixed digits break duplicate checks and search (Ch 13.8 #3). See `LOCALE.md`. |
 | `core_references_extension` (text) | No core migration references an `ext_*` schema. | The core must work without any extension (Ch 43.4). |
 | `extension_changes_core` (text) | Extension migrations do not alter, drop, update or add triggers/policies/indexes on core objects; inserts only into the registries. | Extensions never change the core (Ch 43.4 #1, #4). See `EXTENSIONS.md`. |

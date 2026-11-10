@@ -119,3 +119,22 @@ begin
 end $$;
 create function leak_fixtures.public__roles(p uuid) returns void language sql as $$ select leak_fixtures.roles_for(p) $$;
 create function leak_fixtures.public__role_permissions(p uuid) returns void language sql as $$ select leak_fixtures.roles_for(p) $$;
+
+-- 0A.17 access: a Super Admin assignment (gives user_access rows) and a queued rebuild per institution.
+create function leak_fixtures.access_for(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_user uuid;
+begin
+  if exists (select 1 from public.role_assignments where institution_id = p_institution) then
+    return;
+  end if;
+  perform leak_fixtures.roles_for(p_institution);
+  select user_id into v_user from public.institution_members where institution_id = p_institution and status = 'active' limit 1;
+  insert into public.role_assignments (institution_id, user_id, role_id)
+  select p_institution, v_user, id from public.roles where institution_id = p_institution and is_super_admin;
+  perform app.flush_access_queue(p_institution);
+  insert into public.access_rebuild_queue (institution_id, user_id) values (p_institution, v_user) on conflict do nothing;
+end $$;
+create function leak_fixtures.public__role_assignments(p uuid) returns void language sql as $$ select leak_fixtures.access_for(p) $$;
+create function leak_fixtures.public__user_access(p uuid) returns void language sql as $$ select leak_fixtures.access_for(p) $$;
+create function leak_fixtures.public__access_rebuild_queue(p uuid) returns void language sql as $$ select leak_fixtures.access_for(p) $$;
