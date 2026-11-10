@@ -8,7 +8,7 @@ const A_MEMBER = '11111111-1111-4111-8111-111111111111';
 
 describe('role assignments through the real API', () => {
   after(() => {
-    adminSql(`delete from public.role_assignments where institution_id = '${INSTITUTION.A}';
+    adminSql(`delete from public.role_assignments where institution_id = '${INSTITUTION.A}' and user_id = '${A_MEMBER}';
               select app.flush_access_queue('${INSTITUTION.A}');
               delete from public.app_settings where institution_id = '${INSTITUTION.A}' and key = 'working_hours';`);
   });

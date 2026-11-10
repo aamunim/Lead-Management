@@ -29,6 +29,13 @@
   "last_super_admin": "This is the last Super Admin. Give the role to someone else first.",
   "self_lockout": "This would remove your own access to manage users. Ask another admin to do it.",
   "role_has_members": "People still have this role. Choose a role to move them to first.",
+  "user_unknown": "This person is no longer in your institution. Refresh the list.",
+  "user_state_invalid": "This person's status has just changed. Refresh and try again.",
+  "user_contact_invalid": "Write a name (at most 120 characters).",
+  "profile_shared": "This person also belongs to another institution, so only they can change their name, phone or email.",
+  "email_invalid": "This email address is not valid.",
+  "email_taken": "Someone else already uses this email address.",
+  "record_unknown": "This record was not found in your institution.",
   "actions": {
     "sign_in": "Sign in",
     "choose_institution": "Choose institution",

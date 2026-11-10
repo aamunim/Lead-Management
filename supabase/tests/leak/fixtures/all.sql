@@ -125,13 +125,13 @@ create function leak_fixtures.access_for(p_institution uuid) returns void langua
 declare
   v_user uuid;
 begin
-  if exists (select 1 from public.role_assignments where institution_id = p_institution) then
-    return;
-  end if;
   perform leak_fixtures.roles_for(p_institution);
-  select user_id into v_user from public.institution_members where institution_id = p_institution and status = 'active' limit 1;
-  insert into public.role_assignments (institution_id, user_id, role_id)
-  select p_institution, v_user, id from public.roles where institution_id = p_institution and is_super_admin;
+  select user_id into v_user from public.institution_members where institution_id = p_institution and status = 'active' order by user_id limit 1;
+  -- Seeds (0A.18) may already hold assignments; each table still gets its own row.
+  if not exists (select 1 from public.role_assignments where institution_id = p_institution) then
+    insert into public.role_assignments (institution_id, user_id, role_id)
+    select p_institution, v_user, id from public.roles where institution_id = p_institution and is_super_admin;
+  end if;
   perform app.flush_access_queue(p_institution);
   insert into public.access_rebuild_queue (institution_id, user_id) values (p_institution, v_user) on conflict do nothing;
 end $$;

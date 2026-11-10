@@ -1,0 +1,46 @@
+# Maestro flow (0A.18, Android; owner checkpoint): as a Super Admin, create a role from a template, give it to a person
+# for one branch, then ask the explainer why that person can or cannot see a record.
+# Needs a preview build pointing at staging with a Super Admin test user, a second test user and at least one branch.
+# Run: maestro test -e EMAIL=… -e PASSWORD=… -e TEMPLATE=Caller -e PERSON=… -e BRANCH=… .maestro/users-roles.yaml
+appId: com.leadora.leads
+---
+- launchApp:
+    clearState: true
+- tapOn: { id: "sign-in-email-input" }
+- inputText: ${EMAIL}
+- tapOn: { id: "sign-in-password-input" }
+- inputText: ${PASSWORD}
+- tapOn: { id: "sign-in-submit" }
+- assertVisible: { id: "home" }
+- tapOn: { id: "tab-settings" }
+# 1. New role from a template role.
+- tapOn: { id: "settings-roles" }
+- tapOn: { id: "roles-new" }
+- tapOn: { id: "new-role-from-open" }
+- tapOn: { id: "new-role-from-${TEMPLATE}" }
+- tapOn: { id: "new-role-name-input" }
+- inputText: "Maestro role"
+- tapOn: { id: "new-role-save" }
+- assertVisible: { id: "role-permissions" }
+- back
+- back
+# 2. Give it to the person for one branch.
+- tapOn: { id: "settings-users" }
+- tapOn: { id: "users-search-input" }
+- inputText: ${PERSON}
+- tapOn: { id: "user-${PERSON}" }
+- tapOn: { id: "user-add-role" }
+- tapOn: { id: "assign-role-open" }
+- tapOn: { id: "assign-role-Maestro role" }
+- tapOn: { id: "assign-branch-open" }
+- tapOn: { id: "assign-branch-${BRANCH}" }
+- assertVisible: { id: "assign-preview" }
+- tapOn: { id: "assign-save" }
+- assertVisible: { id: "assignment-Maestro role" }
+# 3. The explainer tells why.
+- scrollUntilVisible: { element: { id: "user-explain" } }
+- tapOn: { id: "user-explain" }
+- tapOn: { id: "explain-permission-open" }
+- tapOn: { id: "explain-permission-settings.general" }
+- tapOn: { id: "explain-check" }
+- assertVisible: { id: "explain-result" }

@@ -54,7 +54,7 @@ update public.profiles set last_active_institution_id = null where user_id in (:
 -- ---------------------------------------------------------------------------------------------------------------------
 select pg_temp.check((pg_temp.claims_for(:user_a) ->> 'active_institution_id')::uuid = :inst_a,
                      'hook: single-membership user gets that institution');
-select pg_temp.check((pg_temp.claims_for(:user_a) ->> 'access_version')::int = 1, 'hook: access_version claim present');
+select pg_temp.check((pg_temp.claims_for(:user_a) ->> 'access_version')::int >= 1, 'hook: access_version claim present');
 select pg_temp.check(pg_temp.claims_for(:user_a) ->> 'user_kind' = 'staff', 'hook: user_kind claim is staff');
 select pg_temp.check(pg_temp.claims_for(:user_both) -> 'active_institution_id' = 'null'::jsonb,
                      'hook: user in two institutions with no selection gets no active institution (D25)');

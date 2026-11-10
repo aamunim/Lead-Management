@@ -131,7 +131,7 @@ select pg_temp.check(not exists (select 1 from jsonb_array_elements(public.org_t
 reset role;
 
 -- 6. Events and audit.
-select pg_temp.check((select count(*) from public.domain_events where institution_id = :inst_a and event_key = 'branch.created') = 3
+select pg_temp.check((select count(*) from public.domain_events where institution_id = :inst_a and event_key = 'branch.created' and occurred_at >= now()) = 3
   and exists (select 1 from public.domain_events where institution_id = :inst_a and event_key = 'org_unit.moved')
   and exists (select 1 from public.audit_log where institution_id = :inst_a and action = 'org_unit.archived'),
   'branch and org-unit changes are emitted and audited');

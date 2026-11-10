@@ -35,6 +35,10 @@ grant execute on function pg_temp.id(text) to authenticated;
 update public.profiles set last_active_institution_id = :inst_a where user_id = :user_both;
 update public.profiles set last_active_institution_id = null where user_id in (:user_a, :user_b);
 
+-- The seeded Super Admins (0A.18) are removed inside this transaction: these tests build their own.
+delete from public.role_assignments where institution_id = :inst_a;
+select app.flush_access_queue(:inst_a);
+
 -- Set-up (as the owner): a test permission, branches X and Y, roles, a synthetic record table with the RLS helper.
 select app.sync_permissions('[{"module":"test","release":"t","permissions":[
   {"key":"test.view","scopable":true,"sensitive":false,"defaults":{}},
@@ -174,15 +178,15 @@ reset role;
 -- A season worker with only this one temporary role.
 select set_config('request.jwt.claims', '', true);
 insert into auth.users (instance_id, id, aud, role, email, created_at, updated_at)
-values ('00000000-0000-0000-0000-000000000000', '77777777-7777-4777-8777-777777777777', 'authenticated', 'authenticated', 'season@example.test', now(), now());
-insert into public.institution_members (institution_id, user_id, status) values (:inst_a, '77777777-7777-4777-8777-777777777777', 'active');
+values ('00000000-0000-0000-0000-000000000000', '99999999-9999-4999-8999-999999999999', 'authenticated', 'authenticated', 'season@example.test', now(), now());
+insert into public.institution_members (institution_id, user_id, status) values (:inst_a, '99999999-9999-4999-8999-999999999999', 'active');
 select pg_temp.act_as(pg_temp.claims_for(:user_platform));
-insert into ids select 'asg_temp', public.role_assign('77777777-7777-4777-8777-777777777777', pg_temp.id('branch_admin'), null, null, now(),
+insert into ids select 'asg_temp', public.role_assign('99999999-9999-4999-8999-999999999999', pg_temp.id('branch_admin'), null, null, now(),
   now() + interval '30 days', null, :inst_a);
 reset role;
 update public.user_access set valid_to = now() - interval '1 minute' where assignment_id = pg_temp.id('asg_temp');
 update public.role_assignments set valid_from = now() - interval '2 days', valid_to = now() - interval '1 minute' where id = pg_temp.id('asg_temp');
-select pg_temp.act_as(pg_temp.claims_for('77777777-7777-4777-8777-777777777777'));
+select pg_temp.act_as(pg_temp.claims_for('99999999-9999-4999-8999-999999999999'));
 select pg_temp.check(not app.can('test.edit', pg_temp.rec('r2')), 'an expired temporary role gives nothing');
 reset role;
 select app.expire_temporary_roles();
