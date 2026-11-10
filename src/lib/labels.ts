@@ -4,6 +4,7 @@ import i18n from '@/i18n';
 import type { Language } from '@/i18n/language';
 import { bundledLabels } from '@/i18n/resources';
 
+import { onCacheClear } from './cache';
 import { currentClaims } from './session';
 import { onSettingsVersion } from './settings-version';
 import { supabase } from './supabase';
@@ -100,8 +101,13 @@ export function useLabelEntries(): State {
 // Sign-in / institution switch / token refresh → load; sign-out → bundled defaults; renamed words → reload.
 supabase.auth.onAuthStateChange((event) => {
   if (event === 'SIGNED_OUT') useBundled();
-  else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') setTimeout(() => void loadLabels().catch(() => undefined), 0);
+  else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') setTimeout(() => void loadLabels().catch(() => undefined), 0);
 });
 onSettingsVersion((version) => {
   if (state.institutionId && version > state.version) void loadLabels().catch(() => undefined);
+});
+// Sign-out, switch, access change → the previous institution's words leave the screen at once.
+onCacheClear((event) => {
+  useBundled();
+  if (event.type === 'institutionSwitch' || event.type === 'accessChanged') void loadLabels().catch(() => undefined);
 });

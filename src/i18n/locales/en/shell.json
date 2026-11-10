@@ -1,0 +1,85 @@
+{
+  "signIn": {
+    "title": "Sign in",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "failed": "The email or password is not right. Please check and try again.",
+    "idleSignedOut": "You were signed out because the app was not used for a while.",
+    "languageLink": "বাংলা / English"
+  },
+  "tabs": {
+    "home": "Home",
+    "more": "More",
+    "settings": "Settings"
+  },
+  "header": {
+    "profile": "Profile and settings",
+    "noInstitution": "No institution chosen",
+    "back": "Back"
+  },
+  "home": {
+    "welcome": "Welcome, {{name}}",
+    "comingSoon": "Your work screens arrive in the next releases."
+  },
+  "more": {
+    "title": "More",
+    "profile": "Profile",
+    "language": "Language",
+    "appearance": "Appearance",
+    "words": "Words used in this app",
+    "samples": "Formats and locale samples",
+    "gallery": "Component gallery (developers)"
+  },
+  "settings": {
+    "title": "Settings",
+    "soon": "Settings for your institution will appear here."
+  },
+  "profile": {
+    "title": "Profile",
+    "account": "Signed in as {{email}}",
+    "institution": "Institution: {{name}}",
+    "language": "Language",
+    "appearance": "Appearance",
+    "security": "Security",
+    "signOut": "Sign out",
+    "signOutTitle": "Sign out of this device?",
+    "signOutBody": "Saved data on this phone is removed.",
+    "signOutOthers": "Sign out of all other devices",
+    "signOutOthersTitle": "Sign out everywhere else?",
+    "signOutOthersBody": "Other phones and browsers with your account must sign in again.",
+    "signOutOthersDone": "Signed out of all other devices.",
+    "appLock": "App lock (PIN or fingerprint)",
+    "appLockOn": "App lock is on.",
+    "appLockOff": "App lock is off.",
+    "appLockUnavailable": "App lock is available in the phone app.",
+    "turnOn": "Turn on",
+    "turnOff": "Turn off"
+  },
+  "network": {
+    "offline": "No internet. Changes are not saved until you are back online.",
+    "online": "✓ Back online"
+  },
+  "upgrade": {
+    "title": "Please update the app",
+    "body": "This version is too old to work safely. Update to continue; your data is safe.",
+    "button": "Update now"
+  },
+  "exit": {
+    "title": "Leave the app?",
+    "confirm": "Leave"
+  },
+  "lock": {
+    "title": "App locked",
+    "enterPin": "Enter your PIN",
+    "setPin": "Choose a 4–6 digit PIN",
+    "confirmPin": "Enter the same PIN again",
+    "mismatch": "The two PINs are different. Try again.",
+    "wrong": "Wrong PIN. Try again.",
+    "tooMany": "Too many wrong tries. Sign in again.",
+    "biometrics": "Use fingerprint",
+    "unlockPrompt": "Unlock the app",
+    "pinLabel": "PIN",
+    "signOutInstead": "Sign out instead"
+  }
+}

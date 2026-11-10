@@ -2,7 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSyncExternalStore } from 'react';
 import { AppState } from 'react-native';
 
-import { currentClaims, onInstitutionChange } from './session';
+import { cacheKey, onCacheClear } from './cache';
+import { currentClaims } from './session';
 import { onSettingsVersion } from './settings-version';
 import { supabase } from './supabase';
 
@@ -22,7 +23,7 @@ const empty: Snapshot = { userId: null, institutionId: null, version: 0, values:
 let snapshot: Snapshot = empty;
 let loading: Promise<void> | null = null;
 const subscribers = new Set<() => void>();
-const storageKey = (userId: string, institutionId: string) => `settings:${userId}:${institutionId}`;
+const storageKey = (userId: string, institutionId: string) => cacheKey({ userId, institutionId }, 'settings');
 
 function publish(next: Snapshot) {
   snapshot = next;
@@ -89,8 +90,19 @@ onSettingsVersion((version) => {
   if (snapshot.institutionId && version > snapshot.version) void loadSettings(true).catch(() => undefined);
 });
 
-// Institution switch / sign-out → forget this user's settings in memory.
-onInstitutionChange(() => publish(empty));
+// Sign-out / switch / access change → forget the previous institution's settings at once; after a switch or an
+// access change, load the new ones (the token refresh may have happened before this clear).
+onCacheClear((event) => {
+  publish(empty);
+  if (event.type === 'institutionSwitch' || event.type === 'accessChanged') void loadSettings(true).catch(() => undefined);
+});
+
+// Sign-in and token refresh (a new active institution) → load.
+supabase.auth.onAuthStateChange((event) => {
+  if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
+    setTimeout(() => void loadSettings(true).catch(() => undefined), 0);
+  }
+});
 
 // Back to the foreground after a while → refresh.
 AppState.addEventListener('change', (state) => {

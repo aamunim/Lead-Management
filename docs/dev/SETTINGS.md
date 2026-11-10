@@ -71,5 +71,6 @@ client numbers 2.04). Proven by a test where 50 parallel connections receive exa
 | `default_language` | institution | 0A.10 | UI language (`bn` / `en`) for members without their own choice; see `I18N.md`. |
 | `time_zone`, `currency`, `phone`, `week_start`, `bangla_digits`, `payment_methods`, `address_placeholder` | institution | 0A.11 | Locale (area `settings.locale`); see `LOCALE.md`. |
 | `working_days`, `working_hours`, `quiet_hours`, `scorecard_day` | institution | 0A.11 | Office calendar (area `settings.office`); behaviour later (1A, 1B). |
+| `idle_signout_minutes` | institution | 0A.14 | Sign out after this many idle minutes (0 = never); area `settings.security`; see `SHELL.md`. |
 
 Besides the JSON Schema, `app.setting_extra_errors(key, value)` adds checks a schema cannot express (a time zone Postgres knows; start ≠ end of a time window). It runs in a trigger on `app_settings`.

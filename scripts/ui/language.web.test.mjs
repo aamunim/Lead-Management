@@ -45,14 +45,15 @@ describe('language switch on the web build', () => {
     await page.close();
   });
 
-  it('the home screen follows the chosen language', async () => {
+  it('the first screen (sign-in, before sign-in) follows the chosen language', async () => {
     const page = await browser.newPage();
     await page.goto(`${base}/language`);
     await page.getByTestId('language-option-bn').click();
     await page.getByText('ভাষা', { exact: true }).waitFor();
     await page.goto(`${base}/`);
-    await page.getByTestId('home-subtitle').waitFor();
-    assert.equal(await page.getByTestId('home-subtitle').textContent(), 'লিড, ফলো-আপ আর আপনার টিম, সব এক জায়গায়।');
+    await page.getByTestId('sign-in-title').waitFor();
+    assert.equal(await page.getByTestId('sign-in-title').textContent(), 'সাইন ইন');
+    assert.equal(await page.getByTestId('sign-in-submit').textContent(), 'সাইন ইন করুন');
     await page.close();
   });
 });

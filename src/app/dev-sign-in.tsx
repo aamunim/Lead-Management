@@ -1,5 +1,5 @@
 import { Redirect } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
@@ -30,6 +30,12 @@ export default function DevSignIn() {
   const [institutions, setInstitutions] = useState<Institution[]>([]);
   const [message, setMessage] = useState('');
   const { colors, space } = useTheme();
+
+  useEffect(() => {
+    // Already signed in (e.g. coming back to this tool): show the claims and the institution list at once.
+    if (devSignInEnabled) void currentClaims().then((c) => (c.sub ? load() : undefined));
+    // load is recreated each render; reading it once on open is enough
+  }, []);
 
   if (!devSignInEnabled) return <Redirect href="/" />;
 

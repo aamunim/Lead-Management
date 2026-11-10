@@ -1,0 +1,46 @@
+# Maestro flow (0A.14, Android; owner checkpoint): sign in, switch language and theme, turn on app lock,
+# lock by sending the app to the background, unlock with the PIN, sign out and see the cache cleared.
+# Needs a preview build pointing at staging with a test user. Run: maestro test -e EMAIL=… -e PASSWORD=… .maestro/shell-security.yaml
+appId: com.leadora.leads
+---
+- launchApp:
+    clearState: true
+- tapOn: { id: "sign-in-email-input" }
+- inputText: ${EMAIL}
+- tapOn: { id: "sign-in-password-input" }
+- inputText: ${PASSWORD}
+- tapOn: { id: "sign-in-submit" }
+- assertVisible: { id: "home" }
+- tapOn: { id: "open-profile" }
+- tapOn: { id: "language-option-bn" }
+- assertVisible: "প্রোফাইল"
+- tapOn: { id: "appearance-dark" }
+- scrollUntilVisible: { element: { id: "profile-applock" } }
+- tapOn: { id: "profile-applock" }
+- tapOn: { id: "pin-new-input" }
+- inputText: "2468"
+- tapOn: { id: "pin-again-input" }
+- inputText: "2468"
+- tapOn: { id: "pin-save" }
+- assertVisible: { id: "profile-applock-state" }
+# Background for more than 30 s → locked on return.
+- pressKey: Home
+- waitForAnimationToEnd: { timeout: 35000 }
+- launchApp
+- assertVisible: { id: "lock-screen" }
+- tapOn: { id: "lock-pin-input" }
+- inputText: "2468"
+- tapOn: { id: "lock-unlock" }
+- assertVisible: { id: "profile" }
+# Back on Home asks before leaving the app; Back closes the dialog first.
+- tapOn: { id: "header-back" }
+- back
+- assertVisible: { id: "confirm-dialog" }
+- back
+- assertNotVisible: { id: "confirm-dialog" }
+# Sign out: back to sign-in; signing in again shows no lock (the PIN and caches were wiped).
+- tapOn: { id: "open-profile" }
+- scrollUntilVisible: { element: { id: "profile-signout" } }
+- tapOn: { id: "profile-signout" }
+- tapOn: { id: "confirm-ok" }
+- assertVisible: { id: "sign-in-title" }

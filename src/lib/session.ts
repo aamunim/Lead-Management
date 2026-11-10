@@ -1,3 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { clearAppCaches, onCacheClear } from './cache';
 import { supabase } from './supabase';
 
 // Session helpers for the tenancy rules (0A.03, docs/dev/TENANCY.md).
@@ -20,17 +23,9 @@ export const SESSION_ERRORS = {
   notAMember: 'not_a_member',
 } as const;
 
-type CacheClearer = () => void | Promise<void>;
-const cacheClearers = new Set<CacheClearer>();
-
-/** Every client cache registers here; caches are keyed by user + institution and are cleared on switch / sign-out. */
-export function onInstitutionChange(clear: CacheClearer): () => void {
-  cacheClearers.add(clear);
-  return () => cacheClearers.delete(clear);
-}
-
-async function clearCaches(): Promise<void> {
-  for (const clear of cacheClearers) await clear();
+/** Every in-memory client cache registers here (alias of onCacheClear, kept for the stores written before 0A.14). */
+export function onInstitutionChange(clear: () => void | Promise<void>): () => void {
+  return onCacheClear(() => clear());
 }
 
 export function readClaims(accessToken: string | undefined): SessionClaims {
@@ -54,19 +49,21 @@ export async function currentClaims(): Promise<SessionClaims> {
  * then a fresh token is fetched so the new claim is used, and all client caches are cleared.
  */
 export async function switchInstitution(institutionId: string): Promise<SessionClaims> {
+  const from = (await currentClaims()).active_institution_id ?? null;
   const { error } = await supabase.rpc('set_active_institution', { p_institution_id: institutionId });
   if (error) throw error;
   const { data, error: refreshError } = await supabase.auth.refreshSession();
   if (refreshError) throw refreshError;
-  await clearCaches();
+  await clearAppCaches({ type: 'institutionSwitch', from });
   return readClaims(data.session?.access_token);
 }
 
 /** Refresh after the server says "session_refresh_required" (access changed, 0A.17). */
 export async function refreshAfterAccessChange(): Promise<SessionClaims> {
+  const before = (await currentClaims()).active_institution_id ?? null;
   const { data, error } = await supabase.auth.refreshSession();
   if (error) throw error;
-  await clearCaches();
+  await clearAppCaches({ type: 'accessChanged', institutionId: before });
   return readClaims(data.session?.access_token);
 }
 
@@ -76,7 +73,24 @@ export async function signOutOtherDevices(): Promise<void> {
   if (error) throw error;
 }
 
+/** Sign out on this device: the session goes and every cached piece of user / institution data is wiped (Ch 47.10). */
 export async function signOut(): Promise<void> {
-  await supabase.auth.signOut({ scope: 'local' });
-  await clearCaches();
+  await supabase.auth.signOut({ scope: 'local' }).catch(() => undefined);
+  await clearAppCaches({ type: 'signOut' });
 }
+
+// A different person signs in on this device → remove what the previous person left behind (Ch 47.12 #5).
+const OWNER_KEY = 'cache_owner';
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event !== 'SIGNED_IN' || !session?.user) return;
+  const userId = session.user.id;
+  setTimeout(() => {
+    void (async () => {
+      const previous = await AsyncStorage.getItem(OWNER_KEY).catch(() => null);
+      if (previous !== userId) {
+        await clearAppCaches({ type: 'userChange', userId });
+        await AsyncStorage.setItem(OWNER_KEY, userId).catch(() => undefined);
+      }
+    })();
+  }, 0);
+});

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 
 import { useTranslation } from '@/i18n';
+import { cacheKey } from '@/lib/cache';
 import { currentClaims } from '@/lib/session';
 
 import { useConfirm } from './Dialog';
@@ -35,7 +36,7 @@ export function useDraft<T>(formKey: string, value: T, restore: (draft: T) => vo
     let alive = true;
     void (async () => {
       const claims = await currentClaims();
-      storageKey.current = `draft:${claims.sub ?? 'anon'}:${claims.active_institution_id ?? '-'}:${formKey}`;
+      storageKey.current = cacheKey({ userId: claims.sub, institutionId: claims.active_institution_id }, 'draft', formKey);
       try {
         const saved = await AsyncStorage.getItem(storageKey.current);
         if (alive && saved) {

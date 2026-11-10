@@ -20,6 +20,8 @@ Read in this order before working on any milestone:
 16. `LOCALE.md` — locale settings, lakh money, dates in the institution's time zone, ASCII digits, server clock.
 17. `LABELS.md` — neutral keys (reference table) and the label dictionary: layers, Bangla forms, usage, rules.
 18. `DESIGN_SYSTEM.md` — tokens (light / dark / brand, Bangla-safe typography), theme, components, form behaviours and the automatic checks.
-19. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-20. `../PLAN_BN.md` — the plan chapters the milestone points to.
-21. `PROGRESS.md` — which milestones are done.
+19. `SHELL.md` — routes and guards, cache namespaces and wiping, the API wrapper, navigation rules, app lock and idle sign-out.
+20. `TEST_DEVICES.md` — the three test phones and the manual pre-release pass.
+21. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+22. `../PLAN_BN.md` — the plan chapters the milestone points to.
+23. `PROGRESS.md` — which milestones are done.
