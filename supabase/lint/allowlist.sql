@@ -20,3 +20,8 @@ insert into lint.allow (rule, object, reason) values
 insert into lint.allow (rule, object, reason) values
   ('platform_table', 'public.label_keys', 'Product-wide registry of neutral label keys (Ch 8.4).'),
   ('platform_table', 'public.label_defaults', 'Product, pack and type-profile default labels; not per institution.');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.permissions', 'Product-wide permission registry loaded from module manifests (Ch 11.5).'),
+  ('platform_table', 'public.field_registry', 'Product-wide registry of sensitive fields (Ch 11.11).'),
+  ('platform_table', 'public.behaviour_flags', 'Product-wide list of role behaviour flags (Ch 11.9).'),
+  ('platform_table', 'public.role_templates', 'Product-wide role templates per type profile (D26).');

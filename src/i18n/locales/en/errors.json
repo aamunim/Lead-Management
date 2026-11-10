@@ -23,6 +23,8 @@
   "org_unit_archived": "This unit is archived. Choose an active one.",
   "org_unit_not_empty": "Move its people, sub-units and records to another unit first; then it can be archived.",
   "branches_disabled": "$t(labels:branch.plural) are not turned on for your institution.",
+  "role_invalid": "This change to the role is not allowed. Check the permissions and try again.",
+  "mfa_required": "Sign in again with the second step (code) to change sensitive permissions.",
   "actions": {
     "sign_in": "Sign in",
     "choose_institution": "Choose institution",

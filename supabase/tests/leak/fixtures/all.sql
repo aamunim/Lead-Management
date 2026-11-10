@@ -104,3 +104,18 @@ create function leak_fixtures.public__org_unit_closure(p uuid) returns void lang
 create function leak_fixtures.public__branches(p uuid) returns void language sql as $$ select leak_fixtures.org_tree(p) $$;
 create function leak_fixtures.public__org_unit_members(p uuid) returns void language sql as $$ select leak_fixtures.org_tree(p) $$;
 create function leak_fixtures.public__org_unit_managers(p uuid) returns void language sql as $$ select leak_fixtures.org_tree(p) $$;
+
+-- 0A.16 roles: the coaching template roles plus a custom role whose name is a marker for A.
+create function leak_fixtures.roles_for(p_institution uuid) returns void language plpgsql as $$
+begin
+  if exists (select 1 from public.roles where institution_id = p_institution) then
+    return;
+  end if;
+  perform app.apply_role_template(p_institution, 'coaching');
+  insert into public.roles (institution_id, name, flags) values (p_institution, 'leak-role-' || left(p_institution::text, 8), '{assignable}');
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('leak-role-' || left(p_institution::text, 8), 'custom role name of A') on conflict do nothing;
+  end if;
+end $$;
+create function leak_fixtures.public__roles(p uuid) returns void language sql as $$ select leak_fixtures.roles_for(p) $$;
+create function leak_fixtures.public__role_permissions(p uuid) returns void language sql as $$ select leak_fixtures.roles_for(p) $$;

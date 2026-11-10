@@ -64,6 +64,8 @@ jobs:
         run: supabase db reset --no-seed
       - name: Apply extension migrations (0A.09)
         run: npm run db:extensions
+      - name: Load module manifests into the permission registry (0A.16)
+        run: npm run db:permissions
       - name: Schema lint (0A.04)
         run: npm run lint:schema
       - name: Schema lint catches every rule (fixtures)
@@ -72,6 +74,8 @@ jobs:
         run: supabase db reset
       - name: Apply extension migrations
         run: npm run db:extensions
+      - name: Load module manifests into the permission registry (0A.16)
+        run: npm run db:permissions
       - name: Bundled default labels match the database (0A.12)
         run: npm run check:labels
       - name: Database tests as real roles (0A.03+)
@@ -108,6 +112,8 @@ jobs:
         run: supabase db reset
       - name: Apply extension migrations
         run: bash scripts/apply-extensions.sh
+      - name: Load module manifests into the permission registry
+        run: npm run db:permissions
       - name: The leak test catches deliberate leaks (self-test)
         run: |
           psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -X -q -v ON_ERROR_STOP=1 \

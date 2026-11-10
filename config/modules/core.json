@@ -1,0 +1,34 @@
+{
+  "$comment": "Core module manifest (0A.16). Each module declares its permissions and sensitive fields as data; scripts/permissions/sync.mjs loads every config/modules/*.json into the permission registry on deploy. Keys are neutral module.action names. Labels and help texts live in src/i18n/locales/{en,bn}/permissions.json under the same key (check:i18n fails without them). defaults = role template key -> scope (\"all\", \"branch\", \"org_unit\", \"team\", \"own\") or true for unscoped permissions.",
+  "module": "core",
+  "release": "0A.16",
+  "permissions": [
+    { "key": "settings.users", "scopable": false, "sensitive": false,
+      "defaults": { "admin": true, "vice_principal": true, "manager": true } },
+    { "key": "settings.roles", "scopable": false, "sensitive": true, "defaults": {} },
+    { "key": "settings.terminology", "scopable": false, "sensitive": false, "defaults": { "admin": true, "vice_principal": true } },
+    { "key": "settings.organisation", "scopable": false, "sensitive": false, "defaults": { "admin": true, "vice_principal": true } },
+    { "key": "settings.general", "scopable": false, "sensitive": false, "defaults": { "admin": true, "vice_principal": true, "manager": true } },
+    { "key": "settings.locale", "scopable": false, "sensitive": false, "defaults": { "admin": true, "vice_principal": true, "manager": true } },
+    { "key": "settings.office", "scopable": false, "sensitive": false, "defaults": { "admin": true, "vice_principal": true, "manager": true } },
+    { "key": "settings.security", "scopable": false, "sensitive": true, "defaults": {} },
+    { "key": "integration.manage", "scopable": false, "sensitive": true, "defaults": {} },
+    { "key": "audit.view", "scopable": false, "sensitive": true, "defaults": { "viewer": true } },
+    { "key": "sensitive_field.view", "scopable": true, "sensitive": true, "defaults": { "accountant": "all" } }
+  ],
+  "platform_permissions": [
+    { "key": "platform.institutions", "sensitive": true },
+    { "key": "platform.product_settings", "sensitive": true },
+    { "key": "platform.extensions", "sensitive": true },
+    { "key": "platform.labels_lock", "sensitive": true },
+    { "key": "platform.billing", "sensitive": true },
+    { "key": "platform.support_access", "sensitive": true }
+  ],
+  "fields": [
+    { "entity": "client", "field": "national_id", "sensitive": true, "permission": "sensitive_field.view" },
+    { "entity": "contact_person", "field": "national_id", "sensitive": true, "permission": "sensitive_field.view" },
+    { "entity": "fee", "field": "amount", "sensitive": true, "permission": "sensitive_field.view" },
+    { "entity": "discount", "field": "amount", "sensitive": true, "permission": "sensitive_field.view" },
+    { "entity": "payment", "field": "amount", "sensitive": true, "permission": "sensitive_field.view" }
+  ]
+}

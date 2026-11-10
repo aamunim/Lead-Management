@@ -1,0 +1,29 @@
+{
+  "names": {
+    "super_admin": "সুপার অ্যাডমিন",
+    "principal": "অধ্যক্ষ",
+    "vice_principal": "উপাধ্যক্ষ",
+    "admin": "অ্যাডমিন",
+    "branch_manager": "$t(labels:branch.singular) ম্যানেজার",
+    "department_head": "বিভাগীয় প্রধান",
+    "accountant": "হিসাবরক্ষক",
+    "viewer": "দর্শক / অডিটর",
+    "governing_body": "গভর্নিং বডি / সভাপতি",
+    "head_teacher": "প্রধান শিক্ষক",
+    "assistant_head_teacher": "সহকারী প্রধান শিক্ষক",
+    "class_teacher": "শ্রেণিশিক্ষক",
+    "owner": "মালিক",
+    "manager": "ম্যানেজার",
+    "team_lead": "$t(labels:team_lead.singular)",
+    "caller": "$t(labels:caller.singular)",
+    "conversion_officer": "$t(labels:conversion_officer.singular)"
+  },
+  "flags": {
+    "assignable": "$t(labels:lead.singular) দেওয়া যাবে",
+    "counts_on_leaderboard": "লিডারবোর্ড আর স্কোরকার্ডে গোনা হবে",
+    "receives_escalations": "এসকেলেশন পাবেন",
+    "counts_as_manager": "ম্যানেজার হিসেবে গোনা হবে",
+    "shown_in_team_activity": "টিম অ্যাক্টিভিটিতে দেখাবে",
+    "call_log_sync_required": "কল লগ সিঙ্ক বাধ্যতামূলক"
+  }
+}

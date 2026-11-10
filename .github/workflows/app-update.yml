@@ -70,6 +70,14 @@ jobs:
         if: inputs.deploy != 'App only'
         run: supabase db push --password "$SUPABASE_DB_PASSWORD"
 
+      - name: Load module manifests into the permission registry (0A.16)
+        if: inputs.deploy != 'App only'
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          [ -n "$DB_URL" ] || { echo "::error::SUPABASE_DB_URL secret is missing (needed to load the permission registry)"; exit 1; }
+          node scripts/permissions/sync.mjs
+
       - name: Apply extension migrations (test-only extensions are skipped)
         if: inputs.deploy != 'App only'
         env:

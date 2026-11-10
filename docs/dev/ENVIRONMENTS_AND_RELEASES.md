@@ -22,6 +22,7 @@ Protect `production` with required reviewers.
 | `SUPABASE_PROJECT_REF` | app-update | Supabase project settings |
 | `SUPABASE_DB_PASSWORD` | app-update | Set when the project is created |
 | `EXPO_TOKEN` | app-update, build-android | Expo account → Access tokens |
+| `SUPABASE_DB_URL` | app-update (permission registry, extensions) | Supabase project → Connect → connection string (session pooler), with the database password |
 | `GOOGLE_SERVICES_JSON_BASE64` | build-android | Firebase project → Android app → `google-services.json`, then `base64 -w0 google-services.json` |
 | `FTP_HOST`, `FTP_USER`, `FTP_PASSWORD`, `FTP_REMOTE_DIR` | deploy-web | Hosting control panel |
 | Android keystore | build-android (EAS credentials) | Managed by EAS credentials; back it up offline |

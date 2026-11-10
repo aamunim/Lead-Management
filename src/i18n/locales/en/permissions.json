@@ -1,0 +1,84 @@
+{
+  "all": {
+    "label": "All permissions (Super Admin)",
+    "help": "Everything, including sensitive permissions. Only the Super Admin role has this."
+  },
+  "settings": {
+    "users": {
+      "label": "Manage users",
+      "help": "Invite people, deactivate them and give them roles they are allowed to give."
+    },
+    "roles": {
+      "label": "Manage roles",
+      "help": "Create and change roles and their permissions. Sensitive: needs two-step sign-in."
+    },
+    "terminology": {
+      "label": "Change the words used",
+      "help": "Rename words such as $t(labels:client.singular) or $t(labels:offering.singular) for the institution."
+    },
+    "organisation": {
+      "label": "Manage $t(labels:branch.plural) and teams",
+      "help": "Create, move and archive $t(labels:branch.plural), departments and teams; set managers."
+    },
+    "general": {
+      "label": "General settings",
+      "help": "Default language and other general settings of the institution."
+    },
+    "locale": {
+      "label": "Formats and money",
+      "help": "Time zone, currency, phone rules, payment methods."
+    },
+    "office": {
+      "label": "Office calendar",
+      "help": "Working days, working hours and quiet hours."
+    },
+    "security": {
+      "label": "Security settings",
+      "help": "Automatic sign-out and other security rules. Sensitive."
+    }
+  },
+  "integration": {
+    "manage": {
+      "label": "Manage integrations and keys",
+      "help": "Connect SMS, email and payment providers and store their keys. Sensitive."
+    }
+  },
+  "audit": {
+    "view": {
+      "label": "View the audit log",
+      "help": "See who changed what and when."
+    }
+  },
+  "sensitive_field": {
+    "view": {
+      "label": "View sensitive fields",
+      "help": "See fields marked sensitive, such as national ID numbers and amounts."
+    }
+  },
+  "platform": {
+    "institutions": {
+      "label": "Manage institutions",
+      "help": "Create, suspend and close institutions (Master Admin)."
+    },
+    "product_settings": {
+      "label": "Product settings",
+      "help": "Settings for the whole product, such as the minimum app version."
+    },
+    "extensions": {
+      "label": "Manage extensions",
+      "help": "Switch extensions on or off for institutions."
+    },
+    "labels_lock": {
+      "label": "Lock words",
+      "help": "Lock words that an institution may not change, such as a receipt title."
+    },
+    "billing": {
+      "label": "Billing",
+      "help": "Plans, prices, invoices and payments of institutions."
+    },
+    "support_access": {
+      "label": "Support access",
+      "help": "Open an institution to help it, with its permission and fully logged."
+    }
+  }
+}

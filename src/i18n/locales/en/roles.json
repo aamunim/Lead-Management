@@ -1,0 +1,29 @@
+{
+  "names": {
+    "super_admin": "Super Admin",
+    "principal": "Principal",
+    "vice_principal": "Vice-principal",
+    "admin": "Admin",
+    "branch_manager": "$t(labels:branch.singular) manager",
+    "department_head": "Department head",
+    "accountant": "Accountant",
+    "viewer": "Viewer / Auditor",
+    "governing_body": "Governing body / Chair",
+    "head_teacher": "Head teacher",
+    "assistant_head_teacher": "Assistant head teacher",
+    "class_teacher": "Class teacher",
+    "owner": "Owner",
+    "manager": "Manager",
+    "team_lead": "$t(labels:team_lead.singular)",
+    "caller": "$t(labels:caller.singular)",
+    "conversion_officer": "$t(labels:conversion_officer.singular)"
+  },
+  "flags": {
+    "assignable": "Can be assigned $t(labels:lead.plural)",
+    "counts_on_leaderboard": "Counts on the leaderboard and scorecard",
+    "receives_escalations": "Receives escalations",
+    "counts_as_manager": "Counts as a manager",
+    "shown_in_team_activity": "Shown in team activity",
+    "call_log_sync_required": "Call log sync required"
+  }
+}
