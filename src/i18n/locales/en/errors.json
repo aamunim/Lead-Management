@@ -17,6 +17,12 @@
   "label_invalid": "Write the word in English (one and many) and in Bangla.",
   "label_too_long": "This word is too long for menus and buttons. Use a shorter one.",
   "label_locked": "This word is set by the platform and cannot be changed.",
+  "org_unit_unknown": "This unit no longer exists. Refresh and try again.",
+  "org_unit_invalid": "A $t(labels:branch.singular) can only be at the top, directly under the institution.",
+  "org_unit_cycle": "A unit cannot be moved under itself or one of its own units.",
+  "org_unit_archived": "This unit is archived. Choose an active one.",
+  "org_unit_not_empty": "Move its people, sub-units and records to another unit first; then it can be archived.",
+  "branches_disabled": "$t(labels:branch.plural) are not turned on for your institution.",
   "actions": {
     "sign_in": "Sign in",
     "choose_institution": "Choose institution",

@@ -76,3 +76,31 @@ begin
     insert into leak.markers values (v_word, 'renamed label of A') on conflict do nothing;
   end if;
 end $$;
+
+-- 0A.15 org units: per institution a branch (with details) → department, with a member and a manager.
+-- One builder, called by every org table's fixture (whichever the runner reaches first builds it).
+create function leak_fixtures.org_tree(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_branch uuid := gen_random_uuid();
+  v_dept   uuid := gen_random_uuid();
+  v_user   uuid;
+begin
+  if exists (select 1 from public.org_units where institution_id = p_institution) then
+    return;
+  end if;
+  select user_id into v_user from public.institution_members where institution_id = p_institution and status = 'active' limit 1;
+  insert into public.org_units (institution_id, id, kind, name) values (p_institution, v_branch, 'branch', 'leak-branch-' || left(p_institution::text, 8));
+  insert into public.branches (institution_id, org_unit_id, address) values (p_institution, v_branch, 'leak-address-' || left(p_institution::text, 8));
+  insert into public.org_units (institution_id, id, parent_id, kind, name) values (p_institution, v_dept, v_branch, 'department', 'leak-dept');
+  insert into public.org_unit_members (institution_id, org_unit_id, user_id) values (p_institution, v_dept, v_user);
+  insert into public.org_unit_managers (institution_id, org_unit_id, user_id) values (p_institution, v_branch, v_user);
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('leak-branch-' || left(p_institution::text, 8), 'branch name of A'),
+                                    ('leak-address-' || left(p_institution::text, 8), 'branch address of A') on conflict do nothing;
+  end if;
+end $$;
+create function leak_fixtures.public__org_units(p uuid) returns void language sql as $$ select leak_fixtures.org_tree(p) $$;
+create function leak_fixtures.public__org_unit_closure(p uuid) returns void language sql as $$ select leak_fixtures.org_tree(p) $$;
+create function leak_fixtures.public__branches(p uuid) returns void language sql as $$ select leak_fixtures.org_tree(p) $$;
+create function leak_fixtures.public__org_unit_members(p uuid) returns void language sql as $$ select leak_fixtures.org_tree(p) $$;
+create function leak_fixtures.public__org_unit_managers(p uuid) returns void language sql as $$ select leak_fixtures.org_tree(p) $$;
