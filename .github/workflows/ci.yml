@@ -46,10 +46,21 @@ jobs:
       - uses: supabase/setup-cli@v1
         with:
           version: 3.1.0
-      - name: Start a local Supabase database
-        run: supabase db start
-      - name: Apply all migrations from zero
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Start local Supabase (database, auth, REST)
+        run: supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,realtime,storage-api,supavisor,postgres-meta
+      - name: Apply all migrations from zero (without seed)
         run: supabase db reset --no-seed
+      - name: Apply all migrations from zero with test seed
+        run: supabase db reset
+      - name: Database tests as real roles (0A.03+)
+        run: npm run test:db
+      - name: End-to-end auth tests (real sign-in, hook, RLS through REST)
+        run: npm run test:e2e
       # Gates added by later milestones (keep the order):
       # - schema lint: institution_id + RLS + index on every tenant table    (0A.04)
       # - DEFINER audit and invoker-calls-revoked-function sweep             (0A.04, lesson 1)
