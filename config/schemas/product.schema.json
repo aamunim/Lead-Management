@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Product-level configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["productName", "isWorkingName", "platforms", "languages", "defaultLanguage", "androidPackage", "deepLinkScheme", "forbiddenWordsInIdentifiers"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "productName": { "type": "string", "minLength": 2, "maxLength": 60 },
+    "isWorkingName": { "type": "boolean" },
+    "nameDecision": { "type": "string" },
+    "platforms": { "type": "array", "items": { "enum": ["android", "web"] }, "minItems": 1, "uniqueItems": true },
+    "languages": { "type": "array", "items": { "enum": ["en", "bn"] }, "minItems": 2, "uniqueItems": true },
+    "defaultLanguage": { "enum": ["en", "bn"] },
+    "androidPackage": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$" },
+    "deepLinkScheme": { "type": "string", "pattern": "^[a-z][a-z0-9+.-]*$" },
+    "forbiddenWordsInIdentifiers": { "type": "array", "items": { "type": "string" } }
+  }
+}

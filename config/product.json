@@ -1,0 +1,12 @@
+{
+  "$schema": "./schemas/product.schema.json",
+  "productName": "Lead Management Platform",
+  "isWorkingName": true,
+  "nameDecision": "D21: final neutral name still open (Ch 1, Ch 53)",
+  "platforms": ["android", "web"],
+  "languages": ["en", "bn"],
+  "defaultLanguage": "bn",
+  "androidPackage": "com.leadplatform.app",
+  "deepLinkScheme": "leadplatform",
+  "forbiddenWordsInIdentifiers": ["admission", "college", "school", "student"]
+}
