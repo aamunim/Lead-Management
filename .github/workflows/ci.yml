@@ -33,6 +33,11 @@ jobs:
         run: npm test
       - name: Web build
         run: npm run export:web
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Edge Functions typecheck (Deno)
+        run: deno check --config supabase/functions/deno.json supabase/functions/*/index.ts
       # Gates added by later milestones (keep the order):
       # - i18n lint: no hard-coded UI strings, every key in en + bn          (0A.10)
       # - label lint: no education words in code identifiers                 (0A.12)
@@ -52,7 +57,7 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Start local Supabase (database, auth, REST)
-        run: supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,realtime,storage-api,supavisor,postgres-meta
+        run: supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,supavisor,postgres-meta
       - name: Apply all migrations from zero (without seed)
         run: supabase db reset --no-seed
       - name: Schema lint (0A.04)
@@ -63,10 +68,9 @@ jobs:
         run: supabase db reset
       - name: Database tests as real roles (0A.03+)
         run: npm run test:db
-      - name: End-to-end auth tests (real sign-in, hook, RLS through REST)
+      - name: End-to-end tests (real sign-in, hook, RLS through REST, Storage, Realtime)
         run: npm run test:e2e
       # Gates added by later milestones (keep the order):
-      # - storage and Realtime leak probes                                   (0A.06)
       # - role-matrix test                                                   (0A.17 / 0A.20)
 
   leak-test:

@@ -39,13 +39,14 @@
     "check:config": "node scripts/validate-config.mjs",
     "export:web": "expo export --platform web",
     "check": "npm run typecheck && npm run check:config && npm test",
-    "test": "node --test \"scripts/tests/*.test.mjs\"",
+    "test": "node --experimental-strip-types --disable-warning=ExperimentalWarning --test \"scripts/tests/*.test.mjs\"",
     "test:db": "bash scripts/db-test.sh",
     "test:e2e": "node --test \"scripts/e2e/*.e2e.mjs\"",
     "lint:schema": "bash scripts/schema-lint.sh",
     "test:lint": "psql \"${DB_URL:-postgresql://postgres:postgres@127.0.0.1:54322/postgres}\" -X -q -v ON_ERROR_STOP=1 -f supabase/lint/tests/lint_fixtures_test.sql",
     "test:leak": "bash scripts/leak-test.sh",
-    "test:leak-self": "psql \"${DB_URL:-postgresql://postgres:postgres@127.0.0.1:54322/postgres}\" -X -q -v ON_ERROR_STOP=1 -f supabase/tests/leak/leak_selftest.sql"
+    "test:leak-self": "psql \"${DB_URL:-postgresql://postgres:postgres@127.0.0.1:54322/postgres}\" -X -q -v ON_ERROR_STOP=1 -f supabase/tests/leak/leak_selftest.sql",
+    "check:functions": "npx --yes deno@2 check --config supabase/functions/deno.json supabase/functions/*/index.ts"
   },
   "private": true,
   "description": "Leadora: multi-institution lead and admission management platform."

@@ -20,6 +20,7 @@
 - [ ] New tables: `institution_id` (+ `branch_id` if relevant), RLS, indexes start with `institution_id`, added to the leak test; `npm run lint:schema` passes (exceptions only in `supabase/lint/allowlist.sql` with a reason).
 - [ ] New SECURITY DEFINER function? Registered in `app.definer_registry` with reason, reviewer and tenant check.
 - [ ] Server decides institution / permissions from the session, never from the client.
+- [ ] Isolation beyond tables (docs/dev/ISOLATION.md): storage paths `<institution_id>/…`, Realtime `inst:<institution_id>:…`, Edge Functions use `withTenant`, logs tagged and redacted, errors use the error contract.
 - [ ] Cross-tenant leak test green (`npm run test:leak`); a new table the generic fixtures cannot fill has a fixture in `supabase/tests/leak/fixtures/`; any new leak allow-list row has a reason.
 - [ ] RPC signature changed? If yes: a new RPC instead, or an optional parameter with a default (lesson 7).
 - [ ] New queue or job has attempts, back-off, "given up" and idempotency keys (lesson 2).

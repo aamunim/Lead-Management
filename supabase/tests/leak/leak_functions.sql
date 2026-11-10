@@ -244,6 +244,146 @@ begin
   end loop;
 end $$;
 
+
+
+-- Runs a counting query as the viewer; an error (no privilege, refused by a trigger) counts as 0 rows affected.
+create function leak.run_as_count(p_sql text, p_claims jsonb) returns bigint language plpgsql as $$
+declare
+  n bigint;
+begin
+  perform set_config('request.jwt.claims', p_claims::text, true);
+  perform set_config('role', 'authenticated', true);
+  execute p_sql into n;
+  perform set_config('role', 'postgres', true);
+  return coalesce(n, 0);
+exception when others then
+  perform set_config('role', 'postgres', true);
+  return 0;
+end $$;
+
+-- 0A.06 Storage probe: in every bucket, a viewer of B may not read, list, overwrite, move or delete objects stored
+-- under A's folder, nor create objects there. A public bucket serves files without RLS and is a finding unless
+-- allow-listed with a reason.
+create function leak.probe_storage(p_viewer text, p_claims jsonb) returns void language plpgsql as $$
+declare
+  b record;
+  v_path text;
+  v_seen bigint;
+  v_changed bigint;
+  v_insert_error text;
+  q_select text; q_update text; q_delete text; q_insert text;
+begin
+  for b in select id, public from storage.buckets order by id loop
+    if b.public then
+      insert into leak.findings values ('storage_public_bucket', 'storage.buckets/' || b.id, p_viewer,
+        'Public bucket: its files are readable by anyone with the URL, without RLS.');
+    end if;
+    v_path := leak.id('inst_a')::text || '/leak-probe/' || b.id || '.txt';
+    perform set_config('request.jwt.claims', '', true);
+    insert into storage.objects (bucket_id, name) values (b.id, v_path) on conflict do nothing;
+    insert into leak.markers values (v_path, 'storage object of A') on conflict do nothing;
+    q_select := format('select count(*) from storage.objects where bucket_id = %L and name like %L', b.id, leak.id('inst_a')::text || '/%');
+    q_update := format('with u as (update storage.objects set name = name || %L where bucket_id = %L and name = %L returning 1) select count(*) from u',
+                       '.moved', b.id, v_path);
+    q_delete := format('with d as (delete from storage.objects where bucket_id = %L and name = %L returning 1) select count(*) from d', b.id, v_path);
+    q_insert := format('insert into storage.objects (bucket_id, name) values (%L, %L)', b.id, leak.id('inst_a')::text || '/leak-probe/planted.txt');
+    -- Each probe in its own block: an error in one (e.g. a storage trigger refusing a rename) must not hide another.
+    v_seen := leak.run_as_count(q_select, p_claims);
+    perform leak.run_as_count(q_update, p_claims);
+    perform leak.run_as_count(q_delete, p_claims);
+    if v_seen > 0 then
+      insert into leak.findings values ('storage_leak', 'storage.buckets/' || b.id, p_viewer,
+        format('%s object(s) under A''s folder are visible.', v_seen));
+    end if;
+    if not exists (select 1 from storage.objects where bucket_id = b.id and name = v_path) then
+      insert into leak.findings values ('storage_leak', 'storage.buckets/' || b.id, p_viewer,
+        'An object under A''s folder could be moved or deleted.');
+      perform set_config('request.jwt.claims', '', true);
+      insert into storage.objects (bucket_id, name) values (b.id, v_path) on conflict do nothing;
+    end if;
+    v_insert_error := null;
+    begin
+      begin
+        perform set_config('request.jwt.claims', p_claims::text, true);
+        perform set_config('role', 'authenticated', true);
+        execute q_insert;
+        raise exception using errcode = 'LK002', message = 'planted';
+      exception when sqlstate 'LK002' then
+        v_insert_error := null; -- the insert succeeded (then rolled back)
+      end;
+    exception when others then
+      v_insert_error := sqlerrm;
+    end;
+    perform set_config('role', 'postgres', true);
+    if v_insert_error is null then
+      insert into leak.findings values ('storage_leak', 'storage.buckets/' || b.id, p_viewer,
+        'An object can be created under A''s folder.');
+    end if;
+  end loop;
+end $$;
+
+-- 0A.06 Realtime probe:
+--  * every table published to Realtime must be a tenant table (its postgres_changes follow the table RLS, which the
+--    table probe checks), unless allow-listed;
+--  * private broadcast / presence channels: a viewer of B may not receive or send on A's channel inst:<A>:<topic>.
+create function leak.probe_realtime(p_viewer text, p_claims jsonb) returns void language plpgsql as $$
+declare
+  r record;
+  v_topic text := 'inst:' || leak.id('inst_a')::text || ':leak-probe';
+  v_seen bigint;
+  v_send_error text;
+  q_select text;
+  q_insert text;
+begin
+  for r in select schemaname || '.' || tablename as obj from pg_publication_tables where pubname = 'supabase_realtime' loop
+    if not exists (select 1 from leak.tenant_tables() t where t.name = r.obj) then
+      insert into leak.findings values ('realtime_table', r.obj, p_viewer,
+        'Published to Realtime but not a tenant table (no institution_id); changes could reach every subscriber.');
+    end if;
+  end loop;
+
+  perform set_config('request.jwt.claims', '', true);
+  insert into realtime.messages (topic, extension, payload, event, private)
+  values (v_topic, 'broadcast', jsonb_build_object('marker', leak.id('inst_a')), 'probe', true);
+  q_select := format('select count(*) from realtime.messages where topic = %L', v_topic);
+  q_insert := format('insert into realtime.messages (topic, extension, payload, event, private) values (%L, %L, %L, %L, true)',
+                     v_topic, 'broadcast', '{}', 'planted');
+  begin
+    perform set_config('request.jwt.claims', p_claims::text, true);
+    perform set_config('realtime.topic', v_topic, true);
+    perform set_config('role', 'authenticated', true);
+    execute q_select into v_seen;
+    perform set_config('role', 'postgres', true);
+  exception when insufficient_privilege then
+    perform set_config('role', 'postgres', true);
+    v_seen := 0;
+  end;
+  if v_seen > 0 then
+    insert into leak.findings values ('realtime_leak', 'channel inst:<A>:*', p_viewer,
+      'A viewer of B can receive messages on A''s private channel.');
+  end if;
+  v_send_error := null;
+  begin
+    begin
+      perform set_config('request.jwt.claims', p_claims::text, true);
+      perform set_config('realtime.topic', v_topic, true);
+      perform set_config('role', 'authenticated', true);
+      execute q_insert;
+      raise exception using errcode = 'LK003', message = 'sent';
+    exception when sqlstate 'LK003' then
+      v_send_error := null;
+    end;
+  exception when others then
+    v_send_error := sqlerrm;
+  end;
+  perform set_config('role', 'postgres', true);
+  perform set_config('realtime.topic', '', true);
+  if v_send_error is null then
+    insert into leak.findings values ('realtime_leak', 'channel inst:<A>:*', p_viewer,
+      'A viewer of B can send on A''s private channel.');
+  end if;
+end $$;
+
 -- T7 Placeholders that fail safe until their probes exist: Storage and Realtime (0A.06).
 create function leak.probe_placeholders() returns void language plpgsql as $$
 begin
@@ -280,6 +420,10 @@ begin
   perform leak.probe_tables('member of A and B, B active', v_both);
   perform leak.probe_rpcs('member of B', v_b);
   perform leak.probe_rpcs('member of A and B, B active', v_both);
+  perform leak.probe_storage('member of B', v_b);
+  perform leak.probe_storage('member of A and B, B active', v_both);
+  perform leak.probe_realtime('member of B', v_b);
+  perform leak.probe_realtime('member of A and B, B active', v_both);
   perform leak.probe_placeholders();
   return query select f.* from leak.findings f
     where not exists (select 1 from leak.allow a where a.rule = f.rule and a.object = f.object and a.viewer = f.viewer)
@@ -308,5 +452,7 @@ begin
   if n > 0 then
     raise exception 'Cross-tenant leak test failed with % finding(s).', n;
   end if;
-  raise notice 'Cross-tenant leak test passed: % tenant table(s) + 4 platform tables, % RPC(s), 2 viewers.', tables, rpcs;
+  raise notice 'Cross-tenant leak test passed: % tenant table(s) + 4 platform tables, % RPC(s), % storage bucket(s), % Realtime table(s) + private channels, 2 viewers.',
+    tables, rpcs, (select count(*) from storage.buckets),
+    (select count(*) from pg_publication_tables where pubname = 'supabase_realtime');
 end $$;

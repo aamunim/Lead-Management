@@ -51,11 +51,20 @@ alter table public.selftest_unfillable enable row level security;
 create policy selftest_unfillable_tenant on public.selftest_unfillable to authenticated
   using (institution_id = (select app.auth_institution_id()));
 
--- A storage bucket without a storage probe yet.
-insert into storage.buckets (id, name) values ('selftest-bucket', 'selftest-bucket');
+-- Storage: a bucket whose policy forgot the institution folder, and a public bucket.
+insert into storage.buckets (id, name, public) values ('selftest-open', 'selftest-open', false),
+                                                      ('selftest-public', 'selftest-public', true);
+create policy selftest_open_all on storage.objects for all to authenticated
+  using (bucket_id = 'selftest-open') with check (bucket_id = 'selftest-open');
 
--- Realtime publication without a Realtime probe yet.
+-- Realtime: a tenant table (fine), a non-tenant table (finding), and a channel policy that forgot the institution.
 alter publication supabase_realtime add table public.selftest_good;
+create table public.selftest_global (id int primary key);
+alter table public.selftest_global enable row level security;
+create policy selftest_global_read on public.selftest_global to authenticated using (true);
+alter publication supabase_realtime add table public.selftest_global;
+create policy selftest_channels_open on realtime.messages for select to authenticated
+  using ((select realtime.topic()) like 'inst:%');
 
 create temp table result as select * from leak.run();
 
@@ -67,10 +76,22 @@ select pg_temp.check(exists (select 1 from result where rule = 'rpc_leak' and ob
                      'an RPC returning another institution''s rows is caught');
 select pg_temp.check(exists (select 1 from result where rule = 'no_fixture' and object = 'public.selftest_unfillable'),
                      'a table without fixtures fails the run');
-select pg_temp.check(exists (select 1 from result where rule = 'storage_unprobed'),
-                     'a storage bucket without its probe fails safe (until 0A.06)');
-select pg_temp.check(exists (select 1 from result where rule = 'realtime_unprobed'),
-                     'Realtime publication without its probe fails safe (until 0A.06)');
+select pg_temp.check(exists (select 1 from result where rule = 'storage_leak' and object = 'storage.buckets/selftest-open'
+                             and message like '%visible%'), 'storage: a policy without the institution folder lets B read A''s files');
+select pg_temp.check(exists (select 1 from result where rule = 'storage_leak' and object = 'storage.buckets/selftest-open'
+                             and message like '%moved or deleted%'), 'storage: ...and move or delete them');
+select pg_temp.check(exists (select 1 from result where rule = 'storage_leak' and object = 'storage.buckets/selftest-open'
+                             and message like '%created%'), 'storage: ...and plant files in A''s folder');
+select pg_temp.check(exists (select 1 from result where rule = 'storage_public_bucket' and object = 'storage.buckets/selftest-public'),
+                     'storage: a public bucket is reported');
+select pg_temp.check(not exists (select 1 from result where object = 'storage.buckets/institution-files'),
+                     'storage: the real institution-files bucket passes every storage probe');
+select pg_temp.check(exists (select 1 from result where rule = 'realtime_table' and object = 'public.selftest_global'),
+                     'realtime: a published table without institution_id is reported');
+select pg_temp.check(not exists (select 1 from result where rule = 'realtime_table' and object = 'public.selftest_good'),
+                     'realtime: a published tenant table is fine (its RLS is probed as a table)');
+select pg_temp.check(exists (select 1 from result where rule = 'realtime_leak' and message like '%receive%'),
+                     'realtime: a channel policy without the institution lets B receive A''s messages');
 select pg_temp.check(not exists (select 1 from result where object like 'public.selftest_good%'),
                      'a correct tenant table and its child (foreign key) pass, with generic fixtures');
 select pg_temp.check((select count(*) from public.selftest_good_child) = 2,
