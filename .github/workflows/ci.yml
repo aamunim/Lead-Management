@@ -60,12 +60,16 @@ jobs:
         run: supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,supavisor,postgres-meta
       - name: Apply all migrations from zero (without seed)
         run: supabase db reset --no-seed
+      - name: Apply extension migrations (0A.09)
+        run: npm run db:extensions
       - name: Schema lint (0A.04)
         run: npm run lint:schema
       - name: Schema lint catches every rule (fixtures)
         run: npm run test:lint
       - name: Apply all migrations from zero with test seed
         run: supabase db reset
+      - name: Apply extension migrations
+        run: npm run db:extensions
       - name: Database tests as real roles (0A.03+)
         run: npm run test:db
       - name: End-to-end tests (real sign-in, hook, RLS through REST, Storage, Realtime)
@@ -85,6 +89,8 @@ jobs:
         run: supabase db start
       - name: Apply migrations and the test seed
         run: supabase db reset
+      - name: Apply extension migrations
+        run: bash scripts/apply-extensions.sh
       - name: The leak test catches deliberate leaks (self-test)
         run: |
           psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -X -q -v ON_ERROR_STOP=1 \

@@ -1,0 +1,1 @@
+This extension exists only to test the extension rules. scripts/apply-extensions.sh skips it when APPLY_TEST_EXTENSIONS=0 (staging, production).

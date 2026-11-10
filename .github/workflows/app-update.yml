@@ -65,6 +65,13 @@ jobs:
         if: inputs.deploy != 'App only'
         run: supabase db push --password "$SUPABASE_DB_PASSWORD"
 
+      - name: Apply extension migrations (test-only extensions are skipped)
+        if: inputs.deploy != 'App only'
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          APPLY_TEST_EXTENSIONS: '0'
+        run: bash scripts/apply-extensions.sh
+
       - name: Deploy Edge Functions
         if: inputs.functions != ''
         run: |

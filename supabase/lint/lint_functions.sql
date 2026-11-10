@@ -31,7 +31,10 @@ create function lint.is_allowed(p_rule text, p_object text) returns boolean lang
 $$;
 
 -- Schemas we own and check.
-create function lint.our_schemas() returns text[] language sql immutable as $$ select array['public', 'app'] $$;
+create function lint.our_schemas() returns text[] language sql stable as $$
+  select array['public', 'app'] || coalesce(array_agg(nspname::text order by nspname), '{}')
+  from pg_namespace where nspname like 'ext\_%'
+$$;
 
 create function lint.findings() returns table (rule text, object text, message text)
 language plpgsql as $$
@@ -62,7 +65,7 @@ begin
   for r in
     select c.oid, c.relrowsecurity, n.nspname || '.' || c.relname as obj
     from pg_class c join pg_namespace n on n.oid = c.relnamespace
-    where c.relkind in ('r', 'p') and n.nspname = 'public'
+    where c.relkind in ('r', 'p') and (n.nspname = 'public' or n.nspname like 'ext\_%')
   loop
     if not r.relrowsecurity then
       rule := 'rls_enabled'; object := r.obj; message := 'Row level security is not enabled.'; return next;

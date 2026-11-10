@@ -17,3 +17,50 @@ begin
     insert into leak.markers values (v_value, 'secret value of A') on conflict do nothing;
   end if;
 end $$;
+
+-- 0A.09 event log and audit log: a row per institution, written the way the app writes them (backend call, no user).
+create function leak_fixtures.public__domain_events(p_institution uuid) returns void language plpgsql as $$
+begin
+  perform app.emit_event(p_institution, 'setting.changed', 1, 'setting', 'leak.key',
+                         jsonb_build_object('key', 'leak.key', 'value', 'leak-event-' || p_institution::text));
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('leak-event-' || p_institution::text, 'event payload of A') on conflict do nothing;
+  end if;
+end $$;
+
+create function leak_fixtures.public__audit_log(p_institution uuid) returns void language plpgsql as $$
+begin
+  perform app.audit(p_institution, 'setting.changed', 'setting', 'leak.key', null,
+                    jsonb_build_object('value', 'leak-audit-' || p_institution::text));
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('leak-audit-' || p_institution::text, 'audit entry of A') on conflict do nothing;
+  end if;
+end $$;
+
+-- Extensions: switch the example extension on for both institutions, so the extension's own RLS is what is tested
+-- (not merely "the extension is off").
+create function leak_fixtures.public__institution_extensions(p_institution uuid) returns void language plpgsql as $$
+begin
+  insert into public.institution_extensions (institution_id, extension_key, enabled)
+  values (p_institution, 'example', true)
+  on conflict (institution_id, extension_key) do update set enabled = true;
+end $$;
+
+create function leak_fixtures.ext_example__notes(p_institution uuid) returns void language plpgsql as $$
+begin
+  perform leak_fixtures.public__institution_extensions(p_institution);
+  insert into ext_example.notes (institution_id, body) values (p_institution, 'leak-note-' || p_institution::text);
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('leak-note-' || p_institution::text, 'extension note of A') on conflict do nothing;
+  end if;
+end $$;
+
+create function leak_fixtures.ext_example__setting_change_counts(p_institution uuid) returns void language plpgsql as $$
+begin
+  perform leak_fixtures.public__institution_extensions(p_institution);
+  insert into ext_example.setting_change_counts (institution_id, changes, last_key)
+  values (p_institution, 1, 'leak-count-' || p_institution::text);
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('leak-count-' || p_institution::text, 'extension data of A') on conflict do nothing;
+  end if;
+end $$;

@@ -143,6 +143,15 @@ select pg_temp.check(not pg_temp.found('index_leading_institution', '%fixture_ba
 select pg_temp.check(pg_temp.found('unique_includes_institution', '%fixture_bad_unique'),
                      'allow-list: other findings on the same table remain');
 
+-- Extension schemas (ext_*) are checked by the same rules (0A.09).
+create schema ext_fixture;
+create table ext_fixture.no_tenant (id uuid primary key);
+create table ext_fixture.no_rls (institution_id uuid not null, id uuid not null, primary key (institution_id, id));
+create function ext_fixture.no_path() returns int language sql as 'select 1';
+select pg_temp.check(pg_temp.found('tenant_institution_id', 'ext_fixture.no_tenant'), 'extension table without institution_id is caught');
+select pg_temp.check(pg_temp.found('rls_enabled', 'ext_fixture.no_rls'), 'extension table without RLS is caught');
+select pg_temp.check(pg_temp.found('search_path', 'ext_fixture.no_path'), 'extension function without search_path is caught');
+
 -- The report fails the run when there is any finding.
 select pg_temp.check((select count(*) from lint.findings()) > 0, 'there are findings now');
 do $$

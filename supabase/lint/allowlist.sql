@@ -10,3 +10,10 @@ insert into lint.allow (rule, object, reason) values
 insert into lint.allow (rule, object, reason) values
   ('platform_table', 'public.setting_definitions', 'Product-wide definitions of settings (keys, schemas, defaults).'),
   ('platform_table', 'public.product_settings', 'Product-level values such as min_app_version; not per institution.');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.event_definitions', 'Product-wide catalogue of event keys and payload schemas.'),
+  ('platform_table', 'public.platform_audit_log', 'Audit of product-level actions (no institution).'),
+  ('platform_table', 'public.extensions', 'Product-wide registry of available extensions.'),
+  ('platform_table', 'public.event_listeners', 'Product-wide registry of event listener functions.');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'app.extension_migrations', 'Tracks applied extension migration files; product-wide, not tenant data.');

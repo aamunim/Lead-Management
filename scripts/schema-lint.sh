@@ -15,3 +15,7 @@ if grep -rn --include='*.ts' --include='*.tsx' 'institution_type' src 2>/dev/nul
   echo "LINT [institution_type] app code reads institution_type; use settings and modules instead." >&2
   exit 1
 fi
+
+# Extension boundaries (0A.09, Ch 43.4). Core migrations never reference an extension schema; extension migrations
+# never change core objects (they may only insert into the registries: extensions, event_definitions, event_listeners).
+bash scripts/extension-lint.sh

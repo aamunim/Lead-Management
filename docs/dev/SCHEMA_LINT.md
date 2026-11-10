@@ -7,8 +7,8 @@ It runs in CI after every migration (`npm run lint:schema`) and fails the build 
 
 | Rule | What it checks | Why |
 |---|---|---|
-| `tenant_institution_id` | Every table in `public` / `app` has `institution_id uuid not null`, unless allow-listed as a platform table. | Data of institutions must never mix (G1, Ch 4). |
-| `rls_enabled` | Every `public` table has RLS enabled **and** at least one policy. | Tables are exposed through the API (G2). |
+| `tenant_institution_id` | Every table in `public` / `app` / `ext_*` has `institution_id uuid not null`, unless allow-listed as a platform table. | Data of institutions must never mix (G1, Ch 4). |
+| `rls_enabled` | Every `public` and `ext_*` table has RLS enabled **and** at least one policy. | Tables are exposed through the API (G2). |
 | `index_leading_institution` | Every index on a tenant table starts with `institution_id`. | Speed and isolation with many institutions (Ch 4, 47). |
 | `unique_includes_institution` | Unique constraints on tenant tables include `institution_id`. | Receipt numbers, stage keys, tags … are unique **per institution** (Ch 4.4). |
 | `branch_id` | Core record tables (`institution_members`, `leads`, `clients`, `offerings`, `cohorts`, `payments`) have a nullable `branch_id`. | Branches from Phase 0 (D9). |
@@ -21,6 +21,9 @@ It runs in CI after every migration (`npm run lint:schema`) and fails the build 
 | `heavy_jit_off` | Functions marked `-- heavy` declare `set jit = off`. | Lesson 4: JIT turned 15 ms into 900 ms. |
 | `rls_initplan` | Session helpers in policies are wrapped in `(select …)`. | Evaluated once per query, not once per row (Ch 47.9). |
 | `institution_type` | Only allow-listed seeding code reads `institution_type` (SQL bodies and `src/`). | Behaviour comes from settings and modules (G9, Ch 2.7). |
+| `definer_service_only` | DEFINER functions registered as `service_role_only` are not executable by `authenticated` or `anon`. | Edge-only readers such as `secret_read_for_service` (0A.07). |
+| `core_references_extension` (text) | No core migration references an `ext_*` schema. | The core must work without any extension (Ch 43.4). |
+| `extension_changes_core` (text) | Extension migrations do not alter, drop, update or add triggers/policies/indexes on core objects; inserts only into the registries. | Extensions never change the core (Ch 43.4 #1, #4). See `EXTENSIONS.md`. |
 
 ## Exceptions
 
@@ -64,7 +67,7 @@ test set-up and tear-down on the local database.
 ```bash
 npx supabase start && npx supabase db reset   # local database with migrations + seed
 npm run lint:schema                           # the lint
-npm run test:lint                             # each rule against deliberately bad fixtures (22 checks)
+npm run test:lint                             # each rule against deliberately bad fixtures (SQL fixtures + extension text-lint fixtures)
 npm run test:db                               # SQL tests as real roles
 npm run test:e2e                              # real sign-in + PostgREST tests
 ```

@@ -13,6 +13,8 @@ Read in this order before working on any milestone:
 9. `ISOLATION.md` — every place institution data must stay separate, its status, and the storage / Realtime / Edge Function / log / error conventions.
 10. `SECRETS.md` — per-institution keys in Vault: write-only, hint only, Edge-only read, rotation, log redaction.
 11. `SETTINGS.md` — settings as data, layers, validation, versions on every response, min app version, counters.
-12. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-13. `../PLAN_BN.md` — the plan chapters the milestone points to.
-14. `PROGRESS.md` — which milestones are done.
+12. `EVENTS.md` — the domain event log (catalogue, payload schemas, listeners, dispatcher) and the append-only audit log.
+13. `EXTENSIONS.md` — the five layers, the triage rule, and the rules, runner and checklist for extensions.
+14. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+15. `../PLAN_BN.md` — the plan chapters the milestone points to.
+16. `PROGRESS.md` — which milestones are done.

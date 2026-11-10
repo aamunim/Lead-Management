@@ -1,17 +1,15 @@
 # Extensions (Ch 43)
 
-An extension is a small, separately built module switched on only for chosen institutions. Layout:
+An extension is a small, separately built module switched on only for chosen institutions. Read
+`docs/dev/EXTENSIONS.md` first (five layers, triage rule, rules and checklist). Layout:
 
 ```
-supabase/extensions/<ext_name>/
-  migrations/      # own migrations, applied after core
+supabase/extensions/<key>/
+  migrations/      # own migrations (0001_name.sql …), applied after core by scripts/apply-extensions.sh
   functions/       # own Edge Functions (optional)
-  README.md        # what it does, events it listens to, permissions it registers
+  uninstall.sql    # removes it completely; the core keeps working
+  README.md        # what it does, events it emits / listens to, permissions it registers
+  TEST_ONLY        # only for test extensions: never applied to staging or production
 ```
 
-Rules:
-- Own Postgres schema: `ext_<name>`. Never add columns to core tables.
-- Never write to core tables directly; use the versioned core RPCs and listen to `domain_events`.
-- Every table has `institution_id` and RLS, and is covered by the cross-tenant leak test.
-- Register its permissions in the permission registry (Ch 11) and its words as labels (Ch 8).
-- Switching an extension off, or removing it, must never break the core app.
+`example/` is the reference extension used by the tests.
