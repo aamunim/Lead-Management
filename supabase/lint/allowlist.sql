@@ -7,3 +7,6 @@ insert into lint.allow (rule, object, reason) values
   ('platform_table', 'app.definer_registry', 'Developer registry of SECURITY DEFINER functions, not tenant data.'),
   -- Membership is looked up by user before any institution is active (access-token hook, switcher).
   ('index_leading_institution', 'institution_members_user_idx', 'Hook and switcher look up memberships by user_id first.');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.setting_definitions', 'Product-wide definitions of settings (keys, schemas, defaults).'),
+  ('platform_table', 'public.product_settings', 'Product-level values such as min_app_version; not per institution.');

@@ -12,6 +12,7 @@ Read in this order before working on any milestone:
 8. `LEAK_TEST.md` — the cross-tenant leak test: fixtures, viewers, probes, allow-list, self-test.
 9. `ISOLATION.md` — every place institution data must stay separate, its status, and the storage / Realtime / Edge Function / log / error conventions.
 10. `SECRETS.md` — per-institution keys in Vault: write-only, hint only, Edge-only read, rotation, log redaction.
-11. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-12. `../PLAN_BN.md` — the plan chapters the milestone points to.
-13. `PROGRESS.md` — which milestones are done.
+11. `SETTINGS.md` — settings as data, layers, validation, versions on every response, min app version, counters.
+12. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+13. `../PLAN_BN.md` — the plan chapters the milestone points to.
+14. `PROGRESS.md` — which milestones are done.

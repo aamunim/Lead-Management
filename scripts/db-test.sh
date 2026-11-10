@@ -12,4 +12,8 @@ for f in supabase/tests/*.sql; do
   # psql's exit code is lost in the pipe; run again quietly to get it.
   psql "$DB_URL" -X -q -v ON_ERROR_STOP=1 -f "$f" >/dev/null 2>&1 || status=1
 done
+for f in supabase/tests/concurrency/*.sh; do
+  echo "== $f"
+  DB_URL="$DB_URL" bash "$f" || status=1
+done
 exit $status

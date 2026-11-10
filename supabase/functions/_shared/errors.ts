@@ -2,7 +2,7 @@
 // message key (translated in the app). The UI shows an error state with Retry — never an empty list.
 // Codes raised by the database (docs/dev/TENANCY.md) are mapped here so the app reacts the same way everywhere.
 
-export type ErrorAction = 'sign_in' | 'choose_institution' | 'refresh_session' | 'retry' | 'none';
+export type ErrorAction = 'sign_in' | 'choose_institution' | 'refresh_session' | 'upgrade_app' | 'fix_input' | 'retry' | 'none';
 
 export type ErrorInfo = { code: string; messageKey: string; httpStatus: number; action: ErrorAction };
 
@@ -17,6 +17,9 @@ export const ERRORS: Record<string, ErrorInfo> = {
   session_refresh_required: {
     code: 'session_refresh_required', messageKey: 'errors.session_refresh_required', httpStatus: 409, action: 'refresh_session',
   },
+  upgrade_required: { code: 'upgrade_required', messageKey: 'errors.upgrade_required', httpStatus: 426, action: 'upgrade_app' },
+  setting_invalid: { code: 'setting_invalid', messageKey: 'errors.setting_invalid', httpStatus: 422, action: 'fix_input' },
+  setting_unknown: { code: 'setting_unknown', messageKey: 'errors.unknown', httpStatus: 404, action: 'none' },
   not_a_member: { code: 'not_a_member', messageKey: 'errors.not_a_member', httpStatus: 403, action: 'none' },
   institution_mismatch: { code: 'institution_mismatch', messageKey: 'errors.forbidden', httpStatus: 403, action: 'none' },
   protected_column: { code: 'protected_column', messageKey: 'errors.forbidden', httpStatus: 403, action: 'none' },
