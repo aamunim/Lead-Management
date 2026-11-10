@@ -29,10 +29,16 @@ jobs:
         run: npm run typecheck
       - name: Product config and identifier check
         run: npm run check:config
+      - name: Translations complete in English and Bangla; no hard-coded UI strings (0A.10)
+        run: npm run check:i18n
       - name: Unit tests
         run: npm test
       - name: Web build
         run: npm run export:web
+      - name: Install a browser for UI tests (not a project dependency)
+        run: npm install --no-save playwright@1.63.0 && npx playwright install --with-deps chromium
+      - name: UI test on the web build (language switch, 0A.10)
+        run: npm run test:ui
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x

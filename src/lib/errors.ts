@@ -6,6 +6,7 @@ import { refreshAfterAccessChange } from './session';
 
 export type { ErrorInfo };
 
+
 /** Normalises any error, logs it (tagged + redacted) and returns what the screen should show. */
 export function describeError(error: unknown, where: string): ErrorInfo {
   const info = toErrorInfo(error);

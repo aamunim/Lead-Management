@@ -15,6 +15,8 @@ Read in this order before working on any milestone:
 11. `SETTINGS.md` — settings as data, layers, validation, versions on every response, min app version, counters.
 12. `EVENTS.md` — the domain event log (catalogue, payload schemas, listeners, dispatcher) and the append-only audit log.
 13. `EXTENSIONS.md` — the five layers, the triage rule, and the rules, runner and checklist for extensions.
-14. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-15. `../PLAN_BN.md` — the plan chapters the milestone points to.
-16. `PROGRESS.md` — which milestones are done.
+14. `I18N.md` — English + Bangla: translation files, typed keys, language resolution, font, the UI string lint.
+15. `GLOSSARY.md` — English ↔ Bangla terms and style; the release language review.
+16. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+17. `../PLAN_BN.md` — the plan chapters the milestone points to.
+18. `PROGRESS.md` — which milestones are done.

@@ -1,0 +1,12 @@
+{
+  "title": "Language",
+  "description": "Choose the language of the app. This changes it only for you.",
+  "followInstitution": "Same as my institution ({{language}})",
+  "current": "Now showing: {{language}}",
+  "saved": "Saved.",
+  "savedOnDevice": "Saved on this device. Sign in to use it on all your devices.",
+  "names": {
+    "en": "English",
+    "bn": "বাংলা"
+  }
+}

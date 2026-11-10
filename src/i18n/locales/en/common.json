@@ -1,0 +1,17 @@
+{
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "back": "Back",
+    "continue": "Continue"
+  },
+  "status": {
+    "loading": "Loading…",
+    "offline": "No internet connection"
+  },
+  "home": {
+    "subtitle": "Leads, follow-ups and your team in one place.",
+    "openLanguage": "Change language"
+  }
+}

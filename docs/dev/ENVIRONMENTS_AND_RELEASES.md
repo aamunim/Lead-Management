@@ -49,6 +49,7 @@ Set `checks`, `database` and `secret-scan` as **required status checks** on `mai
 5. **Staged rollout:** per-institution feature flags and beta institutions come in 1.18; until then release to staging first.
 6. **No big releases in admission peak weeks.** Small fixes only, through a hotfix (flag off or a small OTA).
 7. **Every user-visible change has a "What's new" entry in English and Bangla** (PR template).
+8. **Language review before each release (0A.10-T6, Ch 13.8 #8).** If `src/i18n/locales/` changed since the last release, the owner or a native Bangla reader reads the changed Bangla texts (`git diff <last-release-tag> -- src/i18n/locales/bn`) on a phone, checks them against `docs/dev/GLOSSARY.md`, and confirms in the release PR. A release does not go to production without that confirmation.
 
 ## Release calendar
 

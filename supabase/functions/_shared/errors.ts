@@ -24,6 +24,8 @@ export const ERRORS: Record<string, ErrorInfo> = {
   institution_mismatch: { code: 'institution_mismatch', messageKey: 'errors.forbidden', httpStatus: 403, action: 'none' },
   protected_column: { code: 'protected_column', messageKey: 'errors.forbidden', httpStatus: 403, action: 'none' },
   permission_denied: { code: 'permission_denied', messageKey: 'errors.forbidden', httpStatus: 403, action: 'none' },
+  language_unsupported: { code: 'language_unsupported', messageKey: 'errors.language_unsupported', httpStatus: 422, action: 'fix_input' },
+  extension_disabled: { code: 'extension_disabled', messageKey: 'errors.extension_disabled', httpStatus: 403, action: 'none' },
   timeout: { code: 'timeout', messageKey: 'errors.timeout', httpStatus: 504, action: 'retry' },
   network: { code: 'network', messageKey: 'errors.network', httpStatus: 503, action: 'retry' },
   unknown: { code: 'unknown', messageKey: 'errors.unknown', httpStatus: 500, action: 'retry' },

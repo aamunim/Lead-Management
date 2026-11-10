@@ -1,0 +1,15 @@
+# Maestro flow (0A.10, Android): switch the sample screen between Bangla and English without restarting.
+# Run on a development build or preview APK: maestro test .maestro/language-switch.yaml
+appId: com.leadora.leads
+---
+- launchApp
+- tapOn:
+    id: "open-language"
+- tapOn:
+    id: "language-option-bn"
+- assertVisible: "ভাষা"
+- assertVisible: "এখন দেখাচ্ছে: বাংলা"
+- tapOn:
+    id: "language-option-en"
+- assertVisible: "Language"
+- assertVisible: "Now showing: English"

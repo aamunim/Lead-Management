@@ -62,3 +62,10 @@ client numbers 2.04). Proven by a test where 50 parallel connections receive exa
 - `supabase/tests/concurrency/counter_concurrency.sh` — 50 parallel `counter_next` calls (run by `npm run test:db`).
 - `scripts/e2e/settings.e2e.mjs` — the header on real responses, a change seen by a second device, field-level
   validation message, `upgrade_required` for an old app.
+
+## Registered keys
+
+| Key | Scope | Added in | Meaning |
+|---|---|---|---|
+| `min_app_version` | product | 0A.08 | Apps older than this must update. |
+| `default_language` | institution | 0A.10 | UI language (`bn` / `en`) for members without their own choice; see `I18N.md`. |

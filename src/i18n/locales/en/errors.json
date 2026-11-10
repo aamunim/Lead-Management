@@ -1,0 +1,23 @@
+{
+  "not_signed_in": "Please sign in to continue.",
+  "no_active_institution": "Choose an institution to continue.",
+  "membership_not_active": "Your access to this institution is not active.",
+  "session_refresh_required": "Your access has changed. Refreshing…",
+  "upgrade_required": "Please update the app to continue.",
+  "setting_invalid": "This value is not valid. Please check it and try again.",
+  "not_a_member": "You are not a member of this institution.",
+  "forbidden": "You do not have permission to do this.",
+  "language_unsupported": "This language is not available yet.",
+  "extension_disabled": "This feature is not turned on for your institution.",
+  "timeout": "This is taking too long. Please try again.",
+  "network": "No internet connection. Please try again.",
+  "unknown": "Something went wrong. Please try again.",
+  "actions": {
+    "sign_in": "Sign in",
+    "choose_institution": "Choose institution",
+    "refresh_session": "Refresh",
+    "upgrade_app": "Update app",
+    "fix_input": "Fix and try again",
+    "retry": "Try again"
+  }
+}
