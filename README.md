@@ -6,7 +6,7 @@ A multi-institution lead and admission management platform for educational insti
 ## Documents
 - `docs/PLAN_BN.md` / `.docx` — the full product plan (Bangla, 53 chapters).
 - `docs/DEVELOPMENT_ROADMAP.md` / `.docx` — the development roadmap (English, milestones in build order).
-- `docs/dev/` — developer guide: architecture rules, scope, lessons, stack, progress.
+- `docs/dev/` — developer guide: architecture rules, scope, lessons, stack, environments and releases, progress.
 - `docs/APP_FEATURES_FOR_REBUILD*` — earlier source documents (archive).
 
 ## Getting started

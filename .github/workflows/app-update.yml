@@ -1,0 +1,94 @@
+# Manual release of database changes, Edge Functions and/or an OTA app update (milestone 0A.02-T3, Ch 48.3).
+# Choose the deploy type stated in the PR (database / functions / OTA). A store build is build-android.yml.
+name: app-update
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Environment to release to
+        type: choice
+        options: [staging, production]
+        default: staging
+      deploy:
+        description: What to deploy
+        type: choice
+        options:
+          - Database + app
+          - App only
+          - Database only
+        default: Database + app
+      functions:
+        description: Edge Functions to deploy (space-separated names; empty = none)
+        type: string
+        required: false
+        default: ''
+      message:
+        description: Update message (shown in EAS)
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # GitHub environments "staging" and "production" hold the secrets; protect "production" with required reviewers.
+    environment: ${{ inputs.target }}
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required secrets
+        run: |
+          missing=""
+          for v in SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD SUPABASE_PROJECT_REF EXPO_TOKEN; do
+            [ -n "${!v}" ] || missing="$missing $v"
+          done
+          if [ -n "$missing" ]; then echo "::error::Missing secrets in environment '${{ inputs.target }}':$missing"; exit 1; fi
+
+      - uses: supabase/setup-cli@v1
+        if: inputs.deploy != 'App only' || inputs.functions != ''
+        with:
+          version: 3.1.0
+
+      - name: Link Supabase project
+        if: inputs.deploy != 'App only' || inputs.functions != ''
+        run: supabase link --project-ref "$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Push database migrations
+        if: inputs.deploy != 'App only'
+        run: supabase db push --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Deploy Edge Functions
+        if: inputs.functions != ''
+        run: |
+          for fn in ${{ inputs.functions }}; do
+            supabase functions deploy "$fn" --project-ref "$SUPABASE_PROJECT_REF"
+          done
+
+      - uses: actions/setup-node@v4
+        if: inputs.deploy != 'Database only'
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: expo/expo-github-action@v8
+        if: inputs.deploy != 'Database only'
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Publish OTA update
+        if: inputs.deploy != 'Database only'
+        env:
+          APP_ENV: ${{ inputs.target }}
+        run: |
+          npm ci
+          channel=$([ "${{ inputs.target }}" = "production" ] && echo production || echo preview)
+          eas update --channel "$channel" --message "${{ inputs.message }}" --non-interactive

@@ -1,0 +1,97 @@
+# Every pull request (and push to main) must pass all jobs before merge (milestone 0A.02-T6).
+# Make "checks", "database" and "secret-scan" required status checks in the branch protection rules.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Typecheck, config, unit tests, web build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Product config and identifier check
+        run: npm run check:config
+      - name: Unit tests
+        run: npm test
+      - name: Web build
+        run: npm run export:web
+      # Gates added by later milestones (keep the order):
+      # - i18n lint: no hard-coded UI strings, every key in en + bn          (0A.10)
+      # - label lint: no education words in code identifiers                 (0A.12)
+      # - screenshot tests: light/dark x bn/en with long labels              (0A.20)
+
+  database:
+    name: Migrations on a fresh database + database gates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 3.1.0
+      - name: Start a local Supabase database
+        run: supabase db start
+      - name: Apply all migrations from zero
+        run: supabase db reset --no-seed
+      # Gates added by later milestones (keep the order):
+      # - schema lint: institution_id + RLS + index on every tenant table    (0A.04)
+      # - DEFINER audit and invoker-calls-revoked-function sweep             (0A.04, lesson 1)
+      # - RPC tests as real signed-in roles                                  (0A.04)
+      # - cross-tenant leak test over every table, RPC, storage, channel     (0A.05)
+      # - role-matrix test                                                   (0A.17 / 0A.20)
+
+  secret-scan:
+    name: Secret scan (Proposed, 0A.02-T8)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install gitleaks
+        run: |
+          curl -sSL -o gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz
+          tar -xzf gitleaks.tar.gz gitleaks
+      - name: Scan the repository history
+        run: ./gitleaks detect --source . --redact --verbose --exit-code 1
+
+  deploy-type:
+    name: Migration changes declare a database deploy (Proposed, 0A.02-T10)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check the PR description
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          changed=$(git diff --name-only "$BASE_SHA" HEAD -- supabase/migrations supabase/extensions | grep -c . || true)
+          if [ "$changed" -gt 0 ]; then
+            if printf '%s' "$PR_BODY" | grep -Eiq '\[x\] *Database'; then
+              echo "Database deploy declared."
+            else
+              echo "::error::This PR changes migrations. Tick '[x] Database' under 'Deploy type' in the PR description."
+              exit 1
+            fi
+          else
+            echo "No migration changes."
+          fi

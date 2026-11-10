@@ -1,0 +1,53 @@
+# Website build and upload (milestone 0A.02-T5, Ch 48.3).
+# Hosting today: FTPS to cPanel. Proposed move to atomic hosting with automatic custom-domain SSL in 1B (Ch 45, D16).
+# Upload order avoids half-deployed sites: new hashed assets first, index.html last, so a visitor never gets an
+# index.html that points to files not yet uploaded. The app's stale-chunk reload (1.18) handles old tabs.
+name: deploy-web
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Environment
+        type: choice
+        options: [staging, production]
+        default: staging
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target }}
+    env:
+      FTP_HOST: ${{ secrets.FTP_HOST }}
+      FTP_USER: ${{ secrets.FTP_USER }}
+      FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
+      APP_ENV: ${{ inputs.target }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check required secrets
+        run: |
+          missing=""
+          for v in FTP_HOST FTP_USER FTP_PASSWORD FTP_REMOTE_DIR; do [ -n "${!v}" ] || missing="$missing $v"; done
+          if [ -n "$missing" ]; then echo "::error::Missing secrets in environment '${{ inputs.target }}':$missing"; exit 1; fi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Export web
+        run: npm run export:web
+      # MediaPipe assets for Photo Studio / passport photo are copied into dist/ here when added (2.15, 5.05).
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+      - name: Upload assets first, index.html last
+        run: |
+          lftp -u "$FTP_USER","$FTP_PASSWORD" "ftps://$FTP_HOST" -e "
+            set ftp:ssl-force true; set ssl:verify-certificate true;
+            mirror --reverse --only-newer --exclude-glob index.html --exclude-glob metadata.json dist $FTP_REMOTE_DIR;
+            put -O $FTP_REMOTE_DIR dist/metadata.json;
+            put -O $FTP_REMOTE_DIR dist/index.html;
+            bye"

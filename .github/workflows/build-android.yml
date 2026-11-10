@@ -1,0 +1,88 @@
+# Android store / test builds on GitHub runners (milestone 0A.02-T4, Ch 48.3).
+# google-services.json comes only from a base64 secret and is never committed (lesson 12).
+# The brand inputs let the same workflow build separate branded apps later (D12, Phase 5).
+name: build-android
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: EAS build profile
+        type: choice
+        options: [preview, production, production-apk, development]
+        default: preview
+      brand_app_name:
+        description: Branded app name (leave empty for the shared app)
+        type: string
+        required: false
+        default: ''
+      brand_android_package:
+        description: Branded Android package (leave empty for the shared app)
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: ${{ (inputs.profile == 'production' || inputs.profile == 'production-apk') && 'production' || 'staging' }}
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+      BRAND_APP_NAME: ${{ inputs.brand_app_name }}
+      BRAND_ANDROID_PACKAGE: ${{ inputs.brand_android_package }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required secrets
+        run: |
+          [ -n "$EXPO_TOKEN" ] || { echo "::error::EXPO_TOKEN secret is missing"; exit 1; }
+          [ -n "$GOOGLE_SERVICES_JSON_BASE64" ] || { echo "::error::GOOGLE_SERVICES_JSON_BASE64 secret is missing (Firebase is required for push)"; exit 1; }
+
+      - name: Write google-services.json from the secret
+        run: |
+          echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 -d > google-services.json
+          python3 -c "import json;json.load(open('google-services.json'))" || { echo "::error::google-services.json is not valid JSON"; exit 1; }
+          echo "GOOGLE_SERVICES_FILE=./google-services.json" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - run: npm ci
+
+      - name: Check that the resolved app config includes Firebase
+        run: |
+          npx expo config --type public --json > resolved-config.json
+          node -e "const c=require('./resolved-config.json'); if(!c.android||!c.android.googleServicesFile){console.error('googleServicesFile missing from app config');process.exit(1)} console.log('package:',c.android.package)"
+
+      - name: Build locally on the runner
+        run: eas build --local --non-interactive --platform android --profile "${{ inputs.profile }}" --output "build-output"
+
+      - name: Verify Firebase is inside the build
+        run: |
+          if unzip -l build-output >/dev/null 2>&1; then
+            unzip -p build-output 'resources.arsc' 'base/resources.pb' 2>/dev/null | grep -a -q google_app_id \
+              && echo "Firebase config found in the build." \
+              || { echo "::error::google_app_id not found in the build: Firebase is missing"; exit 1; }
+          else
+            echo "::error::Build output is not a valid archive"; exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-${{ inputs.profile }}-${{ github.run_number }}
+          path: build-output
+          retention-days: 14
