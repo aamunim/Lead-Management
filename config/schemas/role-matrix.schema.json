@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Role matrix (0A.20-T2)",
+  "description": "Expected grant of every registered permission for every template role: true (granted, not scopable), a scope, or false. Checked against the database by `npm run test:role-matrix`.",
+  "type": "object",
+  "properties": { "$comment": { "type": "string" } },
+  "additionalProperties": {
+    "type": "object",
+    "description": "Type profile (template set): role key → permissions.",
+    "additionalProperties": {
+      "type": "object",
+      "description": "Template role: permission key → expected grant.",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$" },
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "boolean" },
+          { "enum": ["own", "team", "org_unit", "branch", "all"] }
+        ]
+      }
+    }
+  }
+}

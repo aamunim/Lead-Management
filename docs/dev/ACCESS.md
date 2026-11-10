@@ -61,3 +61,10 @@ updates or deletes must call `app.can()` or a helper built on it — or be allow
 
 `app.who_matches(institution, rule, user)` evaluates `{mode: all | roles | users}` for non-access settings
 (notification recipients in 0B).
+
+## Speed of `can()` (0A.20)
+
+`can()` is for one check per request (an RPC deciding whether a write is allowed): about 0.05–0.25 ms per call as
+`authenticated`. Never call it per row of a list: lists use the RLS rule, which loads the person's access once per
+query. The wrappers are PL/pgSQL on purpose — a SQL-language function with `SET search_path` is planned again on every
+call (lesson 13). Measured by `npm run bench`.

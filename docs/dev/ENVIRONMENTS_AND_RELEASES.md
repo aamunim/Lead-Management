@@ -41,12 +41,29 @@ entered in the app / Master Admin panel and stored in the Supabase Vault (0A.07,
 
 | Workflow | Trigger | What it does |
 |---|---|---|
-| `ci.yml` | every PR and push to `main` | Typecheck, config check, unit tests, web build; migrations applied to a fresh database; secret scan and "migration PR must declare a database deploy" (both approved, D27). Later milestones add the schema lint, DEFINER audit, RPC-as-role tests, leak test, role matrix, i18n lint and screenshot tests. |
+| `ci.yml` | every PR, push to `main`, nightly (21:17 UTC) and manual | Typecheck, config check, i18n lint and missing keys, permission manifests, unit tests, web build; migrations applied to a fresh database; schema lint (incl. DEFINER registry and write checks) and its fixtures; SQL tests as real roles (RPC-as-role); end-to-end tests; role matrix; benchmark (noisy neighbour); UI tests and the screenshot matrix against committed baselines; cross-tenant leak test with self-test; secret scan and "migration PR must declare a database deploy" (D27). |
 | `app-update.yml` | manual | Database + app / App only / Database only to staging or production: `supabase db push`, optional `functions deploy`, then `eas update` on the channel. |
 | `build-android.yml` | manual | Local EAS build on the runner for a chosen profile; writes `google-services.json` from the secret; fails if Firebase is missing from the config or the built package; uploads the APK / AAB as an artifact. Brand inputs prepare branded apps (D12, Phase 5). |
 | `deploy-web.yml` | manual | Web export and FTPS upload: new assets first, `index.html` last. **Proposed:** move to atomic hosting with automatic custom-domain SSL in 1B. |
 
-Set `checks`, `database` and `secret-scan` as **required status checks** on `main` (repository settings → branch protection).
+### Required checks on `main` (0A.20-T6 — the owner sets this once in GitHub)
+
+Repository **Settings → Branches → Branch protection rule** (or **Rules → Rulesets**) for `main`: *Require a pull request
+before merging*, *Require status checks to pass*, and add these checks (names as GitHub shows them after the first PR
+run):
+
+| Check | Gates inside it |
+|---|---|
+| `Typecheck, config, unit tests, web build` | typecheck, settings / config schema validation, i18n lint and missing keys, permission manifests, unit tests, web build |
+| `Migrations on a fresh database + database gates` | migrations from zero, schema lint + fixtures (DEFINER audit, invoker sweep, write checks), labels, SQL tests as real roles, e2e, **role matrix**, **benchmark**, UI tests, **screenshot diff** |
+| `cross-tenant leak test` | leak test over the whole catalogue (tables, RPCs, storage, Realtime, extensions, dual-membership user) and its self-test |
+| `Secret scan (D27)` | committed secrets |
+| `Migration changes declare a database deploy (D27)` | deploy type declared on migration PRs |
+
+Screenshot baselines are made in this repository's dev container (`npm run screens:update`). If the CI browser draws
+text slightly differently and the diff fails on an unchanged screen, download the `ui-screenshots` artifact of that
+run (it has the CI images and the diffs), check them, copy the `matrix-*.png` files over `tests/screenshots/` (without
+the `matrix-` prefix) and commit.
 
 ## Release rules
 

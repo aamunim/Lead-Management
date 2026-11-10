@@ -26,6 +26,7 @@ Read in this order before working on any milestone:
 22. `PERMISSIONS.md` — module manifests, the permission registry, roles, flags, templates and the rollout of new permissions.
 23. `ACCESS.md` — role assignments, `can()`, `user_access`, RLS for record tables, access version, safeguards.
 24. `USERS_ADMIN.md` — Settings → Users / Roles screens, access explainer (`app.record_entities`), change log.
-25. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-26. `../PLAN_BN.md` — background. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**: when the two differ, the roadmap wins. When a detail is in neither the roadmap nor this developer guide, take it from the plan chapter the milestone points to. Owner decisions are recorded in the roadmap (section 12), not in the plan.
-27. `PROGRESS.md` — which milestones are done.
+25. `QUALITY_GATES.md` — seed generator, role matrix, benchmark, screenshot matrix (0A.20); `RISK_REVIEW_0A.md`, `DEMO_0A.md`.
+26. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+27. `../PLAN_BN.md` — background. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**: when the two differ, the roadmap wins. When a detail is in neither the roadmap nor this developer guide, take it from the plan chapter the milestone points to. Owner decisions are recorded in the roadmap (section 12), not in the plan.
+28. `PROGRESS.md` — which milestones are done.

@@ -37,6 +37,7 @@
     "@types/node": "^22.20.5",
     "@types/react": "~19.3.0",
     "ajv": "^8.20.0",
+    "pngjs": "3.4.0",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -62,7 +63,11 @@
     "test:lint": "bash scripts/tests/extension-lint.test.sh && psql \"${DB_URL:-postgresql://postgres:postgres@127.0.0.1:54322/postgres}\" -X -q -v ON_ERROR_STOP=1 -f supabase/lint/tests/lint_fixtures_test.sql",
     "test:leak": "bash scripts/leak-test.sh",
     "test:leak-self": "psql \"${DB_URL:-postgresql://postgres:postgres@127.0.0.1:54322/postgres}\" -X -q -v ON_ERROR_STOP=1 -f supabase/tests/leak/leak_selftest.sql",
-    "check:functions": "npx --yes deno@2 check --config supabase/functions/deno.json supabase/functions/*/index.ts"
+    "check:functions": "npx --yes deno@2 check --config supabase/functions/deno.json supabase/functions/*/index.ts",
+    "screens:update": "UPDATE_SCREENSHOTS=1 node --test scripts/ui/matrix.web.test.mjs",
+    "test:role-matrix": "node scripts/role-matrix/run.mjs",
+    "bench": "node scripts/bench/run.mjs",
+    "seed:generate": "node scripts/seed/generate.mjs"
   },
   "private": true,
   "description": "Leadora: multi-institution lead and admission management platform."

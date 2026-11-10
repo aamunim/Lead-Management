@@ -6,6 +6,10 @@ on:
   pull_request:
   push:
     branches: [main]
+  # Nightly full run (0A.20-T3/T4): every gate, the whole screenshot matrix and the benchmark on the latest main.
+  schedule:
+    - cron: '17 21 * * *'
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -40,10 +44,8 @@ jobs:
           deno-version: v2.x
       - name: Edge Functions typecheck (Deno)
         run: deno check --config supabase/functions/deno.json supabase/functions/*/index.ts
-      # Gates added by later milestones (keep the order):
-      # - i18n lint: no hard-coded UI strings, every key in en + bn          (0A.10)
-      # - label lint: no education words in code identifiers                 (0A.12)
-      # - screenshot tests: light/dark x bn/en with long labels              (0A.20)
+      # i18n lint, missing keys, label lint and permission manifests run inside `npm run check` (0A.10, 0A.12, 0A.16);
+      # the screenshot matrix, role matrix and benchmark run in the database job below (0A.20).
 
   database:
     name: Migrations on a fresh database + database gates
@@ -80,23 +82,32 @@ jobs:
         run: npm run check:labels
       - name: Database tests as real roles (0A.03+)
         run: npm run test:db
+      - name: Role matrix — every template role × permission × scope (0A.20)
+        run: npm run test:role-matrix
+      - name: Benchmark — large vs small institution, RLS and can() cost (0A.20)
+        run: npm run bench
+      - name: Upload benchmark results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-results
+          path: bench-results/
+          if-no-files-found: ignore
       - name: End-to-end tests (real sign-in, hook, RLS through REST, Storage, Realtime)
         run: npm run test:e2e
       - name: Web build connected to the local Supabase
         run: npm run export:web:local
       - name: Install a browser for UI tests (not a project dependency)
         run: npm install --no-save playwright@1.63.0 && npx playwright install --with-deps chromium
-      - name: UI tests on the web build (language switch 0A.10; formats, pickers, screenshots 0A.11)
+      - name: UI tests and the screenshot matrix (every route × light/dark × bn/en × weird labels, 0A.20)
         run: npm run test:ui
-      - name: Upload UI screenshots (bn/en × light/dark)
+      - name: Upload UI screenshots and screenshot diffs (bn/en × light/dark)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ui-screenshots
           path: ui-screenshots/
           if-no-files-found: ignore
-      # Gates added by later milestones (keep the order):
-      # - role-matrix test                                                   (0A.17 / 0A.20)
 
   leak-test:
     name: cross-tenant leak test

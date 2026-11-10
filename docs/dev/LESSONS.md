@@ -18,6 +18,7 @@ is enforced by a milestone. In a multi-institution app every mistake is multipli
 | 10 | Soft delete + an append-only timeline made restore and audit easy (good pattern). | Keep it; notes are separate rows; base for per-institution undo. | 0A.09 (event / audit log), 1.09, G10 |
 | 11 | Google Play: call-log permission declaration and an account-deletion web path are required; FCM needs `google-services.json` in the build; pre-launch test devices pollute push stats. | Confirm the Play policy first; native module in Phase 3; web account-deletion path; exclude test devices from push stats. | 0B.20, 1.23, 3.01 (gate) |
 | 12 | Never commit secrets: Firebase JSON, `google-services.json`, `.env`, keystore, Apps Script secret, tokens. | Keys entered in the app, stored in the Vault; the app sees only a hint; never logged. | `.gitignore` (0A.01), 0A.02 (secret scanning, Proposed), 0A.07 (secrets), G11 |
+| 13 | A per-row `can()` took ~0.45 ms: a SQL-language function with a `SET search_path` clause is never inlined and is planned again on every call (0A.20). | Helpers called many times per statement are PL/pgSQL (plan cached) or SQL without a `SET` clause; RLS loads a person's access once per query (init-plan), never per row. | Benchmark harness `npm run bench` (0A.20), `docs/dev/ACCESS.md` |
 
 ## How the lessons stay alive (Ch 51.3)
 
