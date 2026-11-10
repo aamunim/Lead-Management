@@ -55,6 +55,10 @@ jobs:
         run: supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,realtime,storage-api,supavisor,postgres-meta
       - name: Apply all migrations from zero (without seed)
         run: supabase db reset --no-seed
+      - name: Schema lint (0A.04)
+        run: npm run lint:schema
+      - name: Schema lint catches every rule (fixtures)
+        run: npm run test:lint
       - name: Apply all migrations from zero with test seed
         run: supabase db reset
       - name: Database tests as real roles (0A.03+)
@@ -62,9 +66,6 @@ jobs:
       - name: End-to-end auth tests (real sign-in, hook, RLS through REST)
         run: npm run test:e2e
       # Gates added by later milestones (keep the order):
-      # - schema lint: institution_id + RLS + index on every tenant table    (0A.04)
-      # - DEFINER audit and invoker-calls-revoked-function sweep             (0A.04, lesson 1)
-      # - RPC tests as real signed-in roles                                  (0A.04)
       # - cross-tenant leak test over every table, RPC, storage, channel     (0A.05)
       # - role-matrix test                                                   (0A.17 / 0A.20)
 

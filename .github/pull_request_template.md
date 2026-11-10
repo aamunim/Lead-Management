@@ -17,7 +17,8 @@
 
 ## Checklist (docs/DEVELOPMENT_ROADMAP.md Section 9.1; docs/dev/ARCHITECTURE_RULES.md)
 - [ ] Ground rules G1–G20 respected; nothing hard-coded (words, institution data, secrets).
-- [ ] New tables: `institution_id` (+ `branch_id` if relevant), RLS, indexes start with `institution_id`, added to the leak test.
+- [ ] New tables: `institution_id` (+ `branch_id` if relevant), RLS, indexes start with `institution_id`, added to the leak test; `npm run lint:schema` passes (exceptions only in `supabase/lint/allowlist.sql` with a reason).
+- [ ] New SECURITY DEFINER function? Registered in `app.definer_registry` with reason, reviewer and tenant check.
 - [ ] Server decides institution / permissions from the session, never from the client.
 - [ ] RPC signature changed? If yes: a new RPC instead, or an optional parameter with a default (lesson 7).
 - [ ] New queue or job has attempts, back-off, "given up" and idempotency keys (lesson 2).
