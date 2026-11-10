@@ -132,7 +132,7 @@ export default function ExplainScreen() {
                     </AppText>
                     <AppText variant="caption" style={{ color: colors.onSurfaceVariant }}>
                       {[r.scope ? `${t('role.scope')}: ${tDynamic(`admin:scopes.${r.scope}`)}` : null,
-                        r.branch_id ? t('user.inBranch', { branch: branchName(r.branch_id) }) : t('user.everywhere'),
+                        r.branch_id && data.branches.length > 0 ? t('user.inBranch', { branch: branchName(r.branch_id) }) : null,
                         r.valid_to ? t('user.until', { date: format.dateTime(r.valid_to) }) : null].filter(Boolean).join(' · ')}
                     </AppText>
                   </View>

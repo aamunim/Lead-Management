@@ -44,6 +44,24 @@ institution (implicit root)
 `branch_id = null` means institution-level / branch not set yet. Branch-limited staff do **not** see null-branch
 records; Admins and the person who created the record do. Lists get a "Branch not set" filter (Ch 12.7 #1).
 
+## Settings → Branches (0A.19)
+
+`/admin/branches` (permission `settings.organisation`, shown only when branches are on): list, add, edit (name,
+address, phone checked against the institution's phone rules, head) and archive. A branch still in use cannot be
+archived: `branch_archive_check(id)` counts sub-units, unit members, managers, staff based there and roles limited to
+it (1A / 1B add their records), and the screen offers **"move everything to another branch, then archive"**
+(`branch_move_contents(from, to)`: moves sub-units with their subtrees, members, managers, home-branch staff and
+branch-limited role assignments; access is rebuilt; audited as `branch.contents_moved` with the counts). With branches
+off nothing about branches appears: no Settings entry, no branch field when giving a role, no branch in the
+explainer or on a person's roles.
+
+The roadmap calls the permission `settings.branches` ("key name to confirm" in 0A.16); the registry uses
+`settings.organisation` (branches, departments and teams) — listed for the owner's review in `PERMISSIONS.md`.
+
+**Proposed follow-ups (0A.19-T8, not built):** branch filter and column on the lead list and board (1A, Ch 15);
+branch choice on the public application form (1B, Ch 27); a bulk "assign branch" tool with preview and undo (1A); a
+"change branch" action on a lead (1A).
+
 ## Branch or a separate institution in a group? (0A.15-T6, Ch 12.6, Proposed guidance)
 
 | Question | Branch (same institution) | Separate institution (in a group, D25) |

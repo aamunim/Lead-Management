@@ -12,6 +12,7 @@ import {
 } from '@/lib/admin';
 import { describeError } from '@/lib/errors';
 import { useFormat } from '@/lib/locale';
+import { useSetting } from '@/lib/settings';
 import { Badge, Row, Section, permissionLabel, roleName, tDynamic } from '@/ui/admin/parts';
 import { BottomSheet, Button, ErrorState, Screen, Skeleton, TextField, useConfirm, useSnackbar } from '@/ui/components';
 import { AppHeader } from '@/ui/shell/AppHeader';
@@ -35,6 +36,7 @@ export default function UserScreen() {
   const [deactivating, setDeactivating] = useState(false);
   const [reason, setReason] = useState('');
   const [editing, setEditing] = useState(false);
+  const branchesOn = useSetting<boolean>('branches_enabled', false) === true;
 
   const refresh = useCallback(async () => {
     const [user, tree] = await Promise.all([fetchUser(id), fetchOrgTree()]);
@@ -78,7 +80,7 @@ export default function UserScreen() {
   const statusTone = { pending: 'warning', active: 'success', deactivated: 'neutral' } as const;
 
   const where = (a: Assignment) =>
-    a.branch_id ? t('user.inBranch', { branch: names[a.branch_id] ?? '' })
+    a.branch_id && branchesOn ? t('user.inBranch', { branch: names[a.branch_id] ?? '' })
       : a.org_unit_id ? t('user.inUnit', { unit: names[a.org_unit_id] ?? '' }) : t('user.everywhere');
   const dates = (a: Assignment) => [t('user.from', { date: format.dateTime(a.valid_from) }),
     a.valid_to ? t('user.until', { date: format.dateTime(a.valid_to) }) : null].filter(Boolean).join(' · ');

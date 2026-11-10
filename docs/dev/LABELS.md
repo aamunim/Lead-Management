@@ -76,7 +76,9 @@ Module names follow their base word (`module.clients` → plural of `client`) un
 |---|---|
 | `public.labels_get()` | all words of the active institution: resolved, the default underneath, the product word |
 | `public.label_set(key, en_singular, en_plural, bn_forms, institution?)` | rename (permission `settings.terminology`; Master Admin until 0A.17); audited, event `label.changed`, bumps the settings version so every device refreshes |
-| `public.label_reset(key, institution?)` | back to the default |
+| `public.label_reset(key, institution?)` | back to the default; audited with old and new (default) values, event `label.changed` (0A.19) |
+| `public.label_reset_all(institution?)` | every renamed word back to its default; locked words stay; one audit row per word (0A.19) |
+| `public.label_bn_forms(key, base, overrides)` | the Bangla forms the server would store, for the live preview (0A.19) |
 | `public.label_lock(institution, key, locked)` | platform only |
 | `app.label(institution, key, language, form)` | one word for notifications, prints and AI prompts (later milestones) |
 
@@ -103,8 +105,18 @@ Module names follow their base word (`module.clients` → plural of `client`) un
 3. Screenshot tests run with the **weird-labels institution** (`test-weird-labels`, user `weird.member@example.test`)
    in both languages (Ch 8.9 rule 4).
 
+## Settings → Terminology (0A.19)
+
+`/admin/terminology` (permission `settings.terminology`): every word grouped as in Ch 8.4, with the same search as
+the read-only screen; rename English singular / plural and the Bangla base word (the other Bangla forms are derived by
+the server and can be changed); length limit shown and checked on both sides; locked words read-only; reset one word
+or all. The **live preview** (`src/ui/admin/LabelPreview.tsx`) shows a list card, a receipt header and a text message
+with the draft word in either language, using a private copy of the translations — the real screens change only
+after saving. After saving, the app reloads the words (`loadLabels`), so every screen re-renders; other devices
+reload on their next request (settings version). The roadmap names the RPCs `labels_set` / `labels_reset`; they are
+`label_set` / `label_reset` / `label_reset_all` here (same behaviour).
+
 ## Not built yet
 
-The editing screen Settings → Terminology with live preview and "reset all" (needs `settings.terminology`, 0A.16),
-the Master Admin lock UI (0B) and the type-profile wiring (0B.04). The read-only screen "Words used in this app"
-(`/terminology`) shows the dictionary in force, searches it and shows sample sentences.
+The Master Admin lock UI (0B) and the type-profile wiring (0B.04). The read-only screen "Words used in this app"
+(`/terminology`) stays for everyone.

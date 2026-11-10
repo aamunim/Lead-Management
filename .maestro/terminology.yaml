@@ -1,0 +1,33 @@
+# Maestro flow (0A.19, Android; owner checkpoint): rename a word in English and Bangla, watch the live preview, see
+# the menus use it, then reset all words. Needs a preview build pointing at staging with a Super Admin test user.
+# Run: maestro test -e EMAIL=… -e PASSWORD=… .maestro/terminology.yaml
+appId: com.leadora.leads
+---
+- launchApp:
+    clearState: true
+- tapOn: { id: "sign-in-email-input" }
+- inputText: ${EMAIL}
+- tapOn: { id: "sign-in-password-input" }
+- inputText: ${PASSWORD}
+- tapOn: { id: "sign-in-submit" }
+- assertVisible: { id: "home" }
+- tapOn: { id: "tab-settings" }
+- tapOn: { id: "settings-terminology" }
+- tapOn: { id: "term-client" }
+- tapOn: { id: "term-en-singular-input" }
+- eraseText
+- inputText: "Trainee"
+- tapOn: { id: "term-en-plural-input" }
+- eraseText
+- inputText: "Trainees"
+- tapOn: { id: "term-bn-base-input" }
+- eraseText
+- inputText: "প্রশিক্ষণার্থী"
+- scrollUntilVisible: { element: { id: "term-preview-receipt" } }
+- assertVisible: "Trainee: Rahim Uddin"
+- tapOn: { id: "term-save" }
+- assertVisible: { id: "terms-preview" }
+- scrollUntilVisible: { element: { id: "terms-reset-all" } }
+- tapOn: { id: "terms-reset-all" }
+- tapOn: { id: "confirm-ok" }
+- assertNotVisible: "Trainee: Rahim Uddin"

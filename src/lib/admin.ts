@@ -161,3 +161,27 @@ export const fetchAudit = (filters: AuditFilters, before?: { at: string; id: str
   rpc<{ items: AuditItem[]; has_more: boolean }>('audit.list', 'audit_list', {
     p_filters: { ...filters, ...(before ? { before_at: before.at, before_id: before.id } : {}) }, p_limit: 50,
   });
+
+// Branches (0A.19)
+export type BranchUnit = OrgUnit & { branch?: { address: string | null; phone: string | null; head_user_id: string | null } | null };
+export type BranchUsage = { units: number; unit_members: number; managers: number; staff_home_branch: number; role_assignments: number; total: number };
+export type BranchInput = { name: string; address: string; phone: string | null; headUserId: string | null };
+export const fetchBranchTree = () => rpc<{ branches_enabled: boolean; units: BranchUnit[] }>('branches.tree', 'org_tree_get', { p_include_archived: true });
+export const createBranch = (b: BranchInput) => rpc<string>('branches.create', 'branch_create', {
+  p_name: b.name, p_address: b.address || null, p_phone: b.phone || null, p_head_user_id: b.headUserId,
+});
+export const updateBranch = (id: string, b: BranchInput) => rpc<null>('branches.update', 'branch_update', {
+  p_id: id, p_name: b.name, p_address: b.address || null, p_phone: b.phone || null, p_head_user_id: b.headUserId,
+});
+export const branchUsage = (id: string) => rpc<BranchUsage>('branches.usage', 'branch_archive_check', { p_id: id });
+export const moveBranchContents = (from: string, to: string) => rpc<BranchUsage>('branches.move', 'branch_move_contents', { p_from: from, p_to: to });
+export const archiveBranch = (id: string) => rpc<null>('branches.archive', 'branch_archive', { p_id: id });
+
+// Terminology (0A.19)
+export type BnFormsValue = { base: string; plural: string; possessive: string; objective: string; plural_oblique: string };
+export const setLabel = (key: string, enSingular: string, enPlural: string, bnForms: Partial<BnFormsValue>) =>
+  rpc<unknown>('labels.set', 'label_set', { p_key: key, p_en_singular: enSingular, p_en_plural: enPlural, p_bn_forms: bnForms });
+export const resetLabel = (key: string) => rpc<unknown>('labels.reset', 'label_reset', { p_key: key });
+export const resetAllLabels = () => rpc<{ reset: number }>('labels.resetAll', 'label_reset_all');
+export const previewBnForms = (key: string, base: string, overrides: Partial<BnFormsValue>) =>
+  rpc<BnFormsValue | null>('labels.forms', 'label_bn_forms', { p_key: key, p_base: base, p_overrides: overrides });

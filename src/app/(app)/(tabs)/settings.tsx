@@ -3,6 +3,7 @@ import { View } from 'react-native';
 
 import { useTranslation } from '@/i18n';
 import { useMyAccess } from '@/lib/access';
+import { useSetting } from '@/lib/settings';
 import { Row } from '@/ui/admin/parts';
 import { EmptyState, ErrorState, Screen, Skeleton, type IconName } from '@/ui/components';
 import { useTheme } from '@/ui/theme';
@@ -13,6 +14,8 @@ export default function SettingsTab() {
   const { t } = useTranslation('admin');
   const { space } = useTheme();
   const { loaded, error, retry, can } = useMyAccess();
+  // With branches off, nothing about branches appears anywhere (Ch 12.2).
+  const branchesOn = useSetting<boolean>('branches_enabled', false) === true;
   type Item = { href: Href; title: string; help: string; icon: IconName; testID: string; show: boolean };
   const all: Item[] = [
     { href: '/admin/users', title: t('menu.users'), help: t('menu.usersHelp'), icon: 'group', testID: 'settings-users', show: can('settings.users') },
@@ -20,6 +23,10 @@ export default function SettingsTab() {
       show: can('settings.roles') },
     { href: '/admin/explain', title: t('menu.explain'), help: t('menu.explainHelp'), icon: 'help-outline', testID: 'settings-explain',
       show: can('settings.users') },
+    { href: '/admin/branches', title: t('menu.branches'), help: t('menu.branchesHelp'), icon: 'store', testID: 'settings-branches',
+      show: branchesOn && can('settings.organisation') },
+    { href: '/admin/terminology', title: t('menu.terminology'), help: t('menu.terminologyHelp'), icon: 'translate', testID: 'settings-terminology',
+      show: can('settings.terminology') },
     { href: '/admin/audit', title: t('menu.audit'), help: t('menu.auditHelp'), icon: 'history', testID: 'settings-audit', show: can('audit.view') },
   ];
   const items = all.filter((i) => i.show);
