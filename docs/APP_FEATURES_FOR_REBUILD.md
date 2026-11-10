@@ -62,8 +62,9 @@
 46. [Renaming terms and modules per institution](#46-renaming-terms-and-modules-per-institution)
 47. [Beyond education: other businesses and industry selection](#47-beyond-education-other-businesses-and-industry-selection)
 48. [Planning round 4: name, plans, messaging, login, SMS and OTP](#48-planning-round-4-name-plans-messaging-login-sms-and-otp)
+49. [Roles and permissions v2: future-proof access control](#49-roles-and-permissions-v2-future-proof-access-control)
 
-> **Note:** sections 39–48 record what was added and decided while planning. Where they conflict with an
+> **Note:** sections 39–49 record what was added and decided while planning. Where they conflict with an
 > earlier section, **the later section wins**. Items marked **Proposed** still need the owner's approval.
 
 ---
@@ -140,6 +141,8 @@ The owner's requirements:
 - **Ask before risky actions:** dialogs warn before re-running costly AI or before deleting.
 
 ## 4. Users, roles, permissions, "who" rules
+
+> **Replaced for the new app by section 49** (roles and permissions v2). This section describes the earlier version and is kept as background.
 
 - **Seed roles:**
 
@@ -2339,3 +2342,152 @@ Both **SMS and email**, chosen per institution, with fallback.
 1. The final **product name** (48.1).
 2. **Prices, limits and trial length** (48.2).
 3. Which **SMS gateways** the first institutions use (48.5, step 1).
+
+---
+
+## 49. Roles and permissions v2: future-proof access control
+
+> **বাংলা সারাংশ:** অংশ ৪-এর রোল আর পারমিশনের ব্যবস্থা এক প্রতিষ্ঠানের জন্য ঠিক ছিল, কিন্তু শাখা, নতুন মডিউল,
+> কাস্টম রেকর্ড, API, অন্য ইন্ডাস্ট্রি আর নতুন চাহিদা এলে এটা ভেঙে পড়বে। এখানে সমালোচনার চোখে ২০টি ভবিষ্যৎ
+> জটিলতা, প্রতিটির সমাধান, আর একটি নতুন (v2) কাঠামো লেখা আছে: পারমিশনের রেজিস্ট্রি, স্কোপ (নিজের / টিম / শাখা / সব),
+> একজনের একাধিক রোল, সাংগঠনিক কাঠামো, ফিল্ড-লেভেল গোপনীয়তা, অনুমোদনের নিয়ম, সময়সীমাসহ অ্যাক্সেস, আর
+> "কেন দেখতে পাচ্ছি না" ব্যাখ্যার টুল। সব অংশ **প্রস্তাবিত**।
+
+### 49.1 What section 4 gets right
+
+Keep these ideas: permission keys instead of hard-coded role checks; system roles that can't be deleted;
+custom roles; restricting staff to some courses; RLS as the final guard; a reusable "who" rule.
+
+### 49.2 Critical review: what will break as needs grow
+
+| # | Future need | Why the section 4 model struggles | Solution in v2 |
+|---|---|---|---|
+| R1 | **New modules** (students, payments, campaigns, alumni, custom records, integrations, AI …) | Permission keys mostly cover leads; every new module adds keys by hand, and roles must be edited one by one. | A **permission registry** (49.4): each module declares its permissions in a standard shape; the role editor is generated from it. |
+| R2 | **Branches and deeper hierarchy** (D9): branch manager → team lead → caller; departments | Scope is only own / team / all; a person has **one** `team_lead_id`, so only one level. | **Org units** (49.5): branch → department → team, any depth; scopes own / team (incl. sub-teams) / org unit / branch / all. |
+| R3 | **One person, several jobs** (caller and accountant; admin of branch A, caller in branch B) | One role per person. | **Several role assignments per user**, each with its own scope (49.6). |
+| R4 | **`acts_as` hidden behaviour** | Custom roles act as caller / team lead / admin, so what they get (leaderboard, escalations, assignment) is decided by hidden code. New behaviours have nowhere to go. | Replace `acts_as` with explicit **behaviour flags** per role (49.7). |
+| R5 | **`settings.manage` means too much** | It gives all settings *and* all courses. An accountant who only manages fee settings can't be set up. | Split into **per-area settings permissions** and keep data scope separate from admin rights (49.4). |
+| R6 | **Wildcard `*` grows silently** | Every new permission, including dangerous ones (billing, integrations, delete all, export all), is granted automatically. | `*` only for the Super Admin system role; **sensitive permissions** (49.4) are never inside other wildcards and need 2-factor sign-in. |
+| R7 | **Two access systems** ("who" rules and permission keys) | A person may have a permission but be blocked by a "who" rule, or the opposite. Hard to explain and to test. | "Who" rules become **permissions with scope** (e.g. `admission.mark`), managed in the same role editor. A "who" picker remains only for non-access settings (e.g. who receives a notification). |
+| R8 | **Ranks (100 / 80 / 50 / 10) are brittle** | Custom roles need a number; "who may manage whom" depends on numbers that mean nothing to users. | **No privilege escalation rule:** nobody can create or grant a role with permissions they don't have, or edit a user who has more. Ranks are kept only for sorting. |
+| R9 | **Data theft by staff** (copying phone lists, mass export before leaving) | Anyone who can view a lead sees all its fields; export is one permission. | **Field-level rules** (49.8): mask phone numbers for chosen roles (calls still work through the app); daily view / export limits with alerts; watermark and log every export; export needs approval above a size. |
+| R10 | **Sensitive fields** (fees, discounts, guardian NID, health or KYC data later, 47.6) | No field-level control. | Fields marked sensitive in the registry; only roles with the field permission see them; never sent to AI. |
+| R11 | **New approvals** (refund, void payment, delete lead, bulk SMS, large export, fee change) | Only discounts have an approval flow with limits. | A **generic approval engine** (49.9): action, limit per role, approver rule, expiry, audit. |
+| R12 | **Temporary access** (leave cover, admission-season staff, auditors) | Roles have no dates. | Role assignments with **start and end dates**; **delegation** ("act for Rahim until Friday") with audit (49.6). |
+| R13 | **Sharing one record** (a lead handed to a specialist for one call) | Only assignment or hand-over. | **Collaborators** on a record with view / edit, optionally time-limited (49.6). |
+| R14 | **Speed with complex rules** (lesson 34) | Checking many rules per row in RLS slows lists. | Precompute each user's visible scope into a `user_access` table; RLS uses simple `IN` checks; benchmark with large tenants (49.10). |
+| R15 | **Stale permissions in the JWT** | A changed role doesn't apply until the token refreshes; a removed person may keep access for minutes or hours. | An **access version** per user; the server compares it on every call and forces a refresh when it changed; deactivation ends all sessions at once (49.10). |
+| R16 | **"Why can't I see this lead?"** | No way to explain access; support guesses. | An **access explainer** for admins: pick a user and a record, see which role / scope / field rule allows or blocks it (49.11). |
+| R17 | **API keys, webhooks, custom records, extensions** (43, 45) | They need permissions too, outside the staff role system. | API keys get **scopes from the same registry**; each custom record type gets generated permissions; extensions register their own (49.4). |
+| R18 | **Renamed terms** (46) and **other industries** (47) | Permission names say "lead", "student", "course". | Permission labels use the label system ("View trainees"); keys stay neutral (47.2). |
+| R19 | **Groups of institutions** (one owner with several colleges) and later **portal users** (D10) | One user = one institution; only staff users. | Store membership as `institution_members(user_id, institution_id, …)` from day one, and a **user kind** (staff / portal / API); group-level roles can be added later without a migration. |
+| R20 | **Adding permissions in future releases** | New keys must be given to existing roles somehow; doing it by hand per institution is error-prone; giving them to everyone is unsafe. | Each new permission declares **defaults for system roles and role templates**; custom roles get only non-sensitive ones by an "inherit from" rule; admins see "new permissions in this release" to review. |
+
+Also protected against: removing the last Super Admin, an admin removing their own access by mistake,
+deleting a role that has people (a **reassign** step instead), and the platform-level roles (49.12) being mixed with institution roles.
+
+### 49.3 The v2 model at a glance
+
+```
+Permission registry  ─┐
+(module.action, scope?, sensitive?, label)
+                      ├─>  Role  ─(grants with scope)─>  Role assignment ─> User
+Role templates ───────┘    (system / custom,              (role, org unit / branch,
+(per type profile)          behaviour flags)               valid from / to)
+Org units: institution → branch → department → team
+Field rules, approval policies, collaborators, delegation  →  all checked by one function: can(user, action, record)
+```
+
+### 49.4 Permission registry
+
+- Every module registers its permissions as data: `module.action`, e.g. `client.view`, `client.edit`, `payment.void`,
+  `campaign.send`, `settings.fees`, `integration.manage`.
+- **Standard actions:** `view`, `create`, `edit`, `delete`, `export`, `import`, `assign`, `approve`, plus special ones per module.
+- **Scope-capable** permissions take a scope when granted: `own`, `team` (with sub-teams), `org_unit`, `branch`, `all`.
+- **Sensitive** permissions (billing, integrations, delete, export all, view sensitive fields, impersonate, manage roles):
+  never implied by any wildcard except the Super Admin's `*`; changing them needs 2-factor sign-in and is always audited.
+- **Settings permissions per area:** `settings.pipeline`, `settings.fees`, `settings.messaging_templates`, `settings.users`,
+  `settings.roles`, `settings.terminology` … instead of one `settings.manage`.
+- Each permission has a label key (46) and a short help text shown in the role editor.
+
+### 49.5 Org units and data scope
+
+- **Org units:** institution → branch → department → team, as a tree of any depth. A user can belong to several units.
+- Each unit can have **managers**; "team" scope = the units a person manages, including sub-units.
+- Records (leads, clients, payments …) carry `branch_id` and an owner; scope is resolved from the owner's units and the record's branch.
+- **Offering limits** (the old course restriction): an extra filter on any role assignment, e.g. "only BBA and MBA".
+  Records with no offering are visible to admins and the creator (as today).
+
+### 49.6 Roles, assignments, delegation, collaborators
+
+- **Role** = a named set of permission grants (with scopes) + behaviour flags. System roles can't be deleted; custom roles can be copied.
+- **Role templates** per type profile (40.3) seed sensible roles, e.g. for a college: Owner / Principal (Super Admin),
+  Admin, Branch manager, Team lead, Counsellor (caller), **Admission officer** (now a real role template), Accountant,
+  Viewer / Auditor. A school adds Class teacher (view own class only); a coaching centre may only need Owner, Manager, Counsellor.
+- **Role assignment** = user + role + optional org unit / branch + optional offering limit + valid from / to.
+  A user may have **several**; their permissions are the **union**.
+- **Delegation:** a user (or admin) delegates their work to someone for a period; actions are logged as "B for A".
+- **Collaborators:** a record can be shared with a named user (view or edit, optional end date) without changing the owner.
+
+### 49.7 Behaviour flags (replacing `acts_as`)
+
+Per role, explicit switches:
+
+| Flag | Meaning |
+|---|---|
+| Can be assigned leads | appears in assignment pickers and round robin |
+| Counts in leaderboard and scorecard | included in credits and rankings (27) |
+| Receives escalations | gets speed-to-lead and overdue escalations (10) |
+| Counts as a manager | used for "team" scope and team reports |
+| Shows in team activity | tracked in team activity (26) |
+| Requires call-log sync | Android sync required (11) |
+
+### 49.8 Field-level rules
+
+- Fields can be **visible**, **masked** (e.g. `017•••••234`) or **hidden** per role.
+- Masked phone numbers can still be **called or messaged through the app**; the full number is never shown or copied.
+- Defaults per type profile: e.g. counsellors see masked guardian NID, no discount history; accountants see fees but masked phone.
+- **Export controls:** export permission per module and scope; exports above N rows need approval (49.9); every export is
+  logged and the file carries the user's name and time; daily view / export thresholds alert admins.
+
+### 49.9 Approval engine
+
+- **Policy** = action (e.g. `discount.give`, `payment.void`, `refund.create`, `lead.delete`, `campaign.send`, `export.large`, `fee.change`)
+  + limit per role (amount, %, count) + approver rule (role / scope / named users) + expiry.
+- Within the limit: done at once. Above it: a request goes to approvers, with notification and an approval queue.
+- Discounts (section 20) become one policy of this engine.
+
+### 49.10 Enforcement and speed
+
+- **One check function** `can(user, action, record)` used by RPCs; the same registry drives the UI (hide what you can't do) and API key scopes.
+- RLS stays the final guard and uses a precomputed `user_access` table (user → visible branches, org units, offerings, own / team user ids),
+  rebuilt when roles, assignments or units change.
+- An **access version** per user is checked on every request; on change the app refreshes the session; deactivation revokes sessions at once.
+- Tested with the cross-tenant leak test (41.2 T1) **and** a role matrix test: for each role template, try every permission on records in and out of scope.
+
+### 49.11 Admin tools
+
+- Role editor generated from the registry, grouped by module, with labels and help; "compare two roles"; "copy role".
+- **Access explainer** (R16).
+- **Access review report:** who has sensitive permissions, unused accounts, temporary access ending soon; monthly reminder to the Super Admin.
+- **Audit log** of every role, assignment, field rule and approval policy change.
+
+### 49.12 Platform level (Master Admin side)
+
+Separate from institution roles: **Master Admin**, **Support**, **Billing**, **Developer** (crash and feedback inbox, 29).
+Support access to an institution follows 41.1 M4 (reason, time limit, read-only by default, audited, visible to the institution).
+
+### 49.13 Phases
+
+- **Phase 0:** registry, roles with scoped grants, several assignments per user, org units with branches, behaviour flags,
+  sensitive permissions, no-escalation rule, `user_access` precompute, access version, role templates per type profile,
+  `institution_members` and user kind, audit log, basic access explainer.
+- **Phase 1:** field-level masking and export controls, approval engine (discounts move onto it), delegation, collaborators, access review report.
+- **Later:** institution groups (one owner, several institutions), portal users (D10).
+
+### 49.14 Questions for the owner
+
+1. Should one person be able to hold **several roles** (e.g. counsellor + accountant)? (Proposed: yes.)
+2. Should phone numbers be **masked** for counsellors by default, to stop staff copying lead lists? (Proposed: an option per institution, off by default.)
+3. Do some owners run **several institutions** and need one login across them? If yes, when?
+4. Are the role templates in 49.6 right for schools and colleges, or are other roles common (e.g. Principal, Vice-principal, Department head)?
