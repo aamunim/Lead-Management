@@ -1,0 +1,170 @@
+{
+  "fee": {
+    "singular": "Fee",
+    "plural": "Fees"
+  },
+  "lead": {
+    "singular": "Lead",
+    "plural": "Leads"
+  },
+  "lost": {
+    "singular": "Lost",
+    "plural": "Lost"
+  },
+  "branch": {
+    "singular": "Branch",
+    "plural": "Branches"
+  },
+  "caller": {
+    "singular": "Caller",
+    "plural": "Callers"
+  },
+  "client": {
+    "singular": "Student",
+    "plural": "Students"
+  },
+  "cohort": {
+    "singular": "Batch",
+    "plural": "Batches"
+  },
+  "network": {
+    "singular": "Alumnus",
+    "plural": "Alumni"
+  },
+  "receipt": {
+    "singular": "Receipt",
+    "plural": "Receipts"
+  },
+  "board_id": {
+    "singular": "Board ID",
+    "plural": "Board IDs"
+  },
+  "discount": {
+    "singular": "Discount",
+    "plural": "Discounts"
+  },
+  "offering": {
+    "singular": "Course",
+    "plural": "Courses"
+  },
+  "referrer": {
+    "singular": "Referrer",
+    "plural": "Referrers"
+  },
+  "converted": {
+    "singular": "Admitted",
+    "plural": "Admitted"
+  },
+  "documents": {
+    "singular": "Paper",
+    "plural": "Papers"
+  },
+  "team_lead": {
+    "singular": "Team Lead",
+    "plural": "Team Leads"
+  },
+  "assessment": {
+    "singular": "Admission test",
+    "plural": "Admission tests"
+  },
+  "conversion": {
+    "singular": "Admission",
+    "plural": "Admissions"
+  },
+  "merit_list": {
+    "singular": "Merit list",
+    "plural": "Merit lists"
+  },
+  "slot_group": {
+    "singular": "Section",
+    "plural": "Sections"
+  },
+  "after_steps": {
+    "singular": "Board flow",
+    "plural": "Board flows"
+  },
+  "appointment": {
+    "singular": "Campus visit",
+    "plural": "Campus visits"
+  },
+  "installment": {
+    "singular": "Installment",
+    "plural": "Installments"
+  },
+  "module": {
+    "leads": {
+      "singular": "Leads",
+      "plural": "Leads"
+    },
+    "clients": {
+      "singular": "Students",
+      "plural": "Students"
+    },
+    "network": {
+      "singular": "Alumni",
+      "plural": "Alumni"
+    },
+    "referrals": {
+      "singular": "Referral inbox",
+      "plural": "Referral inbox"
+    },
+    "scorecard": {
+      "singular": "Weekly scorecard",
+      "plural": "Weekly scorecard"
+    },
+    "leaderboard": {
+      "singular": "Leaderboard",
+      "plural": "Leaderboard"
+    },
+    "conversion_flow": {
+      "singular": "Admission flow",
+      "plural": "Admission flow"
+    },
+    "conversion_contribution": {
+      "singular": "Admission Contribution",
+      "plural": "Admission Contribution"
+    }
+  },
+  "payment_plan": {
+    "singular": "Fee plan",
+    "plural": "Fee plans"
+  },
+  "client_number": {
+    "singular": "Student ID",
+    "plural": "Student IDs"
+  },
+  "contact_person": {
+    "singular": "Guardian",
+    "plural": "Guardians"
+  },
+  "external_board": {
+    "singular": "External board",
+    "plural": "External boards"
+  },
+  "doc": {
+    "id_card_title": {
+      "singular": "ID Card",
+      "plural": "ID Cards"
+    },
+    "receipt_title": {
+      "singular": "Money Receipt",
+      "plural": "Money Receipts"
+    },
+    "admit_card_title": {
+      "singular": "Admit Card",
+      "plural": "Admit Cards"
+    },
+    "application_form_title": {
+      "singular": "Application Form",
+      "plural": "Application Forms"
+    }
+  },
+  "conversion_officer": {
+    "singular": "Admission Officer",
+    "plural": "Admission Officers"
+  },
+  "conversion_cancelled": {
+    "singular": "Admission cancelled",
+    "plural": "Admission cancelled"
+  }
+}

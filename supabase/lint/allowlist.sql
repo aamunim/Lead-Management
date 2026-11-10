@@ -17,3 +17,6 @@ insert into lint.allow (rule, object, reason) values
   ('platform_table', 'public.event_listeners', 'Product-wide registry of event listener functions.');
 insert into lint.allow (rule, object, reason) values
   ('platform_table', 'app.extension_migrations', 'Tracks applied extension migration files; product-wide, not tenant data.');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.label_keys', 'Product-wide registry of neutral label keys (Ch 8.4).'),
+  ('platform_table', 'public.label_defaults', 'Product, pack and type-profile default labels; not per institution.');

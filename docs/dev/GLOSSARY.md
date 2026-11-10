@@ -4,7 +4,9 @@ Use these words everywhere in the UI. If a word is missing, add it here in the s
 **Status:** proposed by development; **the owner or a native reader confirms** (or corrects) each row in the
 release review (`ENVIRONMENTS_AND_RELEASES.md` rule 8). Corrections change the row and every translation that uses it.
 
-## Renamable terms (come from labels, 0A.12 — never written into translations)
+## Renamable terms (come from labels — never written into translations)
+
+The full list with all keys and Bangla forms is in `LABELS.md` and on the screen "Words used in this app".
 
 Each institution can rename these. The defaults below are what an education institution sees.
 

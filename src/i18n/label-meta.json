@@ -1,0 +1,330 @@
+{
+  "lead": {
+    "group": "people",
+    "animate": true,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 40,
+    "sort_order": 0
+  },
+  "client": {
+    "group": "people",
+    "animate": true,
+    "lockable": false,
+    "legacy_key": "student",
+    "max_length": 40,
+    "sort_order": 10
+  },
+  "contact_person": {
+    "group": "people",
+    "animate": true,
+    "lockable": false,
+    "legacy_key": "guardian",
+    "max_length": 40,
+    "sort_order": 20
+  },
+  "network": {
+    "group": "people",
+    "animate": true,
+    "lockable": false,
+    "legacy_key": "alumnus",
+    "max_length": 40,
+    "sort_order": 30
+  },
+  "referrer": {
+    "group": "people",
+    "animate": true,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 40,
+    "sort_order": 40
+  },
+  "offering": {
+    "group": "offering",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "course",
+    "max_length": 30,
+    "sort_order": 50
+  },
+  "cohort": {
+    "group": "offering",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "batch",
+    "max_length": 30,
+    "sort_order": 60
+  },
+  "slot_group": {
+    "group": "offering",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "section",
+    "max_length": 30,
+    "sort_order": 70
+  },
+  "branch": {
+    "group": "offering",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 30,
+    "sort_order": 80
+  },
+  "external_board": {
+    "group": "offering",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 30,
+    "sort_order": 90
+  },
+  "board_id": {
+    "group": "offering",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 30,
+    "sort_order": 100
+  },
+  "after_steps": {
+    "group": "conversion",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "external_board_flow",
+    "max_length": 30,
+    "sort_order": 110
+  },
+  "conversion": {
+    "group": "conversion",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "admission",
+    "max_length": 30,
+    "sort_order": 120
+  },
+  "converted": {
+    "group": "conversion",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "admitted",
+    "max_length": 30,
+    "sort_order": 130
+  },
+  "conversion_cancelled": {
+    "group": "conversion",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "admission_cancelled",
+    "max_length": 30,
+    "sort_order": 140
+  },
+  "lost": {
+    "group": "conversion",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 30,
+    "sort_order": 150
+  },
+  "appointment": {
+    "group": "conversion",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "campus_visit",
+    "max_length": 30,
+    "sort_order": 160
+  },
+  "assessment": {
+    "group": "conversion",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "admission_test",
+    "max_length": 30,
+    "sort_order": 170
+  },
+  "merit_list": {
+    "group": "conversion",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 30,
+    "sort_order": 180
+  },
+  "documents": {
+    "group": "conversion",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "papers",
+    "max_length": 30,
+    "sort_order": 190
+  },
+  "client_number": {
+    "group": "conversion",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "student_id",
+    "max_length": 30,
+    "sort_order": 200
+  },
+  "payment_plan": {
+    "group": "money",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "fees_installments",
+    "max_length": 30,
+    "sort_order": 210
+  },
+  "fee": {
+    "group": "money",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 30,
+    "sort_order": 220
+  },
+  "installment": {
+    "group": "money",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 30,
+    "sort_order": 230
+  },
+  "receipt": {
+    "group": "money",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 30,
+    "sort_order": 240
+  },
+  "discount": {
+    "group": "money",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 30,
+    "sort_order": 250
+  },
+  "caller": {
+    "group": "roles",
+    "animate": true,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 30,
+    "sort_order": 260
+  },
+  "team_lead": {
+    "group": "roles",
+    "animate": true,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 30,
+    "sort_order": 270
+  },
+  "conversion_officer": {
+    "group": "roles",
+    "animate": true,
+    "lockable": false,
+    "legacy_key": "admission_officer",
+    "max_length": 30,
+    "sort_order": 280
+  },
+  "module.leads": {
+    "group": "modules",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "module.leads",
+    "max_length": 40,
+    "sort_order": 290
+  },
+  "module.clients": {
+    "group": "modules",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "module.students",
+    "max_length": 40,
+    "sort_order": 300
+  },
+  "module.network": {
+    "group": "modules",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "module.alumni",
+    "max_length": 40,
+    "sort_order": 310
+  },
+  "module.conversion_contribution": {
+    "group": "modules",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "module.admission_contribution",
+    "max_length": 28,
+    "sort_order": 320
+  },
+  "module.conversion_flow": {
+    "group": "modules",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": "module.admission_flow",
+    "max_length": 28,
+    "sort_order": 330
+  },
+  "module.leaderboard": {
+    "group": "modules",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 28,
+    "sort_order": 340
+  },
+  "module.scorecard": {
+    "group": "modules",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 28,
+    "sort_order": 350
+  },
+  "module.referrals": {
+    "group": "modules",
+    "animate": false,
+    "lockable": false,
+    "legacy_key": null,
+    "max_length": 28,
+    "sort_order": 360
+  },
+  "doc.receipt_title": {
+    "group": "documents",
+    "animate": false,
+    "lockable": true,
+    "legacy_key": null,
+    "max_length": 40,
+    "sort_order": 370
+  },
+  "doc.admit_card_title": {
+    "group": "documents",
+    "animate": false,
+    "lockable": true,
+    "legacy_key": null,
+    "max_length": 40,
+    "sort_order": 380
+  },
+  "doc.application_form_title": {
+    "group": "documents",
+    "animate": false,
+    "lockable": true,
+    "legacy_key": null,
+    "max_length": 40,
+    "sort_order": 390
+  },
+  "doc.id_card_title": {
+    "group": "documents",
+    "animate": false,
+    "lockable": true,
+    "legacy_key": null,
+    "max_length": 40,
+    "sort_order": 400
+  }
+}

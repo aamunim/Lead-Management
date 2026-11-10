@@ -6,6 +6,7 @@ import { useColorScheme } from 'react-native';
 
 import '@/i18n';
 import { BANGLA_FONT_FAMILY } from '@/i18n/language';
+import { loadLabels } from '@/lib/labels';
 import { initLanguage } from '@/lib/language';
 import { initLocale } from '@/lib/locale';
 
@@ -26,6 +27,7 @@ export default function RootLayout() {
   useEffect(() => {
     void initLanguage().catch(() => undefined);
     void initLocale().catch(() => undefined);
+    void loadLabels().catch(() => undefined);
   }, []);
 
   // Wait for the Bangla font so the first Bangla screen never flashes in a fallback font (an error still renders).

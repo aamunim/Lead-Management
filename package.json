@@ -50,6 +50,8 @@
     "test:e2e": "node --test \"scripts/e2e/*.e2e.mjs\"",
     "lint:schema": "bash scripts/schema-lint.sh",
     "db:extensions": "bash scripts/apply-extensions.sh",
+    "labels:export": "node scripts/labels/export-default-labels.mjs",
+    "check:labels": "node scripts/labels/export-default-labels.mjs --check",
     "test:lint": "bash scripts/tests/extension-lint.test.sh && psql \"${DB_URL:-postgresql://postgres:postgres@127.0.0.1:54322/postgres}\" -X -q -v ON_ERROR_STOP=1 -f supabase/lint/tests/lint_fixtures_test.sql",
     "test:leak": "bash scripts/leak-test.sh",
     "test:leak-self": "psql \"${DB_URL:-postgresql://postgres:postgres@127.0.0.1:54322/postgres}\" -X -q -v ON_ERROR_STOP=1 -f supabase/tests/leak/leak_selftest.sql",

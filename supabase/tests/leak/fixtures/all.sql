@@ -64,3 +64,15 @@ begin
     insert into leak.markers values ('leak-count-' || p_institution::text, 'extension data of A') on conflict do nothing;
   end if;
 end $$;
+
+-- 0A.12 labels: A's renamed word is a leak marker, so no table or RPC (labels_get, …) may show it to B.
+create function leak_fixtures.public__institution_labels(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_word text := 'leak-label-' || left(p_institution::text, 8);
+begin
+  insert into public.institution_labels (institution_id, key, en_singular, en_plural, bn_forms)
+  values (p_institution, 'client', v_word, v_word || 's', app.bn_forms(v_word, true));
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values (v_word, 'renamed label of A') on conflict do nothing;
+  end if;
+end $$;

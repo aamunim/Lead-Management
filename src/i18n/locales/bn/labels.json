@@ -1,0 +1,293 @@
+{
+  "fee": {
+    "singular": "ফি",
+    "plural": "ফিগুলো",
+    "possessive": "ফির",
+    "objective": "ফি",
+    "plural_oblique": "ফিগুলোর"
+  },
+  "lead": {
+    "singular": "লিড",
+    "plural": "লিডরা",
+    "possessive": "লিডের",
+    "objective": "লিডকে",
+    "plural_oblique": "লিডদের"
+  },
+  "lost": {
+    "singular": "হাতছাড়া",
+    "plural": "হাতছাড়াগুলো",
+    "possessive": "হাতছাড়ার",
+    "objective": "হাতছাড়া",
+    "plural_oblique": "হাতছাড়াগুলোর"
+  },
+  "branch": {
+    "singular": "শাখা",
+    "plural": "শাখাগুলো",
+    "possessive": "শাখার",
+    "objective": "শাখা",
+    "plural_oblique": "শাখাগুলোর"
+  },
+  "caller": {
+    "singular": "কলার",
+    "plural": "কলাররা",
+    "possessive": "কলারের",
+    "objective": "কলারকে",
+    "plural_oblique": "কলারদের"
+  },
+  "client": {
+    "singular": "শিক্ষার্থী",
+    "plural": "শিক্ষার্থীরা",
+    "possessive": "শিক্ষার্থীর",
+    "objective": "শিক্ষার্থীকে",
+    "plural_oblique": "শিক্ষার্থীদের"
+  },
+  "cohort": {
+    "singular": "ব্যাচ",
+    "plural": "ব্যাচগুলো",
+    "possessive": "ব্যাচের",
+    "objective": "ব্যাচ",
+    "plural_oblique": "ব্যাচগুলোর"
+  },
+  "network": {
+    "singular": "প্রাক্তন শিক্ষার্থী",
+    "plural": "প্রাক্তন শিক্ষার্থীরা",
+    "possessive": "প্রাক্তন শিক্ষার্থীর",
+    "objective": "প্রাক্তন শিক্ষার্থীকে",
+    "plural_oblique": "প্রাক্তন শিক্ষার্থীদের"
+  },
+  "receipt": {
+    "singular": "রসিদ",
+    "plural": "রসিদগুলো",
+    "possessive": "রসিদের",
+    "objective": "রসিদ",
+    "plural_oblique": "রসিদগুলোর"
+  },
+  "board_id": {
+    "singular": "বোর্ড আইডি",
+    "plural": "বোর্ড আইডিগুলো",
+    "possessive": "বোর্ড আইডির",
+    "objective": "বোর্ড আইডি",
+    "plural_oblique": "বোর্ড আইডিগুলোর"
+  },
+  "discount": {
+    "singular": "ছাড়",
+    "plural": "ছাড়গুলো",
+    "possessive": "ছাড়ের",
+    "objective": "ছাড়",
+    "plural_oblique": "ছাড়গুলোর"
+  },
+  "offering": {
+    "singular": "কোর্স",
+    "plural": "কোর্সগুলো",
+    "possessive": "কোর্সের",
+    "objective": "কোর্স",
+    "plural_oblique": "কোর্সগুলোর"
+  },
+  "referrer": {
+    "singular": "রেফারকারী",
+    "plural": "রেফারকারীরা",
+    "possessive": "রেফারকারীর",
+    "objective": "রেফারকারীকে",
+    "plural_oblique": "রেফারকারীদের"
+  },
+  "converted": {
+    "singular": "ভর্তি হয়েছে",
+    "plural": "ভর্তি হয়েছেগুলো",
+    "possessive": "ভর্তি হয়েছের",
+    "objective": "ভর্তি হয়েছে",
+    "plural_oblique": "ভর্তি হয়েছেগুলোর"
+  },
+  "documents": {
+    "singular": "কাগজপত্র",
+    "plural": "কাগজপত্রগুলো",
+    "possessive": "কাগজপত্রের",
+    "objective": "কাগজপত্র",
+    "plural_oblique": "কাগজপত্রগুলোর"
+  },
+  "team_lead": {
+    "singular": "টিম লিড",
+    "plural": "টিম লিডরা",
+    "possessive": "টিম লিডের",
+    "objective": "টিম লিডকে",
+    "plural_oblique": "টিম লিডদের"
+  },
+  "assessment": {
+    "singular": "ভর্তি পরীক্ষা",
+    "plural": "ভর্তি পরীক্ষাগুলো",
+    "possessive": "ভর্তি পরীক্ষার",
+    "objective": "ভর্তি পরীক্ষা",
+    "plural_oblique": "ভর্তি পরীক্ষাগুলোর"
+  },
+  "conversion": {
+    "singular": "ভর্তি",
+    "plural": "ভর্তিগুলো",
+    "possessive": "ভর্তির",
+    "objective": "ভর্তি",
+    "plural_oblique": "ভর্তিগুলোর"
+  },
+  "merit_list": {
+    "singular": "মেধাতালিকা",
+    "plural": "মেধাতালিকাগুলো",
+    "possessive": "মেধাতালিকার",
+    "objective": "মেধাতালিকা",
+    "plural_oblique": "মেধাতালিকাগুলোর"
+  },
+  "slot_group": {
+    "singular": "সেকশন",
+    "plural": "সেকশনগুলো",
+    "possessive": "সেকশনের",
+    "objective": "সেকশন",
+    "plural_oblique": "সেকশনগুলোর"
+  },
+  "after_steps": {
+    "singular": "বোর্ড ফ্লো",
+    "plural": "বোর্ড ফ্লোগুলো",
+    "possessive": "বোর্ড ফ্লোর",
+    "objective": "বোর্ড ফ্লো",
+    "plural_oblique": "বোর্ড ফ্লোগুলোর"
+  },
+  "appointment": {
+    "singular": "ক্যাম্পাস ভিজিট",
+    "plural": "ক্যাম্পাস ভিজিটগুলো",
+    "possessive": "ক্যাম্পাস ভিজিটের",
+    "objective": "ক্যাম্পাস ভিজিট",
+    "plural_oblique": "ক্যাম্পাস ভিজিটগুলোর"
+  },
+  "installment": {
+    "singular": "কিস্তি",
+    "plural": "কিস্তিগুলো",
+    "possessive": "কিস্তির",
+    "objective": "কিস্তি",
+    "plural_oblique": "কিস্তিগুলোর"
+  },
+  "module": {
+    "leads": {
+      "singular": "লিড",
+      "plural": "লিডগুলো",
+      "possessive": "লিডের",
+      "objective": "লিড",
+      "plural_oblique": "লিডগুলোর"
+    },
+    "clients": {
+      "singular": "শিক্ষার্থী",
+      "plural": "শিক্ষার্থীগুলো",
+      "possessive": "শিক্ষার্থীর",
+      "objective": "শিক্ষার্থী",
+      "plural_oblique": "শিক্ষার্থীগুলোর"
+    },
+    "network": {
+      "singular": "প্রাক্তন শিক্ষার্থী",
+      "plural": "প্রাক্তন শিক্ষার্থীগুলো",
+      "possessive": "প্রাক্তন শিক্ষার্থীর",
+      "objective": "প্রাক্তন শিক্ষার্থী",
+      "plural_oblique": "প্রাক্তন শিক্ষার্থীগুলোর"
+    },
+    "referrals": {
+      "singular": "রেফারেল ইনবক্স",
+      "plural": "রেফারেল ইনবক্সগুলো",
+      "possessive": "রেফারেল ইনবক্সের",
+      "objective": "রেফারেল ইনবক্স",
+      "plural_oblique": "রেফারেল ইনবক্সগুলোর"
+    },
+    "scorecard": {
+      "singular": "সাপ্তাহিক স্কোরকার্ড",
+      "plural": "সাপ্তাহিক স্কোরকার্ডগুলো",
+      "possessive": "সাপ্তাহিক স্কোরকার্ডের",
+      "objective": "সাপ্তাহিক স্কোরকার্ড",
+      "plural_oblique": "সাপ্তাহিক স্কোরকার্ডগুলোর"
+    },
+    "leaderboard": {
+      "singular": "লিডারবোর্ড",
+      "plural": "লিডারবোর্ডগুলো",
+      "possessive": "লিডারবোর্ডের",
+      "objective": "লিডারবোর্ড",
+      "plural_oblique": "লিডারবোর্ডগুলোর"
+    },
+    "conversion_flow": {
+      "singular": "ভর্তির ধাপ",
+      "plural": "ভর্তির ধাপগুলো",
+      "possessive": "ভর্তির ধাপের",
+      "objective": "ভর্তির ধাপ",
+      "plural_oblique": "ভর্তির ধাপগুলোর"
+    },
+    "conversion_contribution": {
+      "singular": "ভর্তিতে অবদান",
+      "plural": "ভর্তিতে অবদানগুলো",
+      "possessive": "ভর্তিতে অবদানের",
+      "objective": "ভর্তিতে অবদান",
+      "plural_oblique": "ভর্তিতে অবদানগুলোর"
+    }
+  },
+  "payment_plan": {
+    "singular": "ফি ও কিস্তি",
+    "plural": "ফি ও কিস্তিগুলো",
+    "possessive": "ফি ও কিস্তির",
+    "objective": "ফি ও কিস্তি",
+    "plural_oblique": "ফি ও কিস্তিগুলোর"
+  },
+  "client_number": {
+    "singular": "শিক্ষার্থী আইডি",
+    "plural": "শিক্ষার্থী আইডিগুলো",
+    "possessive": "শিক্ষার্থী আইডির",
+    "objective": "শিক্ষার্থী আইডি",
+    "plural_oblique": "শিক্ষার্থী আইডিগুলোর"
+  },
+  "contact_person": {
+    "singular": "অভিভাবক",
+    "plural": "অভিভাবকরা",
+    "possessive": "অভিভাবকের",
+    "objective": "অভিভাবককে",
+    "plural_oblique": "অভিভাবকদের"
+  },
+  "external_board": {
+    "singular": "বোর্ড",
+    "plural": "বোর্ডগুলো",
+    "possessive": "বোর্ডের",
+    "objective": "বোর্ড",
+    "plural_oblique": "বোর্ডগুলোর"
+  },
+  "doc": {
+    "id_card_title": {
+      "singular": "পরিচয়পত্র",
+      "plural": "পরিচয়পত্রগুলো",
+      "possessive": "পরিচয়পত্রের",
+      "objective": "পরিচয়পত্র",
+      "plural_oblique": "পরিচয়পত্রগুলোর"
+    },
+    "receipt_title": {
+      "singular": "মানি রসিদ",
+      "plural": "মানি রসিদগুলো",
+      "possessive": "মানি রসিদের",
+      "objective": "মানি রসিদ",
+      "plural_oblique": "মানি রসিদগুলোর"
+    },
+    "admit_card_title": {
+      "singular": "প্রবেশপত্র",
+      "plural": "প্রবেশপত্রগুলো",
+      "possessive": "প্রবেশপত্রের",
+      "objective": "প্রবেশপত্র",
+      "plural_oblique": "প্রবেশপত্রগুলোর"
+    },
+    "application_form_title": {
+      "singular": "আবেদন ফর্ম",
+      "plural": "আবেদন ফর্মগুলো",
+      "possessive": "আবেদন ফর্মের",
+      "objective": "আবেদন ফর্ম",
+      "plural_oblique": "আবেদন ফর্মগুলোর"
+    }
+  },
+  "conversion_officer": {
+    "singular": "ভর্তি কর্মকর্তা",
+    "plural": "ভর্তি কর্মকর্তারা",
+    "possessive": "ভর্তি কর্মকর্তার",
+    "objective": "ভর্তি কর্মকর্তাকে",
+    "plural_oblique": "ভর্তি কর্মকর্তাদের"
+  },
+  "conversion_cancelled": {
+    "singular": "ভর্তি বাতিল",
+    "plural": "ভর্তি বাতিলগুলো",
+    "possessive": "ভর্তি বাতিলের",
+    "objective": "ভর্তি বাতিল",
+    "plural_oblique": "ভর্তি বাতিলগুলোর"
+  }
+}

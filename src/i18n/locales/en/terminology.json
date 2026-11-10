@@ -1,0 +1,34 @@
+{
+  "title": "Words used in this app",
+  "intro": "Each institution can rename these words in English and Bangla. Shown: the words in force now, with the default underneath.",
+  "search": "Search words (current, default or old name)",
+  "noResults": "No word matches.",
+  "default": "Default: {{value}}",
+  "key": "Key: {{value}}",
+  "renamed": "Renamed",
+  "locked": "Locked by the platform",
+  "groups": {
+    "people": "People",
+    "offering": "What you offer",
+    "conversion": "From $t(labels:lead.singular) to $t(labels:client.singular)",
+    "money": "Money",
+    "roles": "Staff roles",
+    "modules": "Menus",
+    "documents": "Printed titles"
+  },
+  "forms": {
+    "singular": "One",
+    "plural": "Many",
+    "possessive": "Possessive",
+    "objective": "Object",
+    "plural_oblique": "Plural, possessive"
+  },
+  "samples": {
+    "title": "In sentences",
+    "count": "$t(labels:client.plural): {{n}}",
+    "add": "Add $t(labels:client.singular)",
+    "contact": "$t(labels:contact_person.singular) of the $t(labels:client.singular)",
+    "list": "All $t(labels:client.plural)",
+    "receipt": "$t(labels:doc.receipt_title.singular): $t(labels:fee.singular)"
+  }
+}

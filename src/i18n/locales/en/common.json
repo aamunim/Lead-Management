@@ -11,8 +11,9 @@
     "offline": "No internet connection"
   },
   "home": {
-    "subtitle": "Leads, follow-ups and your team in one place.",
+    "subtitle": "$t(labels:module.leads.singular), follow-ups and your team in one place.",
     "openLanguage": "Change language",
-    "openSamples": "Formats and locale samples"
+    "openSamples": "Formats and locale samples",
+    "openTerminology": "Words used in this app"
   }
 }

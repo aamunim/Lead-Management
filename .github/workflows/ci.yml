@@ -72,6 +72,8 @@ jobs:
         run: supabase db reset
       - name: Apply extension migrations
         run: npm run db:extensions
+      - name: Bundled default labels match the database (0A.12)
+        run: npm run check:labels
       - name: Database tests as real roles (0A.03+)
         run: npm run test:db
       - name: End-to-end tests (real sign-in, hook, RLS through REST, Storage, Realtime)

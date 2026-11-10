@@ -1,0 +1,34 @@
+{
+  "title": "এই অ্যাপের শব্দগুলো",
+  "intro": "প্রতিটি প্রতিষ্ঠান এই শব্দগুলো ইংরেজি আর বাংলায় নিজের মতো বদলাতে পারে। এখানে এখনকার শব্দ, নিচে ডিফল্ট।",
+  "search": "শব্দ খুঁজুন (এখনকার, ডিফল্ট বা পুরোনো নাম)",
+  "noResults": "কোনো শব্দ মেলেনি।",
+  "default": "ডিফল্ট: {{value}}",
+  "key": "Key: {{value}}",
+  "renamed": "বদলানো হয়েছে",
+  "locked": "প্ল্যাটফর্ম লক করেছে",
+  "groups": {
+    "people": "মানুষ",
+    "offering": "যা দেওয়া হয়",
+    "conversion": "$t(labels:lead.singular) থেকে $t(labels:client.singular)",
+    "money": "টাকা",
+    "roles": "স্টাফের রোল",
+    "modules": "মেনু",
+    "documents": "ছাপা কাগজের শিরোনাম"
+  },
+  "forms": {
+    "singular": "একবচন",
+    "plural": "বহুবচন",
+    "possessive": "সম্বন্ধ (র / এর)",
+    "objective": "কর্ম (কে)",
+    "plural_oblique": "বহুবচন সম্বন্ধ (দের / গুলোর)"
+  },
+  "samples": {
+    "title": "বাক্যে",
+    "count": "$t(labels:client.singular): {{n}}",
+    "add": "নতুন $t(labels:client.singular) যোগ করুন",
+    "contact": "$t(labels:client.possessive) $t(labels:contact_person.singular)",
+    "list": "সব $t(labels:client.plural_oblique) তালিকা",
+    "receipt": "$t(labels:doc.receipt_title.singular): $t(labels:fee.singular)"
+  }
+}

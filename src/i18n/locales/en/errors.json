@@ -12,6 +12,11 @@
   "timeout": "This is taking too long. Please try again.",
   "network": "No internet connection. Please try again.",
   "unknown": "Something went wrong. Please try again.",
+  "phone_invalid": "This phone number is not valid.",
+  "number_invalid": "This is not a number.",
+  "label_invalid": "Write the word in English (one and many) and in Bangla.",
+  "label_too_long": "This word is too long for menus and buttons. Use a shorter one.",
+  "label_locked": "This word is set by the platform and cannot be changed.",
   "actions": {
     "sign_in": "Sign in",
     "choose_institution": "Choose institution",

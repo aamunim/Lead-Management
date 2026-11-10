@@ -40,6 +40,10 @@ export function compareLocales(locales) {
   const languages = Object.keys(locales);
   const namespaces = new Set(languages.flatMap((lang) => Object.keys(locales[lang])));
   for (const ns of namespaces) {
+    if (ns === LABELS_NS) {
+      findings.push(...compareLabels(locales, languages));
+      continue;
+    }
     const flat = {};
     for (const lang of languages) {
       if (!locales[lang][ns]) findings.push(`[missing_namespace] ${lang}/${ns}.json does not exist`);
@@ -68,6 +72,49 @@ export function compareLocales(locales) {
       }
       const shapes = new Set(languages.filter((l) => flat[l][key] !== undefined).map((l) => placeholders(flat[l][key])));
       if (shapes.size > 1) findings.push(`[placeholders] ${ns}: "${key}" has different {{placeholders}} per language`);
+    }
+  }
+  return findings;
+}
+
+/** Labels (0A.12) are the renamable words: same words in every language, Bangla has extra grammatical forms. */
+export const LABELS_NS = 'labels';
+export const LABEL_FORMS = { en: ['singular', 'plural'], bn: ['singular', 'plural', 'possessive', 'objective', 'plural_oblique'] };
+
+function labelWords(tree) {
+  const words = new Set();
+  for (const path of Object.keys(flatten(tree ?? {}))) words.add(path.split('.').slice(0, -1).join('.'));
+  return words;
+}
+
+function compareLabels(locales, languages) {
+  const findings = [];
+  const all = new Set(languages.flatMap((lang) => [...labelWords(locales[lang][LABELS_NS])]));
+  for (const lang of languages) {
+    const flat = flatten(locales[lang][LABELS_NS] ?? {});
+    const words = labelWords(locales[lang][LABELS_NS]);
+    for (const word of all) {
+      if (!words.has(word)) { findings.push(`[missing_label] ${lang}/labels: "${word}" is missing`); continue; }
+      for (const form of LABEL_FORMS[lang] ?? ['singular', 'plural']) {
+        if (!flat[`${word}.${form}`]) findings.push(`[missing_label_form] ${lang}/labels: "${word}.${form}" is missing or empty`);
+      }
+    }
+  }
+  return findings;
+}
+
+/** Sentences that use a label ($t(labels:client.plural)) must point to a word and form that exist in that language. */
+export function checkLabelReferences(locales) {
+  const findings = [];
+  for (const [lang, namespaces] of Object.entries(locales)) {
+    const labels = flatten(namespaces[LABELS_NS] ?? {});
+    for (const [ns, tree] of Object.entries(namespaces)) {
+      if (ns === LABELS_NS) continue;
+      for (const [key, value] of Object.entries(flatten(tree))) {
+        for (const m of String(value).matchAll(/\$t\(labels:([\w.]+)[^)]*\)/g)) {
+          if (!labels[m[1]]) findings.push(`[label_reference] ${lang}/${ns}: "${key}" uses labels:${m[1]}, which does not exist`);
+        }
+      }
     }
   }
   return findings;
@@ -103,7 +150,7 @@ export function readLocales(dir = LOCALES_DIR) {
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   const { ERRORS } = await import('../supabase/functions/_shared/errors.ts');
   const locales = readLocales();
-  const findings = [...compareLocales(locales), ...checkErrorContract(locales, ERRORS)];
+  const findings = [...compareLocales(locales), ...checkErrorContract(locales, ERRORS), ...checkLabelReferences(locales)];
   if (findings.length) {
     for (const f of findings) console.error(f);
     console.error(`Translation check failed: ${findings.length} finding(s).`);

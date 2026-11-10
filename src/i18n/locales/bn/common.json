@@ -11,8 +11,9 @@
     "offline": "ইন্টারনেট সংযোগ নেই"
   },
   "home": {
-    "subtitle": "লিড, ফলো-আপ আর আপনার টিম, সব এক জায়গায়।",
+    "subtitle": "$t(labels:module.leads.singular), ফলো-আপ আর আপনার টিম, সব এক জায়গায়।",
     "openLanguage": "ভাষা বদলান",
-    "openSamples": "ফরম্যাট ও লোকেলের নমুনা"
+    "openSamples": "ফরম্যাট ও লোকেলের নমুনা",
+    "openTerminology": "এই অ্যাপের শব্দগুলো"
   }
 }

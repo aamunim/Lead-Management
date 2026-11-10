@@ -15,7 +15,8 @@ void i18n.use(initReactI18next).init({
   initAsync: false, // resources are bundled: ready on the first render
   interpolation: { escapeValue: false }, // React already escapes
   returnNull: false,
-  react: { bindI18n: 'languageChanged', useSuspense: false },
+  // 'added': screens re-render when the institution's labels are loaded (addResourceBundle), no restart.
+  react: { bindI18n: 'languageChanged', bindI18nStore: 'added', useSuspense: false },
 });
 
 export default i18n;
