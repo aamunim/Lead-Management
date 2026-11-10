@@ -66,8 +66,27 @@ jobs:
       - name: End-to-end auth tests (real sign-in, hook, RLS through REST)
         run: npm run test:e2e
       # Gates added by later milestones (keep the order):
-      # - cross-tenant leak test over every table, RPC, storage, channel     (0A.05)
+      # - storage and Realtime leak probes                                   (0A.06)
       # - role-matrix test                                                   (0A.17 / 0A.20)
+
+  leak-test:
+    name: cross-tenant leak test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 3.1.0
+      - name: Start local Supabase database
+        run: supabase db start
+      - name: Apply migrations and the test seed
+        run: supabase db reset
+      - name: The leak test catches deliberate leaks (self-test)
+        run: |
+          psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -X -q -v ON_ERROR_STOP=1 \
+            -f supabase/tests/leak/leak_selftest.sql
+      - name: Cross-tenant leak test (every table and RPC, as members of another institution)
+        run: bash scripts/leak-test.sh
 
   secret-scan:
     name: Secret scan (D27)

@@ -9,6 +9,7 @@ Read in this order before working on any milestone:
 5. `ENVIRONMENTS_AND_RELEASES.md` — environments, secrets, workflows, release rules and the leaked-secret runbook.
 6. `TENANCY.md` — institutions, memberships, the active institution, the RLS policy template and error codes.
 7. `SCHEMA_LINT.md` — the schema lint rules, exceptions, DEFINER registry, guard trigger and the real-role test harness.
-8. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-9. `../PLAN_BN.md` — the plan chapters the milestone points to.
-10. `PROGRESS.md` — which milestones are done.
+8. `LEAK_TEST.md` — the cross-tenant leak test: fixtures, viewers, probes, allow-list, self-test.
+9. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+10. `../PLAN_BN.md` — the plan chapters the milestone points to.
+11. `PROGRESS.md` — which milestones are done.

@@ -43,7 +43,9 @@
     "test:db": "bash scripts/db-test.sh",
     "test:e2e": "node --test \"scripts/e2e/*.e2e.mjs\"",
     "lint:schema": "bash scripts/schema-lint.sh",
-    "test:lint": "psql \"${DB_URL:-postgresql://postgres:postgres@127.0.0.1:54322/postgres}\" -X -q -v ON_ERROR_STOP=1 -f supabase/lint/tests/lint_fixtures_test.sql"
+    "test:lint": "psql \"${DB_URL:-postgresql://postgres:postgres@127.0.0.1:54322/postgres}\" -X -q -v ON_ERROR_STOP=1 -f supabase/lint/tests/lint_fixtures_test.sql",
+    "test:leak": "bash scripts/leak-test.sh",
+    "test:leak-self": "psql \"${DB_URL:-postgresql://postgres:postgres@127.0.0.1:54322/postgres}\" -X -q -v ON_ERROR_STOP=1 -f supabase/tests/leak/leak_selftest.sql"
   },
   "private": true,
   "description": "Leadora: multi-institution lead and admission management platform."
