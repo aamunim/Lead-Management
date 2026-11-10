@@ -6465,7 +6465,7 @@ Every chapter of the plan must appear here. If a row is empty, something has bee
 > **changeable prices, discounts and promotional offers** (D29); prices and limits set by the Master Admin in settings (D30);
 > custom trial length (D31); prices may differ by institution type (D32); institution and platform SMS gateways can be
 > switched at any time (D33, D34); SMS masking (D35); Android package **`com.leadora.leads`** (D36).
-> Product name decided: **Leadora** (D37). **Still open:** the actual price numbers (entered later in settings); the pilot institutions' SMS gateways (Q3) — until then 0B.13 builds Custom HTTP and the platform gateway first, and the ready-made adapters follow when gateways are known.
+> Product name decided: **Leadora** (D37). Round 7 (0A.14 owner checkpoint): idle sign-out is **off by default** (`idle_signout_minutes` = 0; an institution turns it on, D38); with app lock on, the app locks after **30 seconds** in the background (D39). **Still open:** the actual price numbers (entered later in settings); the pilot institutions' SMS gateways (Q3) — until then 0B.13 builds Custom HTTP and the platform gateway first, and the ready-made adapters follow when gateways are known.
 
 These came up while turning the plan into milestones. Each is also written at the milestone's owner checkpoint.
 
