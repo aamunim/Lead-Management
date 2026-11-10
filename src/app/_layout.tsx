@@ -7,6 +7,7 @@ import { useColorScheme } from 'react-native';
 import '@/i18n';
 import { BANGLA_FONT_FAMILY } from '@/i18n/language';
 import { initLanguage } from '@/lib/language';
+import { initLocale } from '@/lib/locale';
 
 // Root layout. Translations are ready on the first render (bundled); the language is resolved right after
 // (device copy first, then the server). The rest of the shell (labels, theme) arrives in 0A.12–0A.14.
@@ -24,6 +25,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     void initLanguage().catch(() => undefined);
+    void initLocale().catch(() => undefined);
   }, []);
 
   // Wait for the Bangla font so the first Bangla screen never flashes in a fallback font (an error still renders).

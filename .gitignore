@@ -40,3 +40,4 @@ yarn-debug.*
 yarn-error.*
 .DS_Store
 *.tsbuildinfo
+ui-screenshots/

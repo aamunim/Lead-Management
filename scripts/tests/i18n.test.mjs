@@ -101,6 +101,17 @@ describe('hard-coded UI string lint', () => {
     assert.deepEqual(rules(`const key = 'Student';`, 'src/lib/x.ts'), ['renamable_term']);
     assert.deepEqual(rules(`const key = 'নতুন শিক্ষার্থী';`, 'src/lib/x.ts'), ['renamable_term']);
   });
+  it('blocks toLocaleString and Intl outside the format library (0A.11)', () => {
+    assert.deepEqual(rules('const s = amount.toLocaleString();', 'src/lib/x.ts'), ['raw_locale_format']);
+    assert.deepEqual(rules('const f = new Intl.NumberFormat("en-IN");', 'src/lib/x.ts'), ['raw_locale_format']);
+    assert.deepEqual(rules('const f = new Intl.DateTimeFormat("en-US");', 'src/lib/format.ts'), []);
+  });
+  it('blocks the phone clock outside server-time (0A.11)', () => {
+    assert.deepEqual(rules('const now = Date.now();', 'src/lib/x.ts'), ['phone_clock']);
+    assert.deepEqual(rules('const now = new Date();', 'src/lib/x.ts'), ['phone_clock']);
+    assert.deepEqual(rules('const d = new Date(value);', 'src/lib/x.ts'), []);
+    assert.deepEqual(rules('const now = Date.now();', 'src/lib/server-time.ts'), []);
+  });
   it('honours a reasoned exemption on the line, or for a developer-only file', () => {
     assert.deepEqual(rules('// i18n-exempt: brand name, never translated\nexport const A = () => <Text>Leadora</Text>;'), []);
     assert.deepEqual(rules('// i18n-exempt-file: developer tool\nexport const A = () => <Text>Sign in</Text>;'), []);

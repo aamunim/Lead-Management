@@ -15,16 +15,19 @@ export const FORBIDDEN_TERMS = [
   /শিক্ষার্থী/, /ছাত্র/, /ছাত্রী/, /কোর্স/, /ব্যাচ/, /ভর্তি/, /অভিভাবক/,
 ];
 
-/** Flattens nested JSON into "a.b.c" → string. */
+/** Flattens nested JSON (objects and arrays) into "a.b.0.c" → value. */
 export function flatten(object, prefix = '') {
   const out = {};
   for (const [key, value] of Object.entries(object ?? {})) {
     const path = prefix ? `${prefix}.${key}` : key;
-    if (value && typeof value === 'object' && !Array.isArray(value)) Object.assign(out, flatten(value, path));
+    if (value && typeof value === 'object') Object.assign(out, flatten(value, path));
     else out[path] = value;
   }
   return out;
 }
+
+/** A top-level "grammar" subtree holds language-specific rules (day periods, word order): it may differ per language. */
+const isGrammar = (key) => key === 'grammar' || key.startsWith('grammar.');
 
 const placeholders = (text) => [...String(text).matchAll(/\{\{\s*([\w.]+)\s*\}\}/g)].map((m) => m[1]).sort().join(',');
 
@@ -44,13 +47,19 @@ export function compareLocales(locales) {
     }
     const keys = new Set(languages.flatMap((lang) => Object.keys(flat[lang])));
     for (const key of [...keys].sort()) {
+      if (isGrammar(key)) {
+        for (const lang of languages) {
+          if (flat[lang][key] === '') findings.push(`[empty] ${lang}/${ns}: "${key}" is empty`);
+        }
+        continue;
+      }
       for (const lang of languages) {
         const value = flat[lang][key];
         if (value === undefined) {
           if (locales[lang][ns]) findings.push(`[missing_key] ${lang}/${ns}: "${key}" is missing`);
           continue;
         }
-        if (typeof value !== 'string' || value.trim() === '') findings.push(`[empty] ${lang}/${ns}: "${key}" is empty`);
+        if (typeof value !== 'string' || value.trim() === '') findings.push(`[empty] ${lang}/${ns}: "${key}" is empty or not text`);
         for (const term of FORBIDDEN_TERMS) {
           if (term.test(String(value))) {
             findings.push(`[renamable_term] ${lang}/${ns}: "${key}" contains "${String(value).match(term)[0]}"; use a label (0A.12)`);

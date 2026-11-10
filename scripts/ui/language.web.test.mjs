@@ -2,38 +2,21 @@
 // without a page reload, survive a reload (device copy), and Bangla must render in the Bangla font.
 // Run: npm run export:web && npm run test:ui
 import assert from 'node:assert/strict';
-import { createReadStream, existsSync, statSync } from 'node:fs';
-import { createServer } from 'node:http';
-import { createRequire } from 'node:module';
-import { extname, join, normalize } from 'node:path';
 import { after, before, describe, it } from 'node:test';
 
-const require = createRequire(import.meta.url);
-const { chromium } = require('playwright');
+import { startWeb } from './helpers.mjs';
 
-const DIST = 'dist';
-const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.ttf': 'font/ttf', '.json': 'application/json', '.png': 'image/png', '.ico': 'image/x-icon' };
-let server;
+let web;
 let browser;
 let base;
 
 before(async () => {
-  assert.ok(existsSync(join(DIST, 'index.html')), 'run `npm run export:web` first');
-  server = createServer((req, res) => {
-    const path = normalize(decodeURIComponent(new URL(req.url, 'http://x').pathname)).replace(/^(\.\.[/\\])+/, '');
-    let file = join(DIST, path);
-    if (!existsSync(file) || statSync(file).isDirectory()) file = join(DIST, 'index.html'); // single-page app
-    res.setHeader('content-type', TYPES[extname(file)] ?? 'application/octet-stream');
-    createReadStream(file).pipe(res);
-  });
-  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
-  base = `http://127.0.0.1:${server.address().port}`;
-  browser = await chromium.launch();
+  web = await startWeb();
+  ({ browser, base } = web);
 });
 
 after(async () => {
-  await browser?.close();
-  server?.close();
+  await web?.stop();
 });
 
 describe('language switch on the web build', () => {

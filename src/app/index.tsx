@@ -17,6 +17,9 @@ export default function HomeScreen() {
       <Link href="/language" style={styles.link} testID="open-language">
         <AppText style={styles.linkText}>{t('home.openLanguage')}</AppText>
       </Link>
+      <Link href="/samples" style={styles.link} testID="open-samples">
+        <AppText style={styles.linkText}>{t('home.openSamples')}</AppText>
+      </Link>
     </View>
   );
 }

@@ -35,10 +35,6 @@ jobs:
         run: npm test
       - name: Web build
         run: npm run export:web
-      - name: Install a browser for UI tests (not a project dependency)
-        run: npm install --no-save playwright@1.63.0 && npx playwright install --with-deps chromium
-      - name: UI test on the web build (language switch, 0A.10)
-        run: npm run test:ui
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
@@ -80,6 +76,19 @@ jobs:
         run: npm run test:db
       - name: End-to-end tests (real sign-in, hook, RLS through REST, Storage, Realtime)
         run: npm run test:e2e
+      - name: Web build connected to the local Supabase
+        run: npm run export:web:local
+      - name: Install a browser for UI tests (not a project dependency)
+        run: npm install --no-save playwright@1.63.0 && npx playwright install --with-deps chromium
+      - name: UI tests on the web build (language switch 0A.10; formats, pickers, screenshots 0A.11)
+        run: npm run test:ui
+      - name: Upload UI screenshots (bn/en × light/dark)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-screenshots
+          path: ui-screenshots/
+          if-no-files-found: ignore
       # Gates added by later milestones (keep the order):
       # - role-matrix test                                                   (0A.17 / 0A.20)
 

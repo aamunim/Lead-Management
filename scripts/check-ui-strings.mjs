@@ -4,6 +4,8 @@
 // - literals in user-visible props:                 title="…", placeholder="…", accessibilityLabel="…" …
 // - literals in navigation options / alerts:        options={{ title: '…' }}, Alert.alert('…')
 // - renamable terms anywhere in string literals:    'Student', 'শিক্ষার্থী' … (they come from labels, 0A.12)
+// - toLocaleString / toLocaleDateString / Intl.* outside src/lib/format.ts (lakh grouping, time zone, digits; 0A.11)
+// - the phone clock (Date.now(), new Date() without arguments) outside src/lib/server-time.ts (Ch 47.7)
 // Exemption: a comment `i18n-exempt: <reason>` on the same or the previous line; for a developer-only file,
 // `i18n-exempt-file: <reason>` anywhere in it.
 import { readdirSync, readFileSync, statSync } from 'node:fs';
@@ -17,6 +19,9 @@ export const VISIBLE_PROPS = new Set([
   'title', 'placeholder', 'label', 'accessibilityLabel', 'accessibilityHint', 'aria-label', 'alt', 'headerTitle',
   'headerBackTitle', 'tabBarLabel', 'drawerLabel', 'subtitle', 'description', 'message', 'helperText', 'errorText',
 ]);
+const FORMAT_FILE = 'src/lib/format.ts';
+const CLOCK_FILE = 'src/lib/server-time.ts';
+const LOCALE_METHODS = new Set(['toLocaleString', 'toLocaleDateString', 'toLocaleTimeString', 'toLocaleUpperCase', 'toLocaleLowerCase']);
 const ALERT_CALLS = new Set(['Alert.alert', 'Alert.prompt', 'alert', 'confirm', 'prompt', 'Toast.show']);
 const hasLetters = (text) => /\p{L}/u.test(text);
 
@@ -54,7 +59,24 @@ export function checkSource(fileName, sourceText) {
     ts.isImportDeclaration(node.parent) || ts.isExportDeclaration(node.parent) || ts.isLiteralTypeNode(node.parent) ||
     ts.isExternalModuleReference(node.parent);
 
+  const file = fileName.replace(/\\/g, '/');
   const visit = (node) => {
+    if (file !== FORMAT_FILE) {
+      if (ts.isPropertyAccessExpression(node) && LOCALE_METHODS.has(node.name.text)) {
+        report(node, 'raw_locale_format', `${node.name.text}: use the formatters from '@/lib/locale' (useFormat)`);
+      }
+      if (ts.isPropertyAccessExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === 'Intl') {
+        report(node, 'raw_locale_format', `Intl.${node.name.text}: use '@/lib/format'`);
+      }
+    }
+    if (file !== CLOCK_FILE) {
+      if (ts.isCallExpression(node) && node.expression.getText(sourceFile) === 'Date.now') {
+        report(node, 'phone_clock', 'Date.now(): use serverNow() from @/lib/server-time');
+      }
+      if (ts.isNewExpression(node) && node.expression.getText(sourceFile) === 'Date' && (!node.arguments || node.arguments.length === 0)) {
+        report(node, 'phone_clock', 'new Date(): use serverNow() from @/lib/server-time');
+      }
+    }
     if (ts.isJsxText(node) && hasLetters(node.text)) report(node, 'jsx_text', node.text);
     if (ts.isJsxExpression(node) && node.expression && (ts.isJsxElement(node.parent) || ts.isJsxFragment(node.parent))) {
       const text = literalText(node.expression);
@@ -110,7 +132,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   const findings = files.flatMap((file) => checkSource(file, readFileSync(file, 'utf8')));
   if (findings.length) {
     for (const f of findings) console.error(`${f.file}:${f.line} [${f.rule}] ${f.text}`);
-    console.error(`UI string lint failed: ${findings.length} hard-coded string(s). Use t('…') from '@/i18n'.`);
+    console.error(`UI string lint failed: ${findings.length} finding(s). Words: t('…') from '@/i18n'; numbers/dates: useFormat(); now: serverNow().`);
     process.exit(1);
   }
   console.log(`UI string lint passed (${files.length} files).`);

@@ -17,6 +17,7 @@ Read in this order before working on any milestone:
 13. `EXTENSIONS.md` — the five layers, the triage rule, and the rules, runner and checklist for extensions.
 14. `I18N.md` — English + Bangla: translation files, typed keys, language resolution, font, the UI string lint.
 15. `GLOSSARY.md` — English ↔ Bangla terms and style; the release language review.
-16. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-17. `../PLAN_BN.md` — the plan chapters the milestone points to.
-18. `PROGRESS.md` — which milestones are done.
+16. `LOCALE.md` — locale settings, lakh money, dates in the institution's time zone, ASCII digits, server clock.
+17. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+18. `../PLAN_BN.md` — the plan chapters the milestone points to.
+19. `PROGRESS.md` — which milestones are done.

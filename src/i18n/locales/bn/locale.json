@@ -1,0 +1,69 @@
+{
+  "title": "ফরম্যাট ও লোকেল",
+  "intro": "বর্তমান ভাষায় নমুনা, এই প্রতিষ্ঠানের সেটিং অনুযায়ী।",
+  "sections": {
+    "money": "টাকা",
+    "numbers": "সংখ্যা",
+    "dates": "তারিখ ও সময়",
+    "inputs": "লিখে দেখুন",
+    "settings": "লোকেল সেটিং"
+  },
+  "samples": {
+    "today": "আজ",
+    "now": "এখন (সার্ভারের ঘড়ি)",
+    "nearMidnight": "মধ্যরাতের ঠিক পরে",
+    "birthday": "শুধু তারিখ"
+  },
+  "banglaDigits": {
+    "preview": "বাংলা অঙ্ক (শুধু দেখার জন্য)"
+  },
+  "fields": {
+    "phone": "ফোন",
+    "phoneHelp": "বাংলা বা ইংরেজি অঙ্কে লিখুন; +880 দিলেও চলবে।",
+    "amount": "পরিমাণ",
+    "date": "তারিখ",
+    "dateTime": "তারিখ ও সময়",
+    "stored": "যেভাবে সংরক্ষণ হবে: {{value}}",
+    "invalidPhone": "ফোন নম্বরটি সঠিক নয়।",
+    "invalidNumber": "এটি কোনো সংখ্যা নয়।",
+    "empty": "দেওয়া হয়নি"
+  },
+  "picker": {
+    "choose": "বাছুন",
+    "previousMonth": "আগের মাস",
+    "nextMonth": "পরের মাস",
+    "today": "আজ",
+    "done": "ঠিক আছে",
+    "hour": "ঘণ্টা",
+    "minute": "মিনিট"
+  },
+  "settings": {
+    "time_zone": "টাইম জোন",
+    "currency": "মুদ্রা",
+    "phone": "ফোনের ফরম্যাট",
+    "week_start": "সপ্তাহের শুরু",
+    "working_days": "কর্মদিবস",
+    "working_hours": "কাজের সময়",
+    "quiet_hours": "নিরব সময়",
+    "scorecard_day": "স্কোরকার্ডের দিন",
+    "default_language": "ডিফল্ট ভাষা",
+    "bangla_digits": "বাংলা অঙ্ক",
+    "payment_methods": "পেমেন্ট পদ্ধতি",
+    "address_placeholder": "ঠিকানার নমুনা"
+  },
+  "digitPlaces": {
+    "ui": "অ্যাপ",
+    "receipts": "রসিদ",
+    "public_pages": "পাবলিক পেজ",
+    "none": "বন্ধ"
+  },
+  "paymentMethods": {
+    "bkash": "বিকাশ",
+    "nagad": "নগদ",
+    "rocket": "রকেট",
+    "cash": "হাতে নগদ",
+    "bank": "ব্যাংক"
+  },
+  "range": "{{start}} – {{end}}",
+  "phoneExample": "+{{code}}, যেমন {{example}}"
+}

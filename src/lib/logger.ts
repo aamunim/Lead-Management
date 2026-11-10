@@ -19,6 +19,7 @@ export function setLogSink(next: Sink): void {
 export async function log(level: Level, event: string, data?: Record<string, unknown>): Promise<void> {
   const claims = await currentClaims().catch(() => ({}) as Awaited<ReturnType<typeof currentClaims>>);
   sink({
+    // i18n-exempt: device time on purpose (when it happened on this phone); the server adds its own time
     ts: new Date().toISOString(),
     level,
     event,

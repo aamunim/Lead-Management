@@ -51,6 +51,7 @@ export async function loadSettings(force = false): Promise<void> {
     const { data, error } = await supabase.rpc('settings_get_all');
     if (error) throw error;
     const result = data as { settings_version: number; values: Record<string, unknown> };
+    // i18n-exempt: cache age on this device only (elapsed time), not a business time
     const next: Snapshot = { userId, institutionId, version: result.settings_version, values: result.values, loadedAt: Date.now() };
     publish(next);
     try {
@@ -93,6 +94,7 @@ onInstitutionChange(() => publish(empty));
 
 // Back to the foreground after a while → refresh.
 AppState.addEventListener('change', (state) => {
+  // i18n-exempt: cache age on this device only (elapsed time), not a business time
   if (state === 'active' && snapshot.institutionId && Date.now() - snapshot.loadedAt > 5 * 60_000) {
     void loadSettings(true).catch(() => undefined);
   }

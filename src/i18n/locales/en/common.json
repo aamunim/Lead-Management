@@ -12,6 +12,7 @@
   },
   "home": {
     "subtitle": "Leads, follow-ups and your team in one place.",
-    "openLanguage": "Change language"
+    "openLanguage": "Change language",
+    "openSamples": "Formats and locale samples"
   }
 }

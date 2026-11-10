@@ -52,6 +52,13 @@ Each institution can rename these. The defaults below are what an education inst
 | Access | অ্যাক্সেস | |
 | Update the app | অ্যাপ আপডেট করুন | |
 | Feature | ফিচার | |
+| bKash / Nagad / Rocket | বিকাশ / নগদ / রকেট | Brand names, written as the brands do |
+| Cash (payment method) | হাতে নগদ | Not "নগদ" alone, which is the Nagad brand |
+| Bank | ব্যাংক | |
+| Time zone | টাইম জোন | |
+| Working days / hours | কর্মদিবস / কাজের সময় | |
+| Quiet hours | নিরব সময় | |
+| AM / PM | — | Bangla uses day periods: রাত (0–4), ভোর (4–6), সকাল (6–12), দুপুর (12–15), বিকাল (15–18), সন্ধ্যা (18–20), রাত (20–24), before the time: বিকাল ৩:০৫ |
 | Loading… | লোড হচ্ছে… | |
 | No internet connection | ইন্টারনেট সংযোগ নেই | |
 

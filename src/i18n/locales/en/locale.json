@@ -1,0 +1,69 @@
+{
+  "title": "Formats and locale",
+  "intro": "Samples in the current language, using this institution's settings.",
+  "sections": {
+    "money": "Money",
+    "numbers": "Numbers",
+    "dates": "Dates and times",
+    "inputs": "Try typing",
+    "settings": "Locale settings"
+  },
+  "samples": {
+    "today": "Today",
+    "now": "Now (server clock)",
+    "nearMidnight": "Just after midnight",
+    "birthday": "A date-only value"
+  },
+  "banglaDigits": {
+    "preview": "Bangla digits (preview only)"
+  },
+  "fields": {
+    "phone": "Phone",
+    "phoneHelp": "Type in Bangla or English digits; +880 is fine.",
+    "amount": "Amount",
+    "date": "Date",
+    "dateTime": "Date and time",
+    "stored": "Stored as: {{value}}",
+    "invalidPhone": "This phone number is not valid.",
+    "invalidNumber": "This is not a number.",
+    "empty": "Not set"
+  },
+  "picker": {
+    "choose": "Choose",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "today": "Today",
+    "done": "Done",
+    "hour": "Hour",
+    "minute": "Minute"
+  },
+  "settings": {
+    "time_zone": "Time zone",
+    "currency": "Currency",
+    "phone": "Phone format",
+    "week_start": "Week starts on",
+    "working_days": "Working days",
+    "working_hours": "Working hours",
+    "quiet_hours": "Quiet hours",
+    "scorecard_day": "Scorecard day",
+    "default_language": "Default language",
+    "bangla_digits": "Bangla digits",
+    "payment_methods": "Payment methods",
+    "address_placeholder": "Address placeholder"
+  },
+  "digitPlaces": {
+    "ui": "App",
+    "receipts": "Receipts",
+    "public_pages": "Public pages",
+    "none": "Off"
+  },
+  "paymentMethods": {
+    "bkash": "bKash",
+    "nagad": "Nagad",
+    "rocket": "Rocket",
+    "cash": "Cash",
+    "bank": "Bank"
+  },
+  "range": "{{start}} – {{end}}",
+  "phoneExample": "+{{code}}, e.g. {{example}}"
+}

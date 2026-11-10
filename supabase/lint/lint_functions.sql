@@ -224,6 +224,22 @@ begin
     end if;
   end loop;
 
+  -- R16 phone columns hold ASCII digits only (Ch 13.8 #3): a CHECK using app.is_ascii_phone(<column>) ------------
+  for r in
+    select n.nspname || '.' || c.relname || '.' || a.attname as obj, c.oid, a.attname
+    from pg_attribute a join pg_class c on c.oid = a.attrelid join pg_namespace n on n.oid = c.relnamespace
+    where c.relkind in ('r', 'p') and n.nspname = any (lint.our_schemas()) and a.attnum > 0 and not a.attisdropped
+      and (a.attname = 'phone' or a.attname like '%\_phone' or a.attname like 'phone\_%')
+  loop
+    if not exists (select 1 from pg_constraint k where k.conrelid = r.oid and k.contype = 'c'
+                   and pg_get_constraintdef(k.oid) ~ ('is_ascii_phone\(\(?' || r.attname || '\)?'))
+       and not lint.is_allowed('phone_ascii', r.obj) then
+      rule := 'phone_ascii'; object := r.obj;
+      message := 'Phone column needs CHECK (app.is_ascii_phone(col)) and the app.normalize_phone_columns trigger.';
+      return next;
+    end if;
+  end loop;
+
   -- R13 RLS init-plan: session helpers in policies must be wrapped in (select ...) (Ch 47.9) -----------------------
   for r in
     select schemaname || '.' || tablename || ' / ' || policyname as obj,

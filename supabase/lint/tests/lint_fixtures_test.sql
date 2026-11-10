@@ -152,6 +152,14 @@ select pg_temp.check(pg_temp.found('tenant_institution_id', 'ext_fixture.no_tena
 select pg_temp.check(pg_temp.found('rls_enabled', 'ext_fixture.no_rls'), 'extension table without RLS is caught');
 select pg_temp.check(pg_temp.found('search_path', 'ext_fixture.no_path'), 'extension function without search_path is caught');
 
+-- Phone columns must be ASCII-only (0A.11).
+create table public.fixture_phone (institution_id uuid not null, id uuid not null, mobile_phone text, primary key (institution_id, id));
+alter table public.fixture_phone enable row level security;
+create policy fixture_phone_p on public.fixture_phone to authenticated using (institution_id = (select app.auth_institution_id()));
+select pg_temp.check(pg_temp.found('phone_ascii', 'public.fixture_phone.mobile_phone'), 'phone column without the ASCII check is caught');
+alter table public.fixture_phone add constraint fixture_phone_ascii check (app.is_ascii_phone(mobile_phone));
+select pg_temp.check(not pg_temp.found('phone_ascii', 'public.fixture_phone.mobile_phone'), '...and passes with the check');
+
 -- The report fails the run when there is any finding.
 select pg_temp.check((select count(*) from lint.findings()) > 0, 'there are findings now');
 do $$
