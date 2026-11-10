@@ -1278,6 +1278,8 @@ Lives in **Master Admin panel → Institutions → \<institution\> → Messaging
 
 ### 39.7 Answers to section 38 (Proposed)
 
+> **Changed by D25 (49.15):** one person may belong to several institutions. Item 1 and correction C1 are replaced by 49.15.
+
 1. One email / phone = one institution.
 2. Institutions sign up themselves; the Master Admin approves.
 3. No institution picker at login (follows from 1).
@@ -2422,8 +2424,9 @@ Field rules, approval policies, collaborators, delegation  →  all checked by o
 
 - **Role** = a named set of permission grants (with scopes) + behaviour flags. System roles can't be deleted; custom roles can be copied.
 - **Role templates** per type profile (40.3) seed sensible roles, e.g. for a college: Owner / Principal (Super Admin),
-  Admin, Branch manager, Team lead, Counsellor (caller), **Admission officer** (now a real role template), Accountant,
-  Viewer / Auditor. A school adds Class teacher (view own class only); a coaching centre may only need Owner, Manager, Counsellor.
+  **Vice-principal**, Admin, Branch manager, **Department head**, Team lead, Counsellor (caller), **Admission officer** (now a real role template), Accountant,
+  Viewer / Auditor, **Governing body / Chairman** (reports only). A school adds **Head teacher, Assistant head teacher** and Class teacher (view own class only);
+  a coaching centre may only need Owner, Manager, Counsellor (D26).
 - **Role assignment** = user + role + optional org unit / branch + optional offering limit + valid from / to.
   A user may have **several**; their permissions are the **union**.
 - **Delegation:** a user (or admin) delegates their work to someone for a period; actions are logged as "B for A".
@@ -2446,6 +2449,7 @@ Per role, explicit switches:
 
 - Fields can be **visible**, **masked** (e.g. `017•••••234`) or **hidden** per role.
 - Masked phone numbers can still be **called or messaged through the app**; the full number is never shown or copied.
+- **Default (D24):** phone numbers are **masked for counsellors (callers)**; the institution can turn it off or extend it to other roles.
 - Defaults per type profile: e.g. counsellors see masked guardian NID, no discount history; accountants see fees but masked phone.
 - **Export controls:** export permission per module and scope; exports above N rows need approval (49.9); every export is
   logged and the file carries the user's name and time; daily view / export thresholds alert admins.
@@ -2483,11 +2487,35 @@ Support access to an institution follows 41.1 M4 (reason, time limit, read-only 
   sensitive permissions, no-escalation rule, `user_access` precompute, access version, role templates per type profile,
   `institution_members` and user kind, audit log, basic access explainer.
 - **Phase 1:** field-level masking and export controls, approval engine (discounts move onto it), delegation, collaborators, access review report.
-- **Later:** institution groups (one owner, several institutions), portal users (D10).
+- **Phase 1 (D25):** institution groups: one login across several institutions, institution switcher, group owner role, group reports (49.15). The data model for it (`institution_members`) is already in phase 0.
+- **Later:** portal users (D10).
 
-### 49.14 Questions for the owner
+### 49.14 Questions for the owner (all answered in 49.15)
 
 1. Should one person be able to hold **several roles** (e.g. counsellor + accountant)? (Proposed: yes.)
 2. Should phone numbers be **masked** for counsellors by default, to stop staff copying lead lists? (Proposed: an option per institution, off by default.)
 3. Do some owners run **several institutions** and need one login across them? If yes, when?
 4. Are the role templates in 49.6 right for schools and colleges, or are other roles common (e.g. Principal, Vice-principal, Department head)?
+
+### 49.15 Owner decisions, planning round 5 (Decided)
+
+| # | Question (49.14) | Decision |
+|---|---|---|
+| D23 | Several roles per person | **Yes.** Permissions are the union of all the person's role assignments (49.6). |
+| D24 | Mask phone numbers for counsellors | **Yes, by default.** Counsellors (callers) see masked numbers and call / message through the app; the institution can switch this off or apply it to more roles (49.8). |
+| D25 | Owners with several institutions, one login | **Yes.** See below. |
+| D26 | More role templates | **Yes:** Principal, Vice-principal, Department head, Head teacher, Assistant head teacher, Governing body / Chairman added to the templates (49.6). |
+
+**What D25 changes (Proposed design)**
+- **One person, several institutions:** a user can be a member of several institutions (`institution_members`), with
+  different roles in each. This replaces "one email / phone = one institution" (39.7 item 1, C1).
+- **Login:** sign in once (password, Google or OTP). With one membership the app opens it directly; with several it shows an
+  **institution switcher** (name, logo, role). The last used institution opens next time; switching is one tap from the top bar.
+- **Security:** the active institution is a claim in the session; switching issues a new session for that institution.
+  Every check still uses the active institution only, so data never mixes (41.2 T1). The leak test also covers a user with two memberships.
+- **Institution group:** the Master Admin can link institutions into a **group** (e.g. one owner's school, college and coaching centre).
+  A **group owner** role can see a **group dashboard** with combined, read-only reports (leads, admissions, collections per institution)
+  without opening each one. Data stays stored per institution; nothing is shared or moved between them.
+- **Billing:** each institution keeps its own plan; a group can get one combined invoice and a group discount (48.2).
+- **Public pages and SMS:** each institution keeps its own slug, domain, sender ID and templates.
+- **Phase:** data model in phase 0; switcher, group owner and group dashboard in phase 1.
