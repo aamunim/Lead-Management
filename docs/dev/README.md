@@ -23,5 +23,5 @@ Read in this order before working on any milestone:
 19. `SHELL.md` — routes and guards, cache namespaces and wiping, the API wrapper, navigation rules, app lock and idle sign-out.
 20. `TEST_DEVICES.md` — the three test phones and the manual pre-release pass.
 21. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-22. `../PLAN_BN.md` — background only. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**; owner decisions are recorded there (section 12), not in the plan.
+22. `../PLAN_BN.md` — background. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**: when the two differ, the roadmap wins. When a detail is in neither the roadmap nor this developer guide, take it from the plan chapter the milestone points to. Owner decisions are recorded in the roadmap (section 12), not in the plan.
 23. `PROGRESS.md` — which milestones are done.
