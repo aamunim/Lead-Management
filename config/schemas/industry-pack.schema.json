@@ -1,0 +1,300 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Industry pack (0B.03, Ch 7.7, Ch 49.2–49.7)",
+  "description": "What an industry adds on top of the neutral core: its words, the common pipeline, its own modules, custom-field presets and sensitive-field rules. Stored as versioned rows in public.industry_packs; published versions never change. Type profiles of the industry build on it.",
+  "type": "object",
+  "required": [
+    "name",
+    "description",
+    "labels",
+    "stages",
+    "modules",
+    "field_presets",
+    "sensitive_fields"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$comment": {
+      "type": "string"
+    },
+    "name": {
+      "$ref": "#/definitions/text"
+    },
+    "description": {
+      "$ref": "#/definitions/longText"
+    },
+    "labels": {
+      "description": "The pack's words for the neutral label keys (Ch 8, Ch 49.3).",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)*$"
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/label"
+      }
+    },
+    "stages": {
+      "description": "The common pipeline of the industry (a profile sets its own).",
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "kind"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "$ref": "#/definitions/key"
+          },
+          "name": {
+            "$ref": "#/definitions/text"
+          },
+          "kind": {
+            "enum": [
+              "open",
+              "won",
+              "lost"
+            ]
+          }
+        }
+      }
+    },
+    "modules": {
+      "description": "Industry-only modules (Ch 49.2 point 4): on by default or not, and the milestone that builds them.",
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "default_on",
+          "built_in"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "$ref": "#/definitions/key"
+          },
+          "name": {
+            "$ref": "#/definitions/text"
+          },
+          "default_on": {
+            "type": "boolean"
+          },
+          "built_in": {
+            "description": "Roadmap milestone that builds the module (null: not scheduled yet); until then it stays off (Ch 7.8).",
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[0-9][A-Z]?\\.[0-9]{1,2}$"
+          }
+        }
+      }
+    },
+    "field_presets": {
+      "description": "Custom-field presets profiles pick from (Ch 7.5, Ch 14).",
+      "type": "array",
+      "maxItems": 60,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "type"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "$ref": "#/definitions/key"
+          },
+          "name": {
+            "$ref": "#/definitions/text"
+          },
+          "type": {
+            "enum": [
+              "text",
+              "number",
+              "decimal",
+              "date",
+              "year",
+              "phone",
+              "choice"
+            ]
+          },
+          "options": {
+            "type": "array",
+            "maxItems": 30,
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "$ref": "#/definitions/key"
+                },
+                "name": {
+                  "$ref": "#/definitions/text"
+                }
+              }
+            }
+          },
+          "max_length": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "sensitive_fields": {
+      "description": "Sensitive fields of the pack (Ch 49.7): shown only to roles with the field permission, never sent to AI, kept at most retention_days, and every view audited when view_audit is on.",
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "required": [
+          "field",
+          "never_to_ai",
+          "view_audit"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "$ref": "#/definitions/key"
+          },
+          "never_to_ai": {
+            "type": "boolean"
+          },
+          "view_audit": {
+            "type": "boolean"
+          },
+          "retention_days": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 30,
+            "maximum": 7300
+          },
+          "reason": {
+            "$ref": "#/definitions/text"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "key": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "maxLength": 60
+    },
+    "text": {
+      "type": "object",
+      "required": [
+        "en",
+        "bn"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "en": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "bn": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        }
+      }
+    },
+    "label": {
+      "type": "object",
+      "required": [
+        "en_singular",
+        "en_plural",
+        "bn"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "en_singular": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "en_plural": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "bn": {
+          "description": "The Bangla base word; other forms are derived unless given.",
+          "type": "object",
+          "required": [
+            "base"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "base": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "plural": {
+              "type": "string",
+              "minLength": 1
+            },
+            "possessive": {
+              "type": "string",
+              "minLength": 1
+            },
+            "objective": {
+              "type": "string",
+              "minLength": 1
+            },
+            "plural_oblique": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "longText": {
+      "type": "object",
+      "required": [
+        "en",
+        "bn"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "en": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 480
+        },
+        "bn": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 480
+        }
+      }
+    }
+  }
+}

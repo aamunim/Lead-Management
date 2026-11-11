@@ -1,0 +1,117 @@
+{
+  "$comment": "Industry list for the hidden first step of the setup wizard (Ch 6.3 step 1, Ch 49.4). Only education is open for sign-up (D20); the others are data rows marked closed until their pack is built. Opening is done in the panel (Profiles & packs).",
+  "industries": [
+    {
+      "key": "education",
+      "name": {
+        "en": "Education",
+        "bn": "শিক্ষা"
+      },
+      "signup_open": true
+    },
+    {
+      "key": "healthcare",
+      "name": {
+        "en": "Healthcare",
+        "bn": "স্বাস্থ্যসেবা"
+      },
+      "signup_open": false
+    },
+    {
+      "key": "real_estate",
+      "name": {
+        "en": "Real estate",
+        "bn": "রিয়েল এস্টেট"
+      },
+      "signup_open": false
+    },
+    {
+      "key": "travel",
+      "name": {
+        "en": "Travel and tourism",
+        "bn": "ট্রাভেল ও ট্যুরিজম"
+      },
+      "signup_open": false
+    },
+    {
+      "key": "study_abroad",
+      "name": {
+        "en": "Study-abroad consultancy",
+        "bn": "বিদেশে পড়াশোনার কনসালটেন্সি"
+      },
+      "signup_open": false
+    },
+    {
+      "key": "recruitment",
+      "name": {
+        "en": "Recruitment / manpower",
+        "bn": "রিক্রুটমেন্ট / ম্যানপাওয়ার"
+      },
+      "signup_open": false
+    },
+    {
+      "key": "automobile",
+      "name": {
+        "en": "Automobile",
+        "bn": "অটোমোবাইল"
+      },
+      "signup_open": false
+    },
+    {
+      "key": "fitness",
+      "name": {
+        "en": "Fitness and wellness",
+        "bn": "ফিটনেস ও ওয়েলনেস"
+      },
+      "signup_open": false
+    },
+    {
+      "key": "beauty",
+      "name": {
+        "en": "Beauty and salon",
+        "bn": "বিউটি ও স্যালন"
+      },
+      "signup_open": false
+    },
+    {
+      "key": "finance",
+      "name": {
+        "en": "Financial services",
+        "bn": "আর্থিক সেবা"
+      },
+      "signup_open": false
+    },
+    {
+      "key": "it_services",
+      "name": {
+        "en": "IT / agency services",
+        "bn": "IT / এজেন্সি সেবা"
+      },
+      "signup_open": false
+    },
+    {
+      "key": "retail",
+      "name": {
+        "en": "Retail / online shop",
+        "bn": "রিটেইল / অনলাইন শপ"
+      },
+      "signup_open": false
+    },
+    {
+      "key": "events",
+      "name": {
+        "en": "Events",
+        "bn": "ইভেন্ট"
+      },
+      "signup_open": false
+    },
+    {
+      "key": "general",
+      "name": {
+        "en": "Other (general)",
+        "bn": "অন্যান্য (সাধারণ)"
+      },
+      "signup_open": false
+    }
+  ]
+}

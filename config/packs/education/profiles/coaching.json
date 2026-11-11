@@ -1,0 +1,318 @@
+{
+  "$comment": "Content is Proposed (Ch 7.10) until the owner approves it at the 0B.03 checkpoint.",
+  "name": {
+    "en": "Coaching centre",
+    "bn": "কোচিং সেন্টার"
+  },
+  "description": {
+    "en": "Short courses in many small batches, monthly or package fees; most leads come from Facebook, so fast follow-up matters most.",
+    "bn": "ছোট কোর্স, অনেক ছোট ব্যাচ, মাসিক বা প্যাকেজ ফি; বেশিরভাগ লিড Facebook থেকে, তাই দ্রুত ফলো-আপই সবচেয়ে জরুরি।"
+  },
+  "role_template_set": "coaching",
+  "labels": {
+    "offering": {
+      "en_singular": "Course",
+      "en_plural": "Courses",
+      "bn": {
+        "base": "কোর্স"
+      }
+    },
+    "cohort": {
+      "en_singular": "Batch",
+      "en_plural": "Batches",
+      "bn": {
+        "base": "ব্যাচ"
+      }
+    },
+    "client_number": {
+      "en_singular": "Student no.",
+      "en_plural": "Student nos.",
+      "bn": {
+        "base": "শিক্ষার্থী নম্বর"
+      }
+    }
+  },
+  "stages": [
+    {
+      "key": "new",
+      "name": {
+        "en": "New",
+        "bn": "নতুন"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "called",
+      "name": {
+        "en": "Called",
+        "bn": "কল করা হয়েছে"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "demo_class",
+      "name": {
+        "en": "Demo class",
+        "bn": "ডেমো ক্লাস"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "enrolled",
+      "name": {
+        "en": "Enrolled",
+        "bn": "ভর্তি হয়েছে"
+      },
+      "kind": "won"
+    },
+    {
+      "key": "lost",
+      "name": {
+        "en": "Lost",
+        "bn": "হারানো"
+      },
+      "kind": "lost"
+    }
+  ],
+  "documents": [
+    {
+      "key": "photo",
+      "name": {
+        "en": "Passport-size photo",
+        "bn": "পাসপোর্ট সাইজের ছবি"
+      },
+      "required": true
+    }
+  ],
+  "fees": {
+    "heads": [
+      {
+        "key": "package",
+        "name": {
+          "en": "Package fee",
+          "bn": "প্যাকেজ ফি"
+        },
+        "frequency": "package"
+      },
+      {
+        "key": "monthly",
+        "name": {
+          "en": "Monthly fee",
+          "bn": "মাসিক ফি"
+        },
+        "frequency": "monthly"
+      }
+    ],
+    "installments": true,
+    "waivers": false
+  },
+  "custom_fields": [
+    "current_occupation",
+    "preferred_time"
+  ],
+  "modules": {
+    "slot_seats": true,
+    "contact_persons": false,
+    "assessment": false,
+    "merit_list": false,
+    "after_steps": false,
+    "network": false,
+    "hostel": false
+  },
+  "settings": {
+    "appointment": {
+      "enabled": true
+    },
+    "fees": {
+      "enabled": true
+    },
+    "lead_score": {
+      "enabled": true
+    },
+    "conversion": {
+      "enabled": true
+    },
+    "clients": {
+      "enabled": true
+    }
+  },
+  "message_templates": [
+    {
+      "key": "follow_up",
+      "purpose": "follow_up",
+      "text": {
+        "en": "Dear {name}, thank you for your interest in {institution}. Call us at {phone} for any question.",
+        "bn": "প্রিয় {name}, {institution}-এ আগ্রহের জন্য ধন্যবাদ। যেকোনো প্রশ্নে {phone} নম্বরে কল করুন।"
+      }
+    },
+    {
+      "key": "demo_reminder",
+      "purpose": "appointment",
+      "text": {
+        "en": "Your demo class for {offering} is on {date} at {time}.",
+        "bn": "{offering}-এর ডেমো ক্লাস {date} তারিখ {time}-এ।"
+      }
+    },
+    {
+      "key": "batch_start",
+      "purpose": "start",
+      "text": {
+        "en": "The new {cohort} of {offering} starts on {date}.",
+        "bn": "{offering}-এর নতুন {cohort} শুরু {date} তারিখে।"
+      }
+    },
+    {
+      "key": "fee_due",
+      "purpose": "fee_due",
+      "text": {
+        "en": "Dear guardian, the fee of {amount} for {name} is due on {date}.",
+        "bn": "সম্মানিত অভিভাবক, {name}-এর {amount} টাকা ফি {date} তারিখের মধ্যে দিন।"
+      }
+    }
+  ],
+  "client_number_pattern": "{CODE}-{000}",
+  "lead_score": {
+    "points": {
+      "called": 1,
+      "answered": 2,
+      "demo_attended": 15,
+      "not_answered": -1
+    }
+  },
+  "lost_reasons": [
+    {
+      "key": "fee_too_high",
+      "name": {
+        "en": "Fee too high",
+        "bn": "ফি বেশি"
+      }
+    },
+    {
+      "key": "chose_other",
+      "name": {
+        "en": "Joined another coaching",
+        "bn": "অন্য কোচিংয়ে ভর্তি"
+      }
+    },
+    {
+      "key": "not_reachable",
+      "name": {
+        "en": "Not reachable",
+        "bn": "যোগাযোগ করা যায়নি"
+      }
+    },
+    {
+      "key": "timing",
+      "name": {
+        "en": "Batch time does not suit",
+        "bn": "ব্যাচের সময় মেলে না"
+      }
+    },
+    {
+      "key": "no_interest",
+      "name": {
+        "en": "No longer interested",
+        "bn": "আগ্রহ নেই"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "key": "facebook",
+      "name": {
+        "en": "Facebook",
+        "bn": "ফেসবুক"
+      }
+    },
+    {
+      "key": "walk_in",
+      "name": {
+        "en": "Walk-in",
+        "bn": "সরাসরি এসেছেন"
+      }
+    },
+    {
+      "key": "phone_call",
+      "name": {
+        "en": "Phone call",
+        "bn": "ফোন কল"
+      }
+    },
+    {
+      "key": "website",
+      "name": {
+        "en": "Website",
+        "bn": "ওয়েবসাইট"
+      }
+    },
+    {
+      "key": "referral",
+      "name": {
+        "en": "Referral",
+        "bn": "রেফারেল"
+      }
+    },
+    {
+      "key": "banner",
+      "name": {
+        "en": "Banner / leaflet",
+        "bn": "ব্যানার / লিফলেট"
+      }
+    },
+    {
+      "key": "sms",
+      "name": {
+        "en": "SMS",
+        "bn": "এসএমএস"
+      }
+    }
+  ],
+  "tags": [
+    {
+      "key": "hot",
+      "name": {
+        "en": "Hot",
+        "bn": "আগ্রহী"
+      }
+    },
+    {
+      "key": "from_ad",
+      "name": {
+        "en": "From an ad",
+        "bn": "বিজ্ঞাপন থেকে"
+      }
+    }
+  ],
+  "report_presets": [
+    "daily_activity",
+    "pipeline_funnel",
+    "source_performance",
+    "caller_scorecard",
+    "speed_to_lead",
+    "follow_ups_due"
+  ],
+  "ai_words": {
+    "en": [
+      "batch",
+      "demo class",
+      "course",
+      "package fee"
+    ],
+    "bn": [
+      "ব্যাচ",
+      "ডেমো ক্লাস",
+      "কোর্স",
+      "প্যাকেজ ফি"
+    ]
+  },
+  "field_rules": [
+    {
+      "role": "caller",
+      "field": "discount_history",
+      "access": "hidden"
+    }
+  ],
+  "notification_recipients": {
+    "default": "client"
+  }
+}

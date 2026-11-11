@@ -36,6 +36,10 @@
   "email_invalid": "This email address is not valid.",
   "email_taken": "Someone else already uses this email address.",
   "record_unknown": "This record was not found in your institution.",
+  "profile_invalid": "This version has problems. Fix the items listed and try again.",
+  "version_published": "A published version never changes. Save your changes as a new version.",
+  "version_unknown": "This version no longer exists. Refresh and try again.",
+  "industry_not_ready": "Publish the pack and at least one profile of this industry first.",
   "actions": {
     "sign_in": "Sign in",
     "choose_institution": "Choose institution",

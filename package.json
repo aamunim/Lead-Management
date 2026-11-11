@@ -68,7 +68,8 @@
     "test:role-matrix": "node scripts/role-matrix/run.mjs",
     "bench": "node scripts/bench/run.mjs",
     "seed:generate": "node scripts/seed/generate.mjs",
-    "check:settings": "node scripts/settings/check.mjs"
+    "check:settings": "node scripts/settings/check.mjs",
+    "check:profiles": "node scripts/profiles/gen-seed.mjs --check"
   },
   "private": true,
   "description": "Leadora: multi-institution lead and admission management platform."

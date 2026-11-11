@@ -63,7 +63,7 @@ user agent from the request. The table is append-only. The institution-facing vi
 
 ## Panel shell
 
-Menu (Ch 5.3, approved, D43): Dashboard, Institutions (0B.07), Groups (1.19), Profiles and packs (0B.03), Providers
+Menu (Ch 5.3, approved, D43): Dashboard, Institutions (0B.07), Groups (1.19), Profiles and packs (built in 0B.03, see `PROFILES.md`), Providers
 (0B.11), Announcements (1.33), Requests (0B.07), Developer inbox (1.18), Platform users. Each item needs its right;
 pages built later say when they arrive. Every institution will get the tabs Overview, Messaging, Notifications,
 Payments, Integrations, Domain, Plan and billing, Words, Audit (filled by later milestones).

@@ -10,11 +10,8 @@ begin;
 select lint.report();
 rollback;
 SQL
-# App code: institution_type may only be read in seeding code (Ch 2.7 #5).
-if grep -rn --include='*.ts' --include='*.tsx' 'institution_type' src 2>/dev/null; then
-  echo "LINT [institution_type] app code reads institution_type; use settings and modules instead." >&2
-  exit 1
-fi
+# Code follows settings and modules, never the type: only the profile applier reads the type column (Ch 7.2, 0B.03-T11).
+node scripts/profiles/lint-institution-type.mjs
 
 # Extension boundaries (0A.09, Ch 43.4). Core migrations never reference an extension schema; extension migrations
 # never change core objects (they may only insert into the registries: extensions, event_definitions, event_listeners).

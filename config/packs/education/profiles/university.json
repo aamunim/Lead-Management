@@ -1,0 +1,464 @@
+{
+  "$comment": "Content is Proposed (Ch 7.10) until the owner approves it at the 0B.03 checkpoint.",
+  "name": {
+    "en": "Private university",
+    "bn": "প্রাইভেট বিশ্ববিদ্যালয়"
+  },
+  "description": {
+    "en": "Several intakes a year, admission test and viva, per-credit fees and result-based waivers.",
+    "bn": "বছরে কয়েকটি ইনটেক, ভর্তি পরীক্ষা ও ভাইভা, প্রতি ক্রেডিট ফি আর ফলাফলভিত্তিক ওয়েভার।"
+  },
+  "role_template_set": "college",
+  "labels": {
+    "lead": {
+      "en_singular": "Applicant",
+      "en_plural": "Applicants",
+      "bn": {
+        "base": "আবেদনকারী"
+      }
+    },
+    "offering": {
+      "en_singular": "Program",
+      "en_plural": "Programs",
+      "bn": {
+        "base": "প্রোগ্রাম"
+      }
+    },
+    "cohort": {
+      "en_singular": "Intake",
+      "en_plural": "Intakes",
+      "bn": {
+        "base": "ইনটেক"
+      }
+    },
+    "conversion": {
+      "en_singular": "Enrolment",
+      "en_plural": "Enrolments",
+      "bn": {
+        "base": "ভর্তি"
+      }
+    }
+  },
+  "stages": [
+    {
+      "key": "new",
+      "name": {
+        "en": "New",
+        "bn": "নতুন"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "counselled",
+      "name": {
+        "en": "Counselled",
+        "bn": "কাউন্সেলিং হয়েছে"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "applied",
+      "name": {
+        "en": "Applied",
+        "bn": "আবেদন করেছে"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "admission_test",
+      "name": {
+        "en": "Test and viva",
+        "bn": "পরীক্ষা ও ভাইভা"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "offer",
+      "name": {
+        "en": "Offer",
+        "bn": "অফার"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "enrolled",
+      "name": {
+        "en": "Enrolled",
+        "bn": "ভর্তি হয়েছে"
+      },
+      "kind": "won"
+    },
+    {
+      "key": "lost",
+      "name": {
+        "en": "Lost",
+        "bn": "হারানো"
+      },
+      "kind": "lost"
+    }
+  ],
+  "documents": [
+    {
+      "key": "ssc_marksheet",
+      "name": {
+        "en": "SSC marksheet",
+        "bn": "এসএসসি নম্বরপত্র"
+      },
+      "required": true
+    },
+    {
+      "key": "hsc_marksheet",
+      "name": {
+        "en": "HSC marksheet",
+        "bn": "এইচএসসি নম্বরপত্র"
+      },
+      "required": true
+    },
+    {
+      "key": "ssc_testimonial",
+      "name": {
+        "en": "SSC testimonial",
+        "bn": "এসএসসি প্রশংসাপত্র"
+      },
+      "required": true
+    },
+    {
+      "key": "hsc_testimonial",
+      "name": {
+        "en": "HSC testimonial",
+        "bn": "এইচএসসি প্রশংসাপত্র"
+      },
+      "required": true
+    },
+    {
+      "key": "photo",
+      "name": {
+        "en": "Passport-size photo",
+        "bn": "পাসপোর্ট সাইজের ছবি"
+      },
+      "required": true
+    },
+    {
+      "key": "nid_or_birth",
+      "name": {
+        "en": "NID or birth registration",
+        "bn": "এনআইডি বা জন্ম নিবন্ধন"
+      },
+      "required": true
+    }
+  ],
+  "fees": {
+    "heads": [
+      {
+        "key": "admission",
+        "name": {
+          "en": "Admission fee",
+          "bn": "ভর্তি ফি"
+        },
+        "frequency": "once"
+      },
+      {
+        "key": "per_credit",
+        "name": {
+          "en": "Per-credit fee",
+          "bn": "প্রতি ক্রেডিট ফি"
+        },
+        "frequency": "per_credit"
+      },
+      {
+        "key": "semester",
+        "name": {
+          "en": "Semester fee",
+          "bn": "সেমিস্টার ফি"
+        },
+        "frequency": "per_semester"
+      }
+    ],
+    "installments": true,
+    "waivers": true
+  },
+  "custom_fields": [
+    "ssc_gpa",
+    "hsc_gpa",
+    "board",
+    "passing_year",
+    "previous_institution",
+    "group",
+    "date_of_birth"
+  ],
+  "modules": {
+    "slot_seats": false,
+    "contact_persons": false,
+    "assessment": true,
+    "merit_list": false,
+    "after_steps": false,
+    "network": true,
+    "hostel": false
+  },
+  "settings": {
+    "appointment": {
+      "enabled": true
+    },
+    "fees": {
+      "enabled": true
+    },
+    "lead_score": {
+      "enabled": true
+    },
+    "conversion": {
+      "enabled": true
+    },
+    "clients": {
+      "enabled": true
+    },
+    "network": {
+      "enabled": true
+    }
+  },
+  "message_templates": [
+    {
+      "key": "follow_up",
+      "purpose": "follow_up",
+      "text": {
+        "en": "Dear {name}, thank you for your interest in {institution}. Call us at {phone} for any question.",
+        "bn": "প্রিয় {name}, {institution}-এ আগ্রহের জন্য ধন্যবাদ। যেকোনো প্রশ্নে {phone} নম্বরে কল করুন।"
+      }
+    },
+    {
+      "key": "visit_reminder",
+      "purpose": "appointment",
+      "text": {
+        "en": "Reminder: your visit to {institution} is on {date} at {time}.",
+        "bn": "মনে করিয়ে দিচ্ছি: {date} তারিখ {time}-এ {institution}-এ আপনার ভিজিট।"
+      }
+    },
+    {
+      "key": "test_date",
+      "purpose": "assessment",
+      "text": {
+        "en": "The admission test for {offering} is on {date} at {time}. Please bring the admit card.",
+        "bn": "{offering}-এর ভর্তি পরীক্ষা {date} তারিখ {time}-এ। প্রবেশপত্র সাথে আনুন।"
+      }
+    },
+    {
+      "key": "result",
+      "purpose": "result",
+      "text": {
+        "en": "The result for {offering} is published. {name}: {result}.",
+        "bn": "{offering}-এর ফলাফল প্রকাশিত হয়েছে। {name}: {result}।"
+      }
+    },
+    {
+      "key": "documents_due",
+      "purpose": "documents",
+      "text": {
+        "en": "Please submit these documents for {name}: {documents}.",
+        "bn": "{name}-এর এই কাগজগুলো জমা দিন: {documents}।"
+      }
+    },
+    {
+      "key": "welcome",
+      "purpose": "welcome",
+      "text": {
+        "en": "Welcome to {institution}, {name}! Your number is {client_number}.",
+        "bn": "{institution}-এ স্বাগতম, {name}! আপনার নম্বর {client_number}।"
+      }
+    }
+  ],
+  "client_number_pattern": "{YY}{INTAKE}{0000}",
+  "lead_score": {
+    "points": {
+      "called": 1,
+      "answered": 2,
+      "visit_done": 8,
+      "applied": 10,
+      "assessment_done": 12,
+      "not_answered": -1
+    }
+  },
+  "lost_reasons": [
+    {
+      "key": "fee_too_high",
+      "name": {
+        "en": "Fee too high",
+        "bn": "ফি বেশি"
+      }
+    },
+    {
+      "key": "chose_other",
+      "name": {
+        "en": "Chose another institution",
+        "bn": "অন্য প্রতিষ্ঠানে ভর্তি"
+      }
+    },
+    {
+      "key": "not_reachable",
+      "name": {
+        "en": "Not reachable",
+        "bn": "যোগাযোগ করা যায়নি"
+      }
+    },
+    {
+      "key": "not_eligible",
+      "name": {
+        "en": "Not eligible",
+        "bn": "যোগ্যতা নেই"
+      }
+    },
+    {
+      "key": "distance",
+      "name": {
+        "en": "Too far",
+        "bn": "দূরত্ব বেশি"
+      }
+    },
+    {
+      "key": "next_session",
+      "name": {
+        "en": "Next session",
+        "bn": "পরের সেশনে"
+      }
+    },
+    {
+      "key": "no_interest",
+      "name": {
+        "en": "No longer interested",
+        "bn": "আগ্রহ নেই"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "key": "facebook",
+      "name": {
+        "en": "Facebook",
+        "bn": "ফেসবুক"
+      }
+    },
+    {
+      "key": "walk_in",
+      "name": {
+        "en": "Walk-in",
+        "bn": "সরাসরি এসেছেন"
+      }
+    },
+    {
+      "key": "phone_call",
+      "name": {
+        "en": "Phone call",
+        "bn": "ফোন কল"
+      }
+    },
+    {
+      "key": "website",
+      "name": {
+        "en": "Website",
+        "bn": "ওয়েবসাইট"
+      }
+    },
+    {
+      "key": "referral",
+      "name": {
+        "en": "Referral",
+        "bn": "রেফারেল"
+      }
+    },
+    {
+      "key": "banner",
+      "name": {
+        "en": "Banner / leaflet",
+        "bn": "ব্যানার / লিফলেট"
+      }
+    },
+    {
+      "key": "sms",
+      "name": {
+        "en": "SMS",
+        "bn": "এসএমএস"
+      }
+    }
+  ],
+  "tags": [
+    {
+      "key": "hot",
+      "name": {
+        "en": "Hot",
+        "bn": "আগ্রহী"
+      }
+    },
+    {
+      "key": "scholarship_query",
+      "name": {
+        "en": "Asked about scholarship",
+        "bn": "বৃত্তির খোঁজ"
+      }
+    },
+    {
+      "key": "sibling",
+      "name": {
+        "en": "Sibling studies here",
+        "bn": "ভাইবোন পড়ে"
+      }
+    }
+  ],
+  "report_presets": [
+    "daily_activity",
+    "pipeline_funnel",
+    "source_performance",
+    "caller_scorecard",
+    "conversion_by_offering",
+    "follow_ups_due"
+  ],
+  "ai_words": {
+    "en": [
+      "program",
+      "intake",
+      "credit",
+      "waiver",
+      "viva",
+      "semester"
+    ],
+    "bn": [
+      "প্রোগ্রাম",
+      "ইনটেক",
+      "ক্রেডিট",
+      "ওয়েভার",
+      "ভাইভা",
+      "সেমিস্টার"
+    ]
+  },
+  "field_rules": [
+    {
+      "role": "caller",
+      "field": "discount_history",
+      "access": "hidden"
+    },
+    {
+      "role": "accountant",
+      "field": "phone",
+      "access": "masked"
+    }
+  ],
+  "notification_recipients": {
+    "default": "client"
+  },
+  "blocks": {
+    "assessment": {
+      "kind": "written_and_viva"
+    },
+    "intakes": [
+      {
+        "en": "Spring",
+        "bn": "স্প্রিং"
+      },
+      {
+        "en": "Summer",
+        "bn": "সামার"
+      },
+      {
+        "en": "Fall",
+        "bn": "ফল"
+      }
+    ]
+  }
+}

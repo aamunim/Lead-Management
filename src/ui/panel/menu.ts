@@ -10,7 +10,7 @@ export const PANEL_MENU: PanelMenuItem[] = [
   { key: 'dashboard', href: '/panel', icon: 'dashboard', permission: 'platform.view', builtIn: null },
   { key: 'institutions', href: '/panel/institutions', icon: 'apartment', permission: 'platform.view', builtIn: '0B.07' },
   { key: 'groups', href: '/panel/groups', icon: 'account-tree', permission: 'platform.view', builtIn: '1.19' },
-  { key: 'profiles', href: '/panel/profiles', icon: 'category', permission: 'platform.profiles', builtIn: '0B.03' },
+  { key: 'profiles', href: '/panel/profiles', icon: 'category', permission: 'platform.profiles', builtIn: null },
   { key: 'providers', href: '/panel/providers', icon: 'hub', permission: 'platform.integrations', builtIn: '0B.11' },
   { key: 'announcements', href: '/panel/announcements', icon: 'campaign', permission: 'platform.view', builtIn: '1.33' },
   { key: 'requests', href: '/panel/requests', icon: 'inbox', permission: 'platform.view', builtIn: '0B.07' },

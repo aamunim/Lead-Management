@@ -1,0 +1,533 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Type profile (0B.03-T2, Ch 7.5)",
+  "description": "Everything a type profile seeds when an institution is set up. Stored as versioned rows in public.type_profiles; published versions never change. Words shown to people are data in both languages (en, bn). Parts for blocks built later (admission test, merit list, fee heads, board flow, hostel) are stored now and stay behind their modules (Ch 7.8).",
+  "type": "object",
+  "required": [
+    "name",
+    "description",
+    "role_template_set",
+    "labels",
+    "stages",
+    "documents",
+    "fees",
+    "custom_fields",
+    "modules",
+    "settings",
+    "message_templates",
+    "client_number_pattern",
+    "lead_score",
+    "lost_reasons",
+    "sources",
+    "tags",
+    "report_presets",
+    "ai_words",
+    "field_rules",
+    "notification_recipients"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$comment": {
+      "type": "string"
+    },
+    "name": {
+      "$ref": "#/definitions/text"
+    },
+    "description": {
+      "$ref": "#/definitions/longText"
+    },
+    "role_template_set": {
+      "description": "Which role templates (public.role_templates) the institution gets (D26).",
+      "$ref": "#/definitions/key"
+    },
+    "labels": {
+      "description": "Words that differ from the pack (label key → word). Keys must be registered label keys (Ch 8).",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)*$"
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/label"
+      }
+    },
+    "stages": {
+      "description": "Pipeline stages in order (Ch 17). At least one stage of kind won and one of kind lost.",
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "kind"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "$ref": "#/definitions/key"
+          },
+          "name": {
+            "$ref": "#/definitions/text"
+          },
+          "kind": {
+            "enum": [
+              "open",
+              "won",
+              "lost"
+            ]
+          }
+        }
+      }
+    },
+    "documents": {
+      "description": "Documents a client submits (Ch 31).",
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "required"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "$ref": "#/definitions/key"
+          },
+          "name": {
+            "$ref": "#/definitions/text"
+          },
+          "required": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "fees": {
+      "description": "Fee structure (Ch 34): the fee heads and how often each is charged. Used when the fees module is built.",
+      "type": "object",
+      "required": [
+        "heads"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "heads": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "name",
+              "frequency"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "key": {
+                "$ref": "#/definitions/key"
+              },
+              "name": {
+                "$ref": "#/definitions/text"
+              },
+              "frequency": {
+                "enum": [
+                  "once",
+                  "monthly",
+                  "per_session",
+                  "per_semester",
+                  "per_credit",
+                  "annual",
+                  "package"
+                ]
+              }
+            }
+          }
+        },
+        "installments": {
+          "type": "boolean"
+        },
+        "waivers": {
+          "description": "Result-based waivers and sibling discounts are offered.",
+          "type": "boolean"
+        }
+      }
+    },
+    "custom_fields": {
+      "description": "Lead custom fields, by key of the pack's field presets (Ch 14).",
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 30,
+      "items": {
+        "$ref": "#/definitions/key"
+      }
+    },
+    "modules": {
+      "description": "Industry modules on or off (keys of the pack's modules; Ch 9). Unlisted modules use the pack default.",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
+      "additionalProperties": {
+        "type": "boolean"
+      }
+    },
+    "settings": {
+      "description": "Setting defaults (key → value). Keys must be institution settings; each value must pass that setting's schema.",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*$"
+      }
+    },
+    "message_templates": {
+      "description": "Message templates (Ch 24). {name} style placeholders are filled when sending.",
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "purpose",
+          "text"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "$ref": "#/definitions/key"
+          },
+          "purpose": {
+            "enum": [
+              "follow_up",
+              "appointment",
+              "assessment",
+              "result",
+              "fee_due",
+              "start",
+              "welcome",
+              "documents"
+            ]
+          },
+          "text": {
+            "$ref": "#/definitions/longText"
+          }
+        }
+      }
+    },
+    "client_number_pattern": {
+      "description": "Client (student) number pattern (Ch 33): parts in braces, at least one counter like {000}.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9{}/_-]*\\{0{2,8}\\}[A-Za-z0-9{}/_-]*$",
+      "maxLength": 40
+    },
+    "lead_score": {
+      "description": "Points per event for the lead score (Ch 22).",
+      "type": "object",
+      "required": [
+        "points"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "points": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": -50,
+            "maximum": 50
+          }
+        }
+      }
+    },
+    "lost_reasons": {
+      "$ref": "#/definitions/namedList"
+    },
+    "sources": {
+      "$ref": "#/definitions/namedList"
+    },
+    "tags": {
+      "$ref": "#/definitions/namedList"
+    },
+    "report_presets": {
+      "description": "Reports shown first (Ch 38).",
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/definitions/key"
+      }
+    },
+    "ai_words": {
+      "description": "Words the AI uses for this kind of institution (Ch 40).",
+      "type": "object",
+      "required": [
+        "en",
+        "bn"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "en": {
+          "type": "array",
+          "maxItems": 30,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          }
+        },
+        "bn": {
+          "type": "array",
+          "maxItems": 30,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          }
+        }
+      }
+    },
+    "field_rules": {
+      "description": "Field-level rule defaults (Ch 11): a template role sees a field hidden or masked.",
+      "type": "array",
+      "maxItems": 60,
+      "items": {
+        "type": "object",
+        "required": [
+          "role",
+          "field",
+          "access"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "$ref": "#/definitions/key"
+          },
+          "field": {
+            "$ref": "#/definitions/key"
+          },
+          "access": {
+            "enum": [
+              "hidden",
+              "masked"
+            ]
+          }
+        }
+      }
+    },
+    "notification_recipients": {
+      "description": "Who gets messages by default (Ch 24): the lead / client, their contact person (guardian), or both.",
+      "type": "object",
+      "required": [
+        "default"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "enum": [
+            "client",
+            "contact_person",
+            "both"
+          ]
+        }
+      }
+    },
+    "blocks": {
+      "description": "Profile parts for blocks built in later phases (Ch 7.8); they stay behind their modules until then.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "assessment": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "written",
+                "viva",
+                "written_and_viva",
+                "interview",
+                "lottery"
+              ]
+            },
+            "for_offerings": {
+              "$ref": "#/definitions/text"
+            }
+          }
+        },
+        "merit_list": {
+          "type": "object",
+          "required": [
+            "by"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "by": {
+              "enum": [
+                "test",
+                "gpa",
+                "test_and_gpa",
+                "central"
+              ]
+            }
+          }
+        },
+        "after_steps": {
+          "type": "object",
+          "required": [
+            "board"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "board": {
+              "$ref": "#/definitions/text"
+            }
+          }
+        },
+        "hostel": {
+          "type": "object",
+          "required": [
+            "separate_sections"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "separate_sections": {
+              "type": "boolean"
+            }
+          }
+        },
+        "intakes": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+            "$ref": "#/definitions/text"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "key": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "maxLength": 60
+    },
+    "text": {
+      "type": "object",
+      "required": [
+        "en",
+        "bn"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "en": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "bn": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        }
+      }
+    },
+    "longText": {
+      "type": "object",
+      "required": [
+        "en",
+        "bn"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "en": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 480
+        },
+        "bn": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 480
+        }
+      }
+    },
+    "label": {
+      "type": "object",
+      "required": [
+        "en_singular",
+        "en_plural",
+        "bn"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "en_singular": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "en_plural": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "bn": {
+          "description": "The Bangla base word; other forms are derived unless given.",
+          "type": "object",
+          "required": [
+            "base"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "base": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "plural": {
+              "type": "string",
+              "minLength": 1
+            },
+            "possessive": {
+              "type": "string",
+              "minLength": 1
+            },
+            "objective": {
+              "type": "string",
+              "minLength": 1
+            },
+            "plural_oblique": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "namedList": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "name"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "$ref": "#/definitions/key"
+          },
+          "name": {
+            "$ref": "#/definitions/text"
+          }
+        }
+      }
+    }
+  }
+}
