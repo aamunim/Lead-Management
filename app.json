@@ -2,7 +2,7 @@
   "expo": {
     "name": "Leadora",
     "slug": "leadora",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "leadora",
@@ -36,7 +36,7 @@
       "typedRoutes": true,
       "reactCompiler": true
     },
-    "runtimeVersion": "0.1.0",
+    "runtimeVersion": "0.2.0",
     "platforms": [
       "android",
       "web"

@@ -51,6 +51,15 @@ describe('checkConfig', () => {
     assert.ok(problems.some((p) => p.includes('differs from config/product.json')), problems.join('\n'));
   });
 
+  it('rejects OTA settings without the expo-updates module', () => {
+    const dir = makeProject();
+    const pkg = JSON.parse(readFileSync(join(repoRoot, 'package.json'), 'utf8'));
+    delete pkg.dependencies['expo-updates'];
+    writeFileSync(join(dir, 'package.json'), JSON.stringify(pkg));
+    const { problems } = checkConfig(dir);
+    assert.ok(problems.some((p) => p.includes('expo-updates')), problems.join('\n'));
+  });
+
   it('rejects a missing runtimeVersion', () => {
     const dir = makeProject(({ app }) => {
       delete app.runtimeVersion;
