@@ -19,7 +19,10 @@ const cleanUp = () => adminSql(`delete from public.platform_members where user_i
   update public.industries set signup_open = (key = 'education');
   set session_replication_role = replica;
   delete from public.type_profiles where key = 'training' and version > 1;
-  set session_replication_role = default;`);
+  set session_replication_role = default;
+  delete from public.institution_labels where institution_id = 'a0000000-0000-4000-8000-00000000000a' and key = 'doc.receipt_title';
+  update public.label_defaults set en_singular = 'Lead', en_plural = 'Leads', bn_forms = app.bn_forms('লিড', true)
+   where scope = 'product' and key = 'lead';`);
 before(async () => {
   web = await startWeb();
   cleanUp();
@@ -203,6 +206,47 @@ describe('Master Admin panel', () => {
     await ctx.close();
   });
 
+  it('institutions: the Labels tab shows where words come from; lock a word with a reason (audited)', async () => {
+    const ctx = await newContext();
+    const page = await ctx.newPage();
+    await panelSignIn(page, 'platform.admin@example.test');
+    await page.getByTestId('panel-dashboard').waitFor({ timeout: 20000 });
+    await page.getByTestId('panel-menu-institutions').click();
+    await page.getByTestId('institution-profile-mixed').waitFor({ timeout: 20000 });
+    assert.match(await page.getByTestId('institution-profile-mixed').textContent(), /School \+ College/);
+    await page.getByTestId('institution-test-college-a').click();
+    await page.getByTestId('label-doc.receipt_title').waitFor({ timeout: 20000 });
+    await page.getByTestId('label-doc.receipt_title').click();
+    await page.getByTestId('lock-reason-input').fill('legal title on receipts');
+    await page.getByTestId('lock-save').click();
+    await page.getByTestId('lock-sheet').waitFor({ state: 'hidden', timeout: 15000 });
+    await page.waitForFunction(() => /Locked/.test(document.querySelector('[data-testid="label-doc.receipt_title"]')?.textContent ?? ''), null, { timeout: 15000 });
+    await page.screenshot({ path: `${SCREENSHOTS}/panel-institution-labels.png`, fullPage: true });
+    assert.match(adminSql(`select count(*) from public.platform_audit_log where action = 'label.locked' and target_id = 'doc.receipt_title'
+      and reason = 'legal title on receipts'`), /\b1\b/);
+    assert.match(adminSql(`select locked_by_platform from public.institution_labels
+      where institution_id = 'a0000000-0000-4000-8000-00000000000a' and key = 'doc.receipt_title'`), /\bt\b/);
+    await ctx.close();
+  });
+
+  it('product words: edit a product-default word (institutions keep their own)', async () => {
+    const ctx = await newContext();
+    const page = await ctx.newPage();
+    await panelSignIn(page, 'platform.admin@example.test');
+    await page.getByTestId('panel-dashboard').waitFor({ timeout: 20000 });
+    await page.goto(`${web.base}/panel/profiles`);
+    await page.getByTestId('profiles-product-words').click();
+    await page.getByTestId('product-label-lead').waitFor({ timeout: 20000 });
+    await page.getByTestId('product-label-lead').click();
+    await page.getByTestId('product-label-en-input').fill('Prospect');
+    await page.getByTestId('product-label-en-plural-input').fill('Prospects');
+    await page.getByTestId('product-label-save').click();
+    await page.getByTestId('product-label-sheet').waitFor({ state: 'hidden', timeout: 15000 });
+    assert.match(adminSql(`select en_singular from public.label_defaults where scope = 'product' and key = 'lead'`), /Prospect/);
+    assert.match(adminSql(`select app.label('a0000000-0000-4000-8000-00000000000a', 'lead')`), /Lead/);
+    await ctx.close();
+  });
+
   it('profiles and packs need platform.profiles (Support is refused)', async () => {
     const ctx = await newContext();
     const page = await ctx.newPage();
@@ -224,8 +268,8 @@ describe('Master Admin panel', () => {
       await panelSignIn(page, 'platform.admin@example.test');
       await page.getByTestId('panel-dashboard').waitFor({ timeout: 20000 });
       await page.screenshot({ path: `${SCREENSHOTS}/panel-dashboard-${language}-${scheme}.png`, fullPage: true });
-      await page.goto(`${web.base}/panel/institutions`);
-      await page.getByTestId('panel-institution-tabs').waitFor({ timeout: 20000 });
+      await page.goto(`${web.base}/panel/institution/a0000000-0000-4000-8000-00000000000a`);
+      await page.getByTestId('label-doc.receipt_title').waitFor({ timeout: 20000 });
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), 'no sideways scroll');
       await page.screenshot({ path: `${SCREENSHOTS}/panel-institutions-${language}-${scheme}.png`, fullPage: true });
       await page.goto(`${web.base}/panel/profile/profile/school`);

@@ -143,6 +143,48 @@
     "sensitive": "Sensitive fields (never sent to AI)",
     "modules": "Modules",
     "on": "on",
-    "off": "off"
+    "off": "off",
+    "productWords": "Product words"
+  },
+  "institutions": {
+    "intro": "Every institution with its industry and types. Open one for its words (Labels tab); approval, status and the other tabs come with 0B.07.",
+    "search": "Search by name or address",
+    "noTypes": "No type yet",
+    "status": {
+      "pending": "Waiting for approval",
+      "trial": "Trial",
+      "active": "Active",
+      "read_only": "Read only",
+      "suspended": "Suspended",
+      "closed": "Closed"
+    }
+  },
+  "labelsTab": {
+    "title": "Words of this institution",
+    "help": "Where each word comes from. Lock a word that must not change (for example the legal receipt title); a locked word is read-only for the institution.",
+    "source": {
+      "institution": "Changed by the institution",
+      "profile": "From its type",
+      "pack": "From the industry pack",
+      "product": "Product default",
+      "derived": "Derived from another word"
+    },
+    "lockedBadge": "Locked",
+    "lock": "Lock this word",
+    "unlock": "Unlock",
+    "lockHelp": "The institution will not be able to change this word. The reason is kept in both audit logs.",
+    "unlockHelp": "The institution will be able to change this word again.",
+    "reason": "Reason",
+    "locked": "Word locked",
+    "unlocked": "Word unlocked"
+  },
+  "productLabels": {
+    "title": "Product words",
+    "intro": "The neutral words under every industry pack, used when a pack has no word for a key. Changing them never changes a word an institution set itself.",
+    "enSingular": "English (one)",
+    "enPlural": "English (many)",
+    "bn": "Bangla",
+    "save": "Save",
+    "saved": "Saved"
   }
 }

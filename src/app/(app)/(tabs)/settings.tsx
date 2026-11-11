@@ -27,6 +27,8 @@ export default function SettingsTab() {
       show: branchesOn && can('settings.organisation') },
     { href: '/admin/terminology', title: t('menu.terminology'), help: t('menu.terminologyHelp'), icon: 'translate', testID: 'settings-terminology',
       show: can('settings.terminology') },
+    { href: '/admin/institution-type', title: t('menu.types'), help: t('menu.typesHelp'), icon: 'category', testID: 'settings-types',
+      show: can('settings.institution_type') },
     { href: '/admin/audit', title: t('menu.audit'), help: t('menu.auditHelp'), icon: 'history', testID: 'settings-audit', show: can('audit.view') },
   ];
   const items = all.filter((i) => i.show);
