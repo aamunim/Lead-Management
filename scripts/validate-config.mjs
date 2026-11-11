@@ -61,6 +61,14 @@ export function checkConfig(root) {
     if (!app.runtimeVersion || typeof app.runtimeVersion !== 'string') {
       problems.push('app.json runtimeVersion must be pinned to a fixed string (Ch 3.8)');
     }
+    // OTA updates (app-update workflow) reach a build only if the expo-updates module is in it.
+    let pkg = null;
+    try {
+      pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
+    } catch { /* a temp test project without package.json */ }
+    if (app.updates?.url && pkg && !pkg.dependencies?.['expo-updates']) {
+      problems.push('app.json sets updates.url but expo-updates is not a dependency: builds would never receive OTA updates');
+    }
   }
   return { problems, fileCount: configFiles.length };
 }
