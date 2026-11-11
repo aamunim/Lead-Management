@@ -40,6 +40,12 @@
   "version_published": "A published version never changes. Save your changes as a new version.",
   "version_unknown": "This version no longer exists. Refresh and try again.",
   "industry_not_ready": "Publish the pack and at least one profile of this industry first.",
+  "profile_choice_invalid": "Choose one or more types of the same industry.",
+  "limit_reached": "Your institution has reached a limit of its plan. Tell your Admin (they can upgrade the plan).",
+  "module_not_in_plan": "This module is not in your institution's plan.",
+  "module_always_on": "This module is always on.",
+  "module_needs_other": "Turn on the modules this one needs first.",
+  "plan_invalid": "This plan is not valid. Check the modules, limits and prices.",
   "actions": {
     "sign_in": "Sign in",
     "choose_institution": "Choose institution",

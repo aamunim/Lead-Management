@@ -8,7 +8,7 @@ import { useLanguageState } from '@/lib/language';
 import { pick } from '@/lib/packs';
 import { fetchPanelInstitutions, type PanelInstitution } from '@/lib/platform-institutions';
 import { Row, tDynamic } from '@/ui/admin/parts';
-import { ErrorState, Skeleton, TextField } from '@/ui/components';
+import { Button, ErrorState, Skeleton, TextField } from '@/ui/components';
 import { usePanel } from '@/ui/panel/PanelContext';
 import { PanelShell } from '@/ui/panel/PanelShell';
 
@@ -16,7 +16,7 @@ import { PanelShell } from '@/ui/panel/PanelShell';
 export default function PanelInstitutions() {
   const { t } = useTranslation('panel');
   const { language } = useLanguageState();
-  const { state } = usePanel();
+  const { state, can } = usePanel();
   const [rows, setRows] = useState<PanelInstitution[] | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [query, setQuery] = useState('');
@@ -36,6 +36,8 @@ export default function PanelInstitutions() {
   return (
     <PanelShell permission="platform.view" title={t('menu.institutions')} testID="panel-institutions">
       <AppText>{t('institutions.intro')}</AppText>
+      {can('platform.plans') ? <Button variant="tonal" icon="workspace-premium" label={t('plans.title')} onPress={() => router.push('/panel/plans')}
+        testID="institutions-plans" /> : null}
       <TextField label={t('institutions.search')} kind="search" value={query} onChangeText={setQuery} testID="institutions-search" />
       {error ? <ErrorState error={error} onRetry={() => void load()} /> : !rows ? <Skeleton lines={6} /> : (
         <View style={{ gap: 8 }}>

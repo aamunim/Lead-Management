@@ -3,6 +3,7 @@ import { View } from 'react-native';
 
 import { useTranslation } from '@/i18n';
 import { useMyAccess } from '@/lib/access';
+import { useModulesEnabled } from '@/lib/modules';
 import { useSetting } from '@/lib/settings';
 import { Row } from '@/ui/admin/parts';
 import { EmptyState, ErrorState, Screen, Skeleton, type IconName } from '@/ui/components';
@@ -15,7 +16,8 @@ export default function SettingsTab() {
   const { space } = useTheme();
   const { loaded, error, retry, can } = useMyAccess();
   // With branches off, nothing about branches appears anywhere (Ch 12.2).
-  const branchesOn = useSetting<boolean>('branches_enabled', false) === true;
+  const modules = useModulesEnabled();
+  const branchesOn = useSetting<boolean>('branches_enabled', false) === true && modules.enabled('branches');
   type Item = { href: Href; title: string; help: string; icon: IconName; testID: string; show: boolean };
   const all: Item[] = [
     { href: '/admin/users', title: t('menu.users'), help: t('menu.usersHelp'), icon: 'group', testID: 'settings-users', show: can('settings.users') },
@@ -29,6 +31,10 @@ export default function SettingsTab() {
       show: can('settings.terminology') },
     { href: '/admin/institution-type', title: t('menu.types'), help: t('menu.typesHelp'), icon: 'category', testID: 'settings-types',
       show: can('settings.institution_type') },
+    { href: '/admin/modules', title: t('menu.modules'), help: t('menu.modulesHelp'), icon: 'extension', testID: 'settings-modules',
+      show: can('settings.modules') },
+    { href: '/admin/plan', title: t('menu.plan'), help: t('menu.planHelp'), icon: 'workspace-premium', testID: 'settings-plan',
+      show: can('billing.view') },
     { href: '/admin/audit', title: t('menu.audit'), help: t('menu.auditHelp'), icon: 'history', testID: 'settings-audit', show: can('audit.view') },
   ];
   const items = all.filter((i) => i.show);

@@ -27,13 +27,13 @@ insert into public.modules (key, label_key, depends_on, always_on, default_enabl
   ('call_sync', null, '{calls}', false, false, null, '3.01', 30),
   ('whatsapp_log', null, '{}', false, true, null, '1.10', 40),
   ('appointment', null, '{}', false, true, null, '1.13', 50),
-  ('assessment', null, '{}', false, false, null, '2.17', 60),
-  ('merit_list', null, '{assessment}', false, false, '{education}', '2.18', 70),
+  ('assessment', 'assessment', '{}', false, false, null, '2.17', 60),
+  ('merit_list', 'merit_list', '{assessment}', false, false, '{education}', '2.18', 70),
   ('fees', null, '{}', false, true, null, '2.02', 80),
-  ('client_number', null, '{}', false, true, null, '2.04', 90),
-  ('after_steps', null, '{}', false, false, '{education}', '2.16', 100),
+  ('client_number', 'client_number', '{}', false, true, null, '2.04', 90),
+  ('after_steps', 'after_steps', '{}', false, false, '{education}', '2.16', 100),
   ('slot_seats', null, '{}', false, true, null, '2.01', 110),
-  ('contact_persons', null, '{}', false, true, null, '1.21', 120),
+  ('contact_persons', 'contact_person', '{}', false, true, null, '1.21', 120),
   ('hostel', null, '{fees}', false, false, null, null, 130),
   ('ai', null, '{}', false, false, null, null, 140),
   ('credits', 'module.leaderboard', '{calls}', false, false, null, null, 150),
@@ -320,7 +320,7 @@ $$;
 
 create or replace function app.limit_level(p_used bigint, p_limit bigint) returns text
 language sql immutable set search_path = '' as $$
-  select case when p_limit is null then 'ok' when p_used > p_limit then 'blocked' when p_used >= p_limit then 'full'
+  select case when p_limit is null or p_used <= 0 then 'ok' when p_used > p_limit then 'blocked' when p_used >= p_limit then 'full'
               when p_limit > 0 and p_used * 100 >= p_limit * 80 then 'warning' else 'ok' end
 $$;
 

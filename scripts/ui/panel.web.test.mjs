@@ -22,7 +22,11 @@ const cleanUp = () => adminSql(`delete from public.platform_members where user_i
   set session_replication_role = default;
   delete from public.institution_labels where institution_id = 'a0000000-0000-4000-8000-00000000000a' and key = 'doc.receipt_title';
   update public.label_defaults set en_singular = 'Lead', en_plural = 'Leads', bn_forms = app.bn_forms('লিড', true)
-   where scope = 'product' and key = 'lead';`);
+   where scope = 'product' and key = 'lead';
+  update public.institution_plan set plan_key = 'standard', plan_version = 1, expires_at = null, limit_overrides = '{}', price_override = null,
+    discount_percent = 0, billing_cycle = 'monthly' where institution_id = 'a0000000-0000-4000-8000-00000000000a';
+  update public.institution_plan set plan_key = 'starter', plan_version = 1 where plan_key = 'starter';
+  delete from public.plans where key = 'starter' and version > 1;`);
 before(async () => {
   web = await startWeb();
   cleanUp();
@@ -245,6 +249,42 @@ describe('Master Admin panel', () => {
     assert.match(adminSql(`select en_singular from public.label_defaults where scope = 'product' and key = 'lead'`), /Prospect/);
     assert.match(adminSql(`select app.label('a0000000-0000-4000-8000-00000000000a', 'lead')`), /Lead/);
     await ctx.close();
+  });
+
+  it('plan and billing: Billing changes an institution\'s plan with a reason; the Master Admin saves a plan version', async () => {
+    const ctx = await newContext();
+    const page = await ctx.newPage();
+    await panelSignIn(page, 'platform.billing@example.test');
+    await page.getByTestId('panel-dashboard').waitFor({ timeout: 20000 });
+    await page.goto(`${web.base}/panel/institution/a0000000-0000-4000-8000-00000000000a`);
+    await page.getByTestId('institution-tab-plan').click();
+    await page.getByTestId('plan-current').waitFor({ timeout: 20000 });
+    await page.getByTestId('plan-choice-starter').click();
+    await page.getByTestId('plan-fit').waitFor({ timeout: 15000 });
+    await page.getByTestId('plan-choice-pro').click();
+    await page.getByTestId('plan-overrides-input').fill('{"sms_month": 20000}');
+    await page.getByTestId('plan-reason-input').fill('signed for a year');
+    await page.getByTestId('plan-save').click();
+    await page.waitForFunction(() => /Pro/.test(document.querySelector('[data-testid="plan-current"]')?.textContent ?? ''), null, { timeout: 15000 });
+    await page.screenshot({ path: `${SCREENSHOTS}/panel-plan-tab.png`, fullPage: true });
+    assert.match(adminSql(`select plan_key || ' ' || (limit_overrides ->> 'sms_month') from public.institution_plan
+      where institution_id = 'a0000000-0000-4000-8000-00000000000a'`), /pro 20000/);
+    assert.match(adminSql(`select count(*) from public.platform_audit_log where action = 'institution.plan_changed' and reason = 'signed for a year'`), /\b1\b/);
+    await ctx.close();
+
+    const admin = await newContext();
+    const p2 = await admin.newPage();
+    await panelSignIn(p2, 'platform.admin@example.test');
+    await p2.getByTestId('panel-dashboard').waitFor({ timeout: 20000 });
+    await p2.goto(`${web.base}/panel/institutions`);
+    await p2.getByTestId('institutions-plans').click();
+    await p2.getByTestId('plan-starter').waitFor({ timeout: 20000 });
+    await p2.getByTestId('plan-starter').click();
+    await p2.getByTestId('plan-limits-input').fill('{"users": 6}');
+    await p2.getByTestId('plan-sheet-save').click();
+    await p2.getByTestId('plan-sheet').waitFor({ state: 'hidden', timeout: 15000 });
+    assert.match(adminSql(`select max(version) from public.plans where key = 'starter'`), /\b2\b/);
+    await admin.close();
   });
 
   it('profiles and packs need platform.profiles (Support is refused)', async () => {

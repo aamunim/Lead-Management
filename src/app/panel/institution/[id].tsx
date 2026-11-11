@@ -12,10 +12,12 @@ import { BottomSheet, Button, EmptyState, ErrorState, Skeleton, TextField, useSn
 import { INSTITUTION_TABS } from '@/ui/panel/menu';
 import { usePanel } from '@/ui/panel/PanelContext';
 import { PanelShell } from '@/ui/panel/PanelShell';
+import { PlanTab } from '@/ui/panel/PlanTab';
 
 // One institution in the panel. Built now: the Labels tab (0B.04-T9; Ch 5.3, Ch 8.8) — every word of the institution
 // with where it comes from, and the platform lock (with a reason) for words that must not change, such as the legal
-// receipt title. A locked word is read-only in the institution's Terminology screen. Other tabs arrive in 0B.07.
+// receipt title. A locked word is read-only in the institution's Terminology screen. The Plan and billing tab is 0B.05;
+// other tabs arrive in 0B.07.
 type Tab = (typeof INSTITUTION_TABS)[number];
 
 export default function PanelInstitution() {
@@ -60,7 +62,8 @@ export default function PanelInstitution() {
         <Chips label={t('institutionTabs.title')} selected={tab} onSelect={setTab}
           choices={INSTITUTION_TABS.map((k) => ({ value: k, label: tDynamic(`panel:institutionTabs.${k}`), testID: `institution-tab-${k}` }))} />
       </View>
-      {tab !== 'labels' ? <EmptyState icon="construction" title={t('soon', { milestone: '0B.07' })} testID="institution-tab-soon" />
+      {tab === 'plan' ? <PlanTab institutionId={id} />
+        : tab !== 'labels' ? <EmptyState icon="construction" title={t('soon', { milestone: '0B.07' })} testID="institution-tab-soon" />
         : error ? <ErrorState error={error} onRetry={() => void load()} /> : !data ? <Skeleton lines={8} /> : (
           <Section title={t('labelsTab.title')} testID="institution-labels">
             <AppText variant="caption">{t('labelsTab.help')}</AppText>

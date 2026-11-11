@@ -17,7 +17,11 @@
     "terminology": "Words used in this institution",
     "terminologyHelp": "Rename words such as $t(labels:client.singular) in English and Bangla, with a preview.",
     "types": "Institution type",
-    "typesHelp": "Types of your institution, preview a change, reset to defaults"
+    "typesHelp": "Types of your institution, preview a change, reset to defaults",
+    "modules": "Modules",
+    "modulesHelp": "Turn the parts your plan allows on or off",
+    "plan": "Plan and usage",
+    "planHelp": "Plan, end date, limits and usage"
   },
   "users": {
     "title": "Users",
@@ -188,7 +192,39 @@
     }
   },
   "modules": {
-    "core": "Settings and security"
+    "title": "Modules",
+    "intro": "Turn on the parts your institution uses. A module that is off disappears from menus, Home, filters and reports; its data is kept and comes back when you turn it on again.",
+    "needs": "Needs: {{names}}",
+    "alwaysOn": "Always on",
+    "notInPlan": "Not in your plan",
+    "waiting": "Needs another module",
+    "onTitle": "Turn on {{name}}?",
+    "offTitle": "Turn off {{name}}?",
+    "onBody": "It appears in menus and settings for everyone with access.",
+    "offBody": "It disappears from menus, Home and reports, and its background jobs stop. Nothing is deleted.",
+    "alsoStops": "These stop too: {{names}}",
+    "turnOn": "Turn on",
+    "turnOff": "Turn off",
+    "turnedOn": "Module turned on",
+    "turnedOff": "Module turned off",
+    "names": {
+      "calls": "Calls",
+      "call_sync": "Android call sync",
+      "whatsapp_log": "WhatsApp log",
+      "appointment": "Visits and appointments",
+      "fees": "Fees, payments and receipts",
+      "slot_seats": "Sections and seats",
+      "hostel": "Hostel and transport",
+      "ai": "AI",
+      "files": "Drive files and Photo Studio",
+      "public_forms": "Public forms",
+      "campaigns": "Bulk SMS campaigns",
+      "branches": "Branches",
+      "automation": "Automation",
+      "custom_records": "Custom records",
+      "api": "API and webhooks",
+      "extensions": "Extensions"
+    }
   },
   "compare": {
     "title": "Compare two roles",
@@ -456,5 +492,40 @@
       "ai_words": "AI words"
     },
     "typeVersion": "{{name}} · v{{version}}"
+  },
+  "plan": {
+    "title": "Plan and usage",
+    "expires": "Ends on {{date}}",
+    "noExpiry": "No end date",
+    "howToUpgrade": "To change the plan, contact your account manager.",
+    "usage": "Usage",
+    "usedOf": "{{used}} of {{limit}}",
+    "unlimited": "{{used}} (no limit)",
+    "modules": "Modules in the plan",
+    "level": {
+      "warning": "80 % or more used",
+      "full": "Limit reached",
+      "blocked": "Over the limit"
+    }
+  },
+  "limits": {
+    "warningTitle": "A limit is almost reached",
+    "fullTitle": "A limit is reached",
+    "line": "{{name}}: {{used}} of {{limit}}",
+    "upgrade": "Upgrade",
+    "tellAdmin": "Tell your Admin: they can upgrade the plan.",
+    "metrics": {
+      "users": "Users",
+      "active_leads": "Active leads",
+      "branches": "Branches",
+      "storage_mb": "Storage (MB)",
+      "sms_month": "SMS this month",
+      "ai_month": "AI requests this month",
+      "automations": "Automations",
+      "custom_fields": "Custom fields",
+      "custom_records": "Custom record types",
+      "api_calls_month": "API calls this month",
+      "campaign_sms_day": "Campaign SMS today"
+    }
   }
 }
