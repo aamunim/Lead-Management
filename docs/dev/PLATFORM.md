@@ -54,6 +54,10 @@ Guards: only a Master Admin makes or changes a Master Admin; nobody changes them
 
 First Master Admin, command line only:
 `DB_URL=… ADMIN_EMAIL=… ADMIN_PASSWORD=… node scripts/platform/create-master-admin.mjs`.
+On staging / production without a local setup: put the password in the environment secret `MASTER_ADMIN_PASSWORD`
+(14+ characters), then Actions → **create-master-admin** → choose the environment and type the email. The person
+opens the panel from "Platform staff" on the app's sign-in page (or `/panel/sign-in` on the web) and sets up an
+authenticator app at the first sign-in.
 
 ## Audit
 

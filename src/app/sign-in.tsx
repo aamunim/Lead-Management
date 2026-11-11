@@ -45,6 +45,7 @@ export default function SignInScreen() {
           fullWidth testID="sign-in-submit" />
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.lg }}>
           <Link href="/language" testID="sign-in-language"><AppText style={{ color: colors.primary, textDecorationLine: 'underline' }}>{t('signIn.languageLink')}</AppText></Link>
+          <Link href="/panel/sign-in" testID="sign-in-panel"><AppText style={{ color: colors.onSurfaceVariant }}>{t('signIn.panelLink')}</AppText></Link>
           {devSignInEnabled ? <Link href="/dev-sign-in"><AppText style={{ color: colors.onSurfaceVariant }}>{Constants.expoConfig?.slug ?? ''}</AppText></Link> : null}
         </View>
       </Screen>
