@@ -84,8 +84,24 @@ jobs:
         run: npm run test:db
       - name: Role matrix — every template role × permission × scope (0A.20)
         run: npm run test:role-matrix
-      - name: Benchmark — large vs small institution, RLS and can() cost (0A.20)
-        run: npm run bench
+      # Slow-down gate (0A.20-T5, D41): compare with the last result from main / the nightly run (Actions cache).
+      - name: Restore the benchmark baseline
+        uses: actions/cache/restore@v4
+        with:
+          path: bench-baseline
+          key: bench-baseline-${{ github.run_id }}
+          restore-keys: bench-baseline-
+      - name: Benchmark — large vs small institution, RLS and can() cost; fails on slow-downs (0A.20)
+        run: npm run bench -- --baseline bench-baseline/latest.json --fail-on-slowdown
+      - name: Keep this result as the new baseline (main and nightly only)
+        if: github.event_name != 'pull_request'
+        run: mkdir -p bench-baseline && cp bench-results/latest.json bench-baseline/latest.json
+      - name: Save the benchmark baseline
+        if: github.event_name != 'pull_request'
+        uses: actions/cache/save@v4
+        with:
+          path: bench-baseline
+          key: bench-baseline-${{ github.run_id }}
       - name: Upload benchmark results
         if: always()
         uses: actions/upload-artifact@v4

@@ -27,6 +27,10 @@ on:
         description: Update message (shown in EAS)
         type: string
         required: true
+      load_demo_data:
+        description: Load the demo data (staging only; needs the DEMO_PASSWORD secret)
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -84,6 +88,13 @@ jobs:
           DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           APPLY_TEST_EXTENSIONS: '0'
         run: bash scripts/apply-extensions.sh
+
+      - name: Load the demo data (staging only)
+        if: inputs.load_demo_data && inputs.target == 'staging' && inputs.deploy != 'App only'
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          DEMO_PASSWORD: ${{ secrets.DEMO_PASSWORD }}
+        run: bash scripts/demo/load-staging.sh
 
       - name: Deploy Edge Functions
         if: inputs.functions != ''

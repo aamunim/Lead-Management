@@ -1,16 +1,23 @@
 # Phase 0A demo script (0A.20-T9)
 
 For the owner checkpoint: run it once on a phone (preview build) and once on the web, in both languages. About 15
-minutes. Test users (password `password123`, test data only): `owner.admin@example.test` (Super Admin of Test College
+minutes. Test users (local password `password123`; on staging the `DEMO_PASSWORD` secret): `owner.admin@example.test` (Super Admin of Test College
 A), `a.member@example.test` (staff of A), `both.member@example.test` (member of A and B),
 `weird.member@example.test` (weird-labels institution).
 
 ## Before the demo
 
-1. Local: `npx supabase@3.1.0 db reset`, `npm run db:extensions`, `npm run db:permissions`, then
-   `psql "$DB_URL" -f scripts/demo/prepare.sql` (branches on for Test College A, two branches).
-   Staging: the same seed and script (0A.20-T8 staging rehearsal).
-2. Web: `npm run export:web:local` and open it; phone: the preview build pointing at the same backend.
+**Staging (preview build, phone and web):**
+1. Add the secret `DEMO_PASSWORD` (at least 12 characters) to the GitHub environment **staging**. The demo accounts on
+   staging use it; the public test password is never used there, and there is no Master Admin test account there.
+2. Actions → **app-update** → Run workflow: target `staging`, deploy `Database only`, tick **Load the demo data**.
+   This applies all migrations, the permission registry and the demo data (Test College A with two branches, B, the
+   weird-labels institution, the test accounts).
+3. Android: Actions → **build-android** → profile `preview`; install the APK from the run's artifacts.
+   Web: Actions → **deploy-web** (staging), or locally `npm run export:web` with the staging variables.
+
+**Local:** `npx supabase@3.1.0 db reset`, `npm run db:extensions`, `npm run db:permissions`, then
+`psql "$DB_URL" -f scripts/demo/prepare.sql`; web: `npm run export:web:local`.
 
 ## Script
 

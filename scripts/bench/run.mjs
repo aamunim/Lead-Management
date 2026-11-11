@@ -5,7 +5,7 @@
 //   - the RLS + user_access overhead (same query as the table owner, without RLS),
 //   - can() per call, and rebuilding one person's access in the large institution.
 // Writes bench-results/latest.json. With --baseline <file> it prints the change against an earlier run (report only;
-// a failing CI gate on slow-downs is 0A.20-T5, Proposed). The noisy-neighbour check uses the Proposed threshold below.
+// With --fail-on-slowdown as well (CI, 0A.20-T5, D41) it fails when a measured path got slower than the threshold.
 //
 //   npm run bench                     # run and check the noisy-neighbour threshold
 //   npm run bench -- --baseline bench-results/previous.json
@@ -18,8 +18,9 @@ const DB_URL = process.env.DB_URL || 'postgresql://postgres:postgres@127.0.0.1:5
 const LARGE_ROWS = Number(process.env.BENCH_LARGE_ROWS ?? 30000);
 const SMALL_ROWS = Number(process.env.BENCH_SMALL_ROWS ?? 3000);
 const RUNS = Number(process.env.BENCH_RUNS ?? 30);
-// Proposed (owner to confirm): the small institution's queries may be at most 25 % or 2 ms slower with the large one.
+// Agreed threshold (D40): slower by more than 25 % AND more than 2 ms (0.05 ms for per-call µs figures) fails.
 export const NEIGHBOUR_THRESHOLD = { ratio: 1.25, absoluteMs: 2 };
+const absoluteFor = (key) => (key.endsWith('_us') ? 50 : NEIGHBOUR_THRESHOLD.absoluteMs);
 
 const large = seedId('institution:bench-large');
 const small = seedId('institution:bench-small');
@@ -129,16 +130,22 @@ mkdirSync('bench-results', { recursive: true });
 writeFileSync('bench-results/latest.json', `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report.results, null, 2));
 
+const failures = [];
 const baselineArg = process.argv.indexOf('--baseline');
 if (baselineArg > 0 && existsSync(process.argv[baselineArg + 1])) {
   const base = JSON.parse(readFileSync(process.argv[baselineArg + 1], 'utf8')).results;
   for (const [k, v] of Object.entries(result)) {
-    if (base[k]) console.log(`${k}: ${base[k]} → ${v} (${(((v - base[k]) / base[k]) * 100).toFixed(1)} %)`);
+    if (!base[k]) continue;
+    console.log(`${k}: ${base[k]} → ${v} (${(((v - base[k]) / base[k]) * 100).toFixed(1)} %)`);
+    if (process.argv.includes('--fail-on-slowdown') && v > base[k] * NEIGHBOUR_THRESHOLD.ratio && v - base[k] > absoluteFor(k)) {
+      failures.push(`${k}: slower than the last main / nightly run (${base[k]} → ${v})`);
+    }
   }
+} else if (baselineArg > 0) {
+  console.log('No baseline yet (first run on main makes it): slow-down check skipped.');
 }
 
 // Noisy neighbour: the small institution must not get noticeably slower because a large one shares the database.
-const failures = [];
 for (const q of ['small_own_list', 'small_own_count', 'small_branch_count']) {
   const withLarge = result[`${q}_with_large_ms`];
   const alone = result[`${q}_alone_ms`];
@@ -148,7 +155,7 @@ for (const q of ['small_own_list', 'small_own_count', 'small_branch_count']) {
 }
 if (failures.length) {
   for (const f of failures) console.error(f);
-  console.error('Benchmark: the large institution slows the small one beyond the threshold.');
+  console.error('Benchmark failed: slower than the agreed threshold (25 % and 2 ms).');
   process.exit(1);
 }
-console.log('Benchmark passed: the large institution does not slow the small one beyond the threshold.');
+console.log('Benchmark passed: no slow-down beyond the threshold (noisy neighbour and against the baseline).');

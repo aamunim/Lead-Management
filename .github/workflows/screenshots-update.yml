@@ -1,0 +1,48 @@
+# Makes the screenshot-matrix baselines on the same runner image CI compares on (0A.20-T3) and commits them to the
+# branch it runs on. Run it after an intended screen change, then review the changed images in the commit.
+name: screenshots-update
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: screenshots-update-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 3.1.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Start local Supabase (database, auth, REST)
+        run: supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,supavisor,postgres-meta
+      - name: Migrations, test seed, extensions, permission registry
+        run: |
+          supabase db reset
+          npm run db:extensions
+          npm run db:permissions
+      - name: Web build connected to the local Supabase
+        run: npm run export:web:local
+      - name: Install a browser (same version as CI)
+        run: npm install --no-save playwright@1.63.0 && npx playwright install --with-deps chromium
+      - name: Make the baselines
+        run: npm run screens:update
+      - name: Commit the baselines
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/screenshots
+          if git diff --cached --quiet; then echo "Baselines unchanged."; exit 0; fi
+          git commit -m "Update screenshot baselines (made on the CI runner)"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

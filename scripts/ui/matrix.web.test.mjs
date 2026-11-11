@@ -3,7 +3,9 @@
 // - A route file without an entry in ROUTES fails the test (new screens join the matrix).
 // - Parts that change on their own (dates, the change log) are masked.
 // - A small difference is tolerated (anti-aliasing); a real change fails and writes a diff image to ui-screenshots/diff/.
-// Update the baselines after an intended change: `npm run screens:update` (then review the images in the commit).
+// Baselines are made in CI (the GitHub runner draws text differently from other machines): run the workflow
+// "screenshots-update" on the branch after an intended change; it commits tests/screenshots/. The diff runs in CI
+// (or with SCREENSHOT_DIFF=1); elsewhere the matrix still captures every screen and checks the route list.
 // Run a subset: SCREENS=users,roles npm run test:ui -- scripts/ui/matrix.web.test.mjs
 import assert from 'node:assert/strict';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
@@ -19,6 +21,7 @@ const { PNG } = require('pngjs');
 
 const BASELINES = 'tests/screenshots';
 const UPDATE = process.env.UPDATE_SCREENSHOTS === '1';
+const COMPARE = process.env.CI === 'true' || process.env.SCREENSHOT_DIFF === '1';
 const ONLY = process.env.SCREENS ? new Set(process.env.SCREENS.split(',')) : null;
 const INST_C = 'c0000000-0000-4000-8000-00000000000c';
 const WEIRD = '66666666-6666-4666-8666-666666666666';
@@ -141,7 +144,8 @@ describe('screenshot matrix', () => {
         const shot = await p.screenshot({ mask: (route.mask ?? []).map((s) => p.locator(s)), animations: 'disabled' });
         writeFileSync(join(SCREENSHOTS, `matrix-${name}`), shot);
         const baseline = join(BASELINES, name);
-        if (UPDATE) {
+        if (UPDATE || !COMPARE) {
+          if (!UPDATE) continue;
           writeFileSync(baseline, shot);
           continue;
         }

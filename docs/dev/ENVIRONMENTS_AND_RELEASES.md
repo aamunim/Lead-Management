@@ -60,10 +60,10 @@ run):
 | `Secret scan (D27)` | committed secrets |
 | `Migration changes declare a database deploy (D27)` | deploy type declared on migration PRs |
 
-Screenshot baselines are made in this repository's dev container (`npm run screens:update`). If the CI browser draws
-text slightly differently and the diff fails on an unchanged screen, download the `ui-screenshots` artifact of that
-run (it has the CI images and the diffs), check them, copy the `matrix-*.png` files over `tests/screenshots/` (without
-the `matrix-` prefix) and commit.
+Screenshot baselines are made **on the CI runner**, because each machine draws text a little differently (the first
+CI run showed 2–17 % changed pixels against images made elsewhere). After an intended screen change: Actions →
+**screenshots-update** → *Run workflow* on the branch; it commits `tests/screenshots/`. Review the images in that
+commit. The diff itself runs only in CI (or locally with `SCREENSHOT_DIFF=1`).
 
 ## Release rules
 

@@ -1,0 +1,5 @@
+# False positives reviewed by a person (0A.20). One fingerprint per line: <commit>:<file>:<rule>:<line>.
+# A setting key in a variable called KEY ('e2e.followup_days'), not a secret:
+273a2c1f03a9093420b3e9764ce04befc9843af1:scripts/e2e/settings.e2e.mjs:generic-api-key:9
+# A made-up JWT ("signature") used to test log redaction:
+038fe253b337ce2b931f3341825eb9c637ab14d0:scripts/tests/edge-shared.test.mjs:jwt:11

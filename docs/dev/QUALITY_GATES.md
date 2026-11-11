@@ -27,15 +27,16 @@ offering-limited assignment. 3,020 checks today. After a template or registry ch
 `scripts/bench/run.mjs`: large (30,000 rows) and small (3,000 rows) institution side by side in a synthetic table with
 the real RLS rule. Measures the small institution's list and count with and without the large one, the RLS overhead,
 `can()` per call and rebuilding one person's access; writes `bench-results/latest.json` (CI artifact). Fails when the
-large institution slows the small one by more than **25 % and 2 ms (Proposed threshold, owner to confirm)**.
-`--baseline` prints the change against an earlier run; failing CI on a slow-down is **0A.20-T5, Proposed**.
+large institution slows the small one by more than **25 % and 2 ms (D40)**, and in CI when any figure got that much
+slower than the last `main` / nightly run (baseline kept in the Actions cache; `--baseline … --fail-on-slowdown`, D41).
 
 ## Screenshot matrix — part of `npm run test:ui` (T3)
 
 `scripts/ui/matrix.web.test.mjs`: every screen route × light / dark × bn / en, signed in as the weird-labels
 institution's Super Admin, compared with `tests/screenshots/*.png` (80 images). Dates and the change log are masked;
 up to 0.5 % of pixels may differ (anti-aliasing). A new route file without an entry fails. After an intended change:
-`npm run screens:update`, look at the changed images, commit them. Diffs: `ui-screenshots/diff/` (CI artifact).
+run the **screenshots-update** workflow on the branch (baselines are made on the CI runner, where they are compared),
+look at the changed images in its commit. The diff runs in CI only (locally: `SCREENSHOT_DIFF=1`). Diffs: `ui-screenshots/diff/` (CI artifact).
 Every PR runs the whole matrix (about 3–4 minutes); the nightly run repeats it with the benchmark.
 
 ## Other gates already in place
