@@ -1,5 +1,5 @@
 import { Redirect } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Linking, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
@@ -27,8 +27,11 @@ export default function PanelSignIn() {
   const [busy, setBusy] = useState(false);
   const [enrolment, setEnrolment] = useState<{ factorId: string; secret: string; uri: string } | null>(null);
 
+  // Start the set-up only once: a second start would replace the key the person is already typing into their app.
+  const enrolling = useRef(false);
   useEffect(() => {
-    if (state.status !== 'secondStep' || state.mode !== 'enroll' || enrolment) return;
+    if (state.status !== 'secondStep' || state.mode !== 'enroll' || enrolment || enrolling.current) return;
+    enrolling.current = true;
     void enrollAuthenticator().then((r) => {
       if ('error' in r) setError(t('signIn.wrongCode'));
       else setEnrolment(r);
