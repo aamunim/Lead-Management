@@ -149,6 +149,8 @@ describe('Settings → Users and Roles', () => {
     await page.getByTestId('audit-role.assigned').first().waitFor({ timeout: 15000 });
     assert.ok(await page.getByTestId('audit-role.created').first().isVisible());
     await page.getByTestId('audit-area-assignments').click();
+    // The filtered list replaces the full one when it arrives: wait for that, then check.
+    await page.waitForFunction(() => document.querySelectorAll('[data-testid="audit-role.created"]').length === 0, null, { timeout: 15000 });
     await page.getByTestId('audit-role.assigned').first().waitFor();
     assert.equal(await page.getByTestId('audit-role.created').count(), 0);
     await page.screenshot({ path: `${SCREENSHOTS}/admin-audit.png`, fullPage: true });
