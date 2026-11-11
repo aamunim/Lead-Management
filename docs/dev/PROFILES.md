@@ -90,6 +90,17 @@ nursing / health use the **college** set; madrasa and English-medium use the **s
 - **Test institutions:** `supabase/seeds/0B04_profile_institutions.sql` — one per profile (`profile-<key>`) and
   `profile-mixed` (school + college).
 
+### Demo for the 0B.04 checkpoint (staging)
+
+1. As the Super Admin of a demo institution: Settings → Institution type → tick School and College → Preview → open
+   "Words" to see what changes → Apply.
+2. Change a word in Settings → Terminology (for example "Class" → "Grade").
+3. Institution type → untick College, tick Coaching → Preview: the changed word is listed as "kept"; Apply. The word
+   stays "Grade"; the other words follow the new types.
+4. Reset to profile defaults → Words → the preview shows "Grade → …"; confirm.
+5. In the panel: Institutions → the demo institution → Labels → lock "doc.receipt_title" with a reason; in the app the
+   word is now read-only in Terminology.
+
 ## Profile contents (approved at the 0B.03 checkpoint, D44)
 
 The content below was approved by the owner at the 0B.03 checkpoint (D44). Generated from `config/packs/education`.
