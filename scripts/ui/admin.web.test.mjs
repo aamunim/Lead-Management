@@ -182,8 +182,9 @@ describe('Settings → Users and Roles', () => {
     await page.getByTestId('compare-rows').waitFor();
     assert.ok(await page.getByTestId('compare-audit.view').isVisible(), 'a difference is listed');
     await page.goto(`${web.base}/admin/new-permissions`);
-    await page.getByTestId('new-settings.team').waitFor({ timeout: 15000 });
-    assert.match(await page.getByTestId('new-settings.team').textContent(), /Given to:/);
+    // This release's new permission (0B.04): sensitive, so it is not given to any role by itself (Super Admin has all).
+    await page.getByTestId('new-settings.institution_type').waitFor({ timeout: 15000 });
+    assert.match(await page.getByTestId('new-settings.institution_type').textContent(), /Not given to any role yet/);
     await page.close();
   });
 
