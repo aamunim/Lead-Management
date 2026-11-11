@@ -67,6 +67,10 @@
     "forms": {
       "label": "ফর্ম ও $t(labels:network.possessive) সেটিংস",
       "help": "পাবলিক ফর্ম, $t(labels:network.singular) আর রেফারেল।"
+    },
+    "institution_type": {
+      "label": "প্রতিষ্ঠানের ধরন",
+      "help": "প্রতিষ্ঠানের ধরন (স্কুল, কলেজ …) বাছাই, প্রিভিউ দেখে বসানো; কোনো অংশ ধরনের ডিফল্টে ফিরিয়ে নেওয়া।"
     }
   },
   "integration": {

@@ -203,8 +203,8 @@ begin
       return next;
     end if;
 
-    -- R14 institution_type only in seeding code (Ch 2.7 #5)
-    if r.prosrc ~* 'institution_type' and not lint.is_allowed('institution_type', r.obj) then
+    -- R14 institution_type only in seeding code (Ch 2.7 #5); the permission key settings.institution_type is not a read
+    if r.prosrc ~* '(^|[^.])institution_type' and not lint.is_allowed('institution_type', r.obj) then
       rule := 'institution_type'; object := r.obj;
       message := 'Only seeding code may read institution_type; behaviour must depend on settings and modules.';
       return next;

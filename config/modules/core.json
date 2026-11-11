@@ -29,6 +29,13 @@
       }
     },
     {
+      "key": "settings.institution_type",
+      "scopable": false,
+      "sensitive": true,
+      "defaults": {},
+      "introduced_in_release": "0B.04"
+    },
+    {
       "key": "settings.organisation",
       "scopable": false,
       "sensitive": false,

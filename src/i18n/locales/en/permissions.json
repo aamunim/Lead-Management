@@ -67,6 +67,10 @@
     "forms": {
       "label": "Forms and $t(labels:network.singular) settings",
       "help": "Public forms, the $t(labels:network.singular) and referrals."
+    },
+    "institution_type": {
+      "label": "Institution type",
+      "help": "Choose the institution's types (school, college …), see a preview and apply them; reset areas to the type defaults."
     }
   },
   "integration": {

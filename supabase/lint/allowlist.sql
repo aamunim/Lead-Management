@@ -42,3 +42,5 @@ insert into lint.allow (rule, object, reason) values
   ('platform_table', 'public.industries', 'Product-wide industry list for the sign-up wizard (0B.03, Ch 6.3).'),
   ('platform_table', 'public.industry_packs', 'Product-wide versioned industry packs edited by the Master Admin (0B.03, Ch 49).'),
   ('platform_table', 'public.type_profiles', 'Product-wide versioned type profiles edited by the Master Admin (0B.03, Ch 7).');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.profile_areas', 'Product-wide registry of profile areas and where each is used (0B.04).');
