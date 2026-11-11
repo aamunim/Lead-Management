@@ -11,7 +11,7 @@ let web;
 const cleanUp = () => adminSql(`delete from public.institution_modules where institution_id = '${INSTITUTION.A}';
   update public.institution_plan set limit_overrides = '{}' where institution_id = '${INSTITUTION.A}';
   delete from public.app_settings where institution_id = '${INSTITUTION.A}' and key = 'branches_enabled';
-  update public.profiles set preferred_language = null where email = 'owner.admin@example.test';
+  update public.profiles set preferred_language = null where email in ('owner.admin@example.test', 'a.member@example.test');
   select app.bump_settings_version('${INSTITUTION.A}');`);
 before(async () => {
   web = await startWeb();
@@ -85,14 +85,14 @@ describe('Modules, plan and limits', () => {
     const staff = await newPage();
     await signIn(staff, 'a.member@example.test');
     await staff.getByTestId('limit-banner').waitFor({ timeout: 20000 });
-    assert.match(await staff.getByTestId('limit-banner').textContent(), /Tell your Admin/);
+    assert.match(await staff.getByTestId('limit-banner').textContent(), /Tell your Admin|Admin-কে জানান/);
     assert.equal(await staff.getByTestId('limit-upgrade').count(), 0);
     await staff.close();
   });
 
   for (const [scheme, language] of [['light', 'en'], ['dark', 'en'], ['light', 'bn'], ['dark', 'bn']]) {
     it(`screenshots: ${language} ${scheme}`, async () => {
-      adminSql(`update public.institution_plan set limit_overrides = jsonb_build_object('users', app.usage_of('${INSTITUTION.A}', 'users') + 1)
+      adminSql(`update public.institution_plan set limit_overrides = jsonb_build_object('users', app.usage_of('${INSTITUTION.A}', 'users'))
           where institution_id = '${INSTITUTION.A}';
         update public.profiles set preferred_language = '${language}' where email = 'owner.admin@example.test'`);
       const page = await newPage({ colorScheme: scheme });
