@@ -11,12 +11,12 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
 //    app.json is used.
 export default ({ config }: ConfigContext): ExpoConfig => {
   const googleServicesFile =
-    process.env.GOOGLE_SERVICES_FILE ?? (existsSync('./google-services.json') ? './google-services.json' : undefined);
+    process.env.GOOGLE_SERVICES_FILE || (existsSync('./google-services.json') ? './google-services.json' : undefined);
 
-  const name = process.env.BRAND_APP_NAME ?? config.name ?? '';
+  const name = process.env.BRAND_APP_NAME || (config.name ?? '');
   const slug = config.slug ?? '';
-  const androidPackage = process.env.BRAND_ANDROID_PACKAGE ?? config.android?.package;
-  const scheme = process.env.BRAND_SCHEME ?? config.scheme;
+  const androidPackage = process.env.BRAND_ANDROID_PACKAGE || config.android?.package;
+  const scheme = process.env.BRAND_SCHEME || config.scheme;
 
   return {
     ...config,

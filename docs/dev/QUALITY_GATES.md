@@ -29,6 +29,8 @@ the real RLS rule. Measures the small institution's list and count with and with
 `can()` per call and rebuilding one person's access; writes `bench-results/latest.json` (CI artifact). Fails when the
 large institution slows the small one by more than **25 % and 2 ms (D40)**, and in CI when any figure got that much
 slower than the last `main` / nightly run (baseline kept in the Actions cache; `--baseline … --fail-on-slowdown`, D41).
+CI machines differ in speed (the first `main` run was 30–40 % slower on every figure with the same code), so each
+run also times pure CPU work (`calibration_ms`) and the comparison is scaled to the baseline machine.
 
 ## Screenshot matrix — part of `npm run test:ui` (T3)
 

@@ -86,6 +86,9 @@ grant execute on function pg_temp.claims(uuid) to authenticated;
 \\set list 'select id, title from public.bench_records order by created_at desc, id limit 50'
 \\set count 'select count(*) from public.bench_records'
 
+-- Machine speed (no tables, no RLS): later runs on a faster or slower CI machine are scaled by this.
+insert into results select 'calibration_ms', pg_temp.time_query('select sum(g::numeric * g) from generate_series(1, 200000) g', ${RUNS});
+
 -- Owner (no RLS) baseline for the small institution.
 insert into results select 'small_owner_list_ms', pg_temp.time_query('select id, title from public.bench_records where institution_id = ''${small}'' order by created_at desc, id limit 50', ${RUNS});
 
@@ -134,11 +137,15 @@ const failures = [];
 const baselineArg = process.argv.indexOf('--baseline');
 if (baselineArg > 0 && existsSync(process.argv[baselineArg + 1])) {
   const base = JSON.parse(readFileSync(process.argv[baselineArg + 1], 'utf8')).results;
-  for (const [k, v] of Object.entries(result)) {
-    if (!base[k]) continue;
+  // CI machines differ in speed: scale this run to the baseline machine with the calibration figure.
+  const speed = base.calibration_ms && result.calibration_ms ? base.calibration_ms / result.calibration_ms : null;
+  console.log(speed ? `Machine speed vs baseline: ×${speed.toFixed(2)} (figures below are scaled)` : 'No calibration in the baseline: report only.');
+  for (const [k, raw] of Object.entries(result)) {
+    if (!base[k] || k === 'calibration_ms') continue;
+    const v = speed ? Math.round(raw * speed * 1000) / 1000 : raw;
     console.log(`${k}: ${base[k]} → ${v} (${(((v - base[k]) / base[k]) * 100).toFixed(1)} %)`);
-    if (process.argv.includes('--fail-on-slowdown') && v > base[k] * NEIGHBOUR_THRESHOLD.ratio && v - base[k] > absoluteFor(k)) {
-      failures.push(`${k}: slower than the last main / nightly run (${base[k]} → ${v})`);
+    if (speed && process.argv.includes('--fail-on-slowdown') && v > base[k] * NEIGHBOUR_THRESHOLD.ratio && v - base[k] > absoluteFor(k)) {
+      failures.push(`${k}: slower than the last main / nightly run (${base[k]} → ${v}, scaled to the baseline machine)`);
     }
   }
 } else if (baselineArg > 0) {
