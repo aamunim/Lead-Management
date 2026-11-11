@@ -44,3 +44,8 @@ insert into lint.allow (rule, object, reason) values
   ('platform_table', 'public.type_profiles', 'Product-wide versioned type profiles edited by the Master Admin (0B.03, Ch 7).');
 insert into lint.allow (rule, object, reason) values
   ('platform_table', 'public.profile_areas', 'Product-wide registry of profile areas and where each is used (0B.04).');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.modules', 'Product-wide module list (0B.05, Ch 9.2).'),
+  ('platform_table', 'public.limit_metrics', 'Product-wide catalog of limit metrics (0B.05, Ch 9.5).'),
+  ('platform_table', 'public.plans', 'Product-wide versioned plans catalog edited by the Master Admin (0B.05, Ch 9.3).'),
+  ('platform_table', 'public.addons', 'Product-wide add-on catalog (0B.05, Ch 9.4).');

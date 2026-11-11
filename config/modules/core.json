@@ -36,6 +36,13 @@
       "introduced_in_release": "0B.04"
     },
     {
+      "key": "settings.modules",
+      "scopable": false,
+      "sensitive": true,
+      "defaults": {},
+      "introduced_in_release": "0B.05"
+    },
+    {
       "key": "settings.organisation",
       "scopable": false,
       "sensitive": false,
@@ -189,6 +196,13 @@
       "defaults": {
         "accountant": "all"
       }
+    },
+    {
+      "key": "billing.view",
+      "scopable": false,
+      "sensitive": true,
+      "defaults": {},
+      "introduced_in_release": "0B.05"
     }
   ],
   "platform_permissions": [
@@ -240,6 +254,11 @@
       "key": "platform.developer",
       "sensitive": true,
       "introduced_in_release": "0B.02"
+    },
+    {
+      "key": "platform.plans",
+      "sensitive": true,
+      "introduced_in_release": "0B.05"
     }
   ],
   "fields": [

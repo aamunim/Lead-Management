@@ -71,6 +71,10 @@
     "institution_type": {
       "label": "Institution type",
       "help": "Choose the institution's types (school, college …), see a preview and apply them; reset areas to the type defaults."
+    },
+    "modules": {
+      "label": "Modules",
+      "help": "Turn the modules your plan allows on or off; see what else is affected first."
     }
   },
   "integration": {
@@ -135,6 +139,16 @@
     "developer": {
       "label": "Developer inbox",
       "help": "Feedback and error reports."
+    },
+    "plans": {
+      "label": "Plans",
+      "help": "Edit the plans catalog: modules, limits, prices and trial length (as new versions)."
+    }
+  },
+  "billing": {
+    "view": {
+      "label": "Plan and usage",
+      "help": "See the plan, its end date, limits and usage of the institution."
     }
   }
 }
