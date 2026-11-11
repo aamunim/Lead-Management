@@ -150,7 +150,7 @@ export default function InstitutionTypeScreen() {
                     <Row icon={open === a.area ? 'expand-less' : 'expand-more'} title={tDynamic(`admin:types.areas.${a.area}`)}
                       subtitle={[areaLine(a), ['0B.04'].includes(a.used_from) ? null : t('types.usedFrom', { milestone: a.used_from })].filter(Boolean).join(' · ')}
                       onPress={() => setOpen(open === a.area ? null : a.area)} testID={`types-area-${a.area}`} />
-                    {open === a.area ? a.items.slice(0, 30).map((i) => (
+                    {open === a.area ? a.items.map((i) => (
                       <AppText key={i.key} variant="caption" testID={`types-item-${a.area}-${i.key}`}>
                         {`${t(`types.action.${i.action}`)}: ${i.key} — ${describeValue(i.before, language)} → ${describeValue(i.after, language)}`}
                       </AppText>

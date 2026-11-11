@@ -60,7 +60,37 @@ RPCs: `platform_packs_list`, `platform_pack_get`, `platform_pack_validate`, `pla
 nursing / health use the **college** set; madrasa and English-medium use the **school** set; training uses the
 **coaching** set.
 
-## Proposed contents (owner review, 0B.03 checkpoint)
+## Applying profiles to an institution (0B.04)
+
+- The **profile applier** (`supabase/migrations/20261113090000_profile_applier.sql`) is the only code that reads which
+  types an institution has. `app.apply_profiles(institution, profiles[], exclude_areas[], label_choices)` stores a
+  snapshot of the newest published pack + profile versions per item in `seeded_items`, completes the template roles
+  and records the versions in `institution_profiles`. `institutions.industry` is always set (education today).
+- **Areas** (`profile_areas`): words, settings and role templates are used now; modules (0B.05), custom fields (1.01),
+  recipients (1.21), stages (1.07), lists, lead-score points, message templates, field rules, report presets, fees,
+  client-number pattern, documents, later blocks and AI words are stored now and read by the block that is built later.
+- **Resolution:** the institution's own value (`institution_labels`, `app_settings`) → the seeded value → the pack /
+  product / definition default. Re-seeding therefore never overwrites an edit; `modified_by_institution` is kept by
+  triggers on the own-value tables.
+- **Mixed institutions** (Proposed merge rules): stages, number patterns and later blocks are kept per type; lists are
+  joined by key (first type wins); on / off settings and modules are on when any type turns them on; lead-score points
+  take the highest; a hidden field beats a masked one; different default recipients become "both"; different words for
+  the same key are a **conflict** chosen in the preview (without a choice the first type wins).
+- **Type change** (Settings → Institution type, `settings.institution_type`, sensitive): preview first (new, changed,
+  back to default, kept because the institution changed it), then apply. Unmodified seeds of a removed type go; edited
+  items, roles and data are never deleted. A second type never adds a second Super Admin role.
+- **New versions** never apply by themselves; the screen shows "version N is available" and the Admin opts in after the
+  preview (Ch 7.6).
+- **Reset to profile defaults** (`profile_reset(area, confirm)`): per area (`settings.terminology` for the words, or a
+  settings area such as `settings.fees`), preview of each own value and the default it returns to; applied only when
+  confirmed; audited.
+- **Master Admin:** Institutions → an institution → Labels tab (where each word comes from, lock / unlock with a reason,
+  `platform.labels_lock`); Profiles and packs → Product words (the neutral product defaults, `platform.profiles`; never
+  an institution's own words).
+- **Test institutions:** `supabase/seeds/0B04_profile_institutions.sql` — one per profile (`profile-<key>`) and
+  `profile-mixed` (school + college).
+
+## Profile contents (approved at the 0B.03 checkpoint, D44)
 
 The content below was approved by the owner at the 0B.03 checkpoint (D44). Generated from `config/packs/education`.
 

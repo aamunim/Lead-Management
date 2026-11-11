@@ -13,14 +13,16 @@ const cleanUp = () => adminSql(`delete from public.seeded_items where institutio
   delete from public.institution_profiles where institution_id = '${INSTITUTION.A}';
   delete from public.institution_labels where institution_id = '${INSTITUTION.A}';
   delete from public.role_permissions rp using public.roles r where rp.role_id = r.id and r.institution_id = '${INSTITUTION.A}'
-    and r.id::text <> all (string_to_array('${rolesBefore}', ','));
-  delete from public.roles where institution_id = '${INSTITUTION.A}' and id::text <> all (string_to_array('${rolesBefore}', ','));
+    and r.id::text <> all (string_to_array('${rolesBefore}', ','))
+    and not exists (select 1 from public.role_assignments ra where ra.role_id = r.id);
+  delete from public.roles r where r.institution_id = '${INSTITUTION.A}' and r.id::text <> all (string_to_array('${rolesBefore}', ','))
+    and not exists (select 1 from public.role_assignments ra where ra.role_id = r.id);
   update public.profiles set preferred_language = null where email = 'owner.admin@example.test';
   select app.bump_settings_version('${INSTITUTION.A}');`);
 before(async () => {
   web = await startWeb();
   rolesBefore = adminSql(`select string_agg(id::text, ',') from public.roles where institution_id = '${INSTITUTION.A}'`)
-    .match(/[0-9a-f-]{36}(,[0-9a-f-]{36})*/)[0];
+    .match(/[0-9a-f]{8}-[0-9a-f-]{27}(,[0-9a-f]{8}-[0-9a-f-]{27})*/)[0];
   cleanUp();
 });
 after(async () => {
@@ -58,11 +60,10 @@ describe('Settings → Institution type', () => {
     await page.getByTestId('types-preview').click();
     await page.getByTestId('types-conflict-offering').waitFor({ timeout: 15000 });
     await page.getByTestId('types-conflict-offering-coaching').click();
-    await page.waitForFunction(() => document.querySelector('[data-testid="types-conflict-offering-coaching"]')?.getAttribute('aria-checked') === 'true'
-      || document.querySelector('[data-testid="types-conflict-offering-coaching"]')?.getAttribute('aria-selected') === 'true', null, { timeout: 15000 });
+    // The preview is fetched again with the choice: the word for "offering" becomes the coaching one.
     await page.getByTestId('types-area-labels').click();
-    await page.getByTestId('types-item-labels-offering').waitFor();
-    assert.match(await page.getByTestId('types-item-labels-offering').textContent(), /Course/);
+    await page.waitForFunction(() => /Course/.test(document.querySelector('[data-testid="types-item-labels-offering"]')?.textContent ?? ''),
+      null, { timeout: 15000 });
     await page.screenshot({ path: `${SCREENSHOTS}/types-preview.png`, fullPage: true });
     await page.getByTestId('types-reason-input').fill('school with coaching batches');
     await page.getByTestId('types-apply').click();
