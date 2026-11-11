@@ -1,0 +1,278 @@
+{
+  "keys": {
+    "activity": {
+      "label": "টিমের কার্যক্রম",
+      "help": "কাজের সময়ে টিম কী করছে তা দেখা।"
+    },
+    "reports": {
+      "label": "রিপোর্ট",
+      "help": "রিপোর্টের সেটিংস।"
+    },
+    "scorecard": {
+      "label": "সাপ্তাহিক স্কোরকার্ড",
+      "help": "প্রতিজনের সাপ্তাহিক স্কোরকার্ড।"
+    },
+    "credits": {
+      "label": "ক্রেডিট ও লিডারবোর্ড",
+      "help": "ফলাফলের ক্রেডিট কে পাবেন; লিডারবোর্ড।"
+    },
+    "credit_extras": {
+      "label": "বাড়তি ক্রেডিট",
+      "help": "সাধারণ ক্রেডিটের ওপর বাড়তি ক্রেডিট।"
+    },
+    "notifications": {
+      "label": "নোটিফিকেশন",
+      "help": "কে কোন নোটিফিকেশন পাবেন।"
+    },
+    "web": {
+      "label": "ওয়েবসাইট ব্যবহার",
+      "help": "কে ওয়েবসাইট ব্যবহার করতে পারবেন (অ্যাডমিনরা সবসময় পারেন)।"
+    },
+    "conversion": {
+      "label": "$t(labels:conversion.possessive) ধাপ",
+      "help": "$t(labels:conversion.possessive) ধাপগুলো।"
+    },
+    "conversion_approval": {
+      "label": "$t(labels:conversion.possessive) অনুমোদন",
+      "help": "$t(labels:conversion.possessive) সময় যে অনুমোদন লাগে।"
+    },
+    "clients": {
+      "label": "$t(labels:client.plural_oblique) ট্যাব",
+      "help": "$t(labels:client.plural_oblique) তালিকা।"
+    },
+    "files": {
+      "label": "ফাইল",
+      "help": "ফাইল চালু কি না, আর কে সবার ফাইল দেখবেন।"
+    },
+    "upload_rules": {
+      "label": "আপলোডের নিয়ম",
+      "help": "আপলোড করা কাগজের নিয়ম (ওয়েবে সম্পাদনা)।"
+    },
+    "photo_presets": {
+      "label": "ছবির প্রিসেট",
+      "help": "ফটো স্টুডিওর প্রিসেট।"
+    },
+    "fees": {
+      "label": "ফি ও পেমেন্ট",
+      "help": "ফি, পেমেন্টের মাধ্যম, রসিদের ডিজাইন, রিমাইন্ডার।"
+    },
+    "receipt_prefix": {
+      "label": "রসিদ নম্বরের প্রিফিক্স",
+      "help": "প্রতিটি রসিদ নম্বরের আগের অক্ষর।"
+    },
+    "assignment": {
+      "label": "Assign করা",
+      "help": "নতুন $t(labels:lead.plural) কাকে দেওয়া হবে (যেমন পালাক্রমে)।"
+    },
+    "board": {
+      "label": "পাইপলাইন বোর্ড",
+      "help": "পাইপলাইনের ধাপের বোর্ড।"
+    },
+    "lead_cards": {
+      "label": "$t(labels:lead.singular) কার্ড",
+      "help": "তালিকার কার্ডে কী দেখাবে।"
+    },
+    "lead_filters": {
+      "label": "$t(labels:lead.singular) ফিল্টার",
+      "help": "তালিকার ফিল্টার।"
+    },
+    "lead_score": {
+      "label": "$t(labels:lead.singular) স্কোর",
+      "help": "স্কোরের নিয়ম।"
+    },
+    "appointment": {
+      "label": "$t(labels:appointment.plural)",
+      "help": "ভিজিটের মতো $t(labels:appointment.plural)।"
+    },
+    "message_templates": {
+      "label": "মেসেজ টেমপ্লেট",
+      "help": "মেসেজের তৈরি লেখা।"
+    },
+    "speed_to_lead_minutes": {
+      "label": "প্রথম কল (মিনিটের মধ্যে)",
+      "help": "এই সময়ের মধ্যে নতুন $t(labels:lead.singular)-এ কল না হলে এসকেলেশন।"
+    },
+    "early_reminder_minutes": {
+      "label": "আগাম রিমাইন্ডার (কত মিনিট আগে)",
+      "help": "ফলো-আপের আগে রিমাইন্ডার।"
+    },
+    "repeat_reminder_minutes": {
+      "label": "বারবার রিমাইন্ডার (প্রতি … মিনিটে)",
+      "help": "রিমাইন্ডার কত পরপর আসবে।"
+    },
+    "escalate_team_lead_hours": {
+      "label": "Team Lead-কে জানানো (কত ঘণ্টা পরে)",
+      "help": "কখন Team Lead জানবেন।"
+    },
+    "escalate_admin_hours": {
+      "label": "Admin-কে জানানো (কত ঘণ্টা পরে)",
+      "help": "কখন Admin জানবেন।"
+    },
+    "call_sync": {
+      "label": "কল লগ সিঙ্ক",
+      "help": "ফোনের কল লগ সিঙ্ক।"
+    },
+    "call_lock": {
+      "label": "কল লক",
+      "help": "একসাথে একজনই একটি $t(labels:lead.singular)-এ কল করবেন।"
+    },
+    "double_call": {
+      "label": "দুবার কলের সতর্কতা",
+      "help": "এইমাত্র কল হওয়া কাউকে আবার কল করার আগে সতর্কতা।"
+    },
+    "contacts_import": {
+      "label": "ফোনের কন্টাক্ট",
+      "help": "কে ফোনের কন্টাক্ট ব্যবহার করতে পারবেন।"
+    },
+    "ai_chance": {
+      "label": "$t(labels:conversion.possessive) সম্ভাবনা",
+      "help": "AI দিয়ে সম্ভাবনার অনুমান।"
+    },
+    "ai_credit": {
+      "label": "AI ক্রেডিট",
+      "help": "ফলাফলের জন্য AI ক্রেডিট।"
+    },
+    "ai_providers": {
+      "label": "AI প্রোভাইডার ও বাজেট",
+      "help": "প্রোভাইডার, মডেল আর মাসিক বাজেট (কী থাকে ভল্টে)।"
+    },
+    "network": {
+      "label": "$t(labels:network.singular) ও রেফারেল",
+      "help": "$t(labels:network.singular) আর রেফারেল।"
+    },
+    "public_forms": {
+      "label": "পাবলিক ফর্ম",
+      "help": "যে কেউ পূরণ করতে পারেন এমন ফর্ম।"
+    },
+    "working_days": {
+      "label": "কাজের দিন ও ছুটি",
+      "help": "অফিস যেদিন খোলা।"
+    },
+    "working_hours": {
+      "label": "কাজের সময়",
+      "help": "অফিস যে সময় খোলা।"
+    },
+    "quiet_hours": {
+      "label": "নিরব সময়",
+      "help": "এই সময়ে মেসেজ বা রিমাইন্ডার যাবে না।"
+    },
+    "scorecard_day": {
+      "label": "স্কোরকার্ডের দিন",
+      "help": "যেদিন সাপ্তাহিক স্কোরকার্ড তৈরি হয়।"
+    },
+    "institution_name": {
+      "label": "প্রতিষ্ঠানের নাম",
+      "help": "যে নাম সবাই দেখেন।"
+    },
+    "time_zone": {
+      "label": "টাইম জোন",
+      "help": "প্রতিষ্ঠানের টাইম জোন।"
+    },
+    "currency": {
+      "label": "মুদ্রা",
+      "help": "মুদ্রা আর টাকার অঙ্ক কীভাবে লেখা হবে।"
+    },
+    "phone": {
+      "label": "ফোন নম্বর",
+      "help": "দেশের কোড আর নম্বরের ধরন।"
+    },
+    "week_start": {
+      "label": "সপ্তাহ শুরু",
+      "help": "সপ্তাহের প্রথম দিন।"
+    },
+    "payment_methods": {
+      "label": "পেমেন্টের মাধ্যম",
+      "help": "যেসব মাধ্যমে পেমেন্ট করা যায়।"
+    },
+    "address_placeholder": {
+      "label": "ঠিকানার উদাহরণ",
+      "help": "ফর্মে দেখানো উদাহরণ ঠিকানা।"
+    },
+    "default_language": {
+      "label": "ডিফল্ট ভাষা",
+      "help": "যাঁরা ভাষা বাছেননি তাঁদের ভাষা।"
+    },
+    "bangla_digits": {
+      "label": "বাংলা অঙ্ক",
+      "help": "কোথায় সংখ্যা বাংলা অঙ্কে লেখা হবে।"
+    },
+    "branches_enabled": {
+      "label": "$t(labels:branch.plural)",
+      "help": "প্রতিষ্ঠানে $t(labels:branch.plural) আছে কি না।"
+    },
+    "idle_signout_minutes": {
+      "label": "নিষ্ক্রিয় থাকলে সাইন আউট (মিনিট)",
+      "help": "০ = কখনো নয়।"
+    },
+    "min_app_version": {
+      "label": "অ্যাপের ন্যূনতম ভার্সন",
+      "help": "এর চেয়ে পুরোনো অ্যাপ আপডেট করতে হবে।"
+    },
+    "app_name": {
+      "label": "অ্যাপের নাম",
+      "help": "প্রোডাক্টের নাম।"
+    },
+    "app_domain": {
+      "label": "ডোমেইন",
+      "help": "প্রোডাক্টের ডোমেইন।"
+    },
+    "privacy_contact_email": {
+      "label": "প্রাইভেসি যোগাযোগ",
+      "help": "প্রাইভেসি পাতার ইমেইল।"
+    },
+    "developer_email": {
+      "label": "ফিডব্যাক ইনবক্স",
+      "help": "ফিডব্যাক আর ত্রুটির রিপোর্ট কে পাবেন।"
+    }
+  },
+  "groups": {
+    "branding": {
+      "label": "ব্র্যান্ডিং"
+    },
+    "external_board_flow": {
+      "label": "বহিস্থ বোর্ডের ধাপ"
+    },
+    "reset_password_format": {
+      "label": "রিসেট পাসওয়ার্ডের ধরন"
+    },
+    "locale": {
+      "label": "ফরম্যাট ও লোকেল"
+    },
+    "lead_score_rules": {
+      "label": "স্কোরের নিয়ম"
+    },
+    "counters": {
+      "label": "নম্বরের ক্রম"
+    },
+    "external_accounts": {
+      "label": "সংযুক্ত সেবা"
+    },
+    "types_and_packs": {
+      "label": "ধরন, শব্দ ও মডিউল"
+    },
+    "plan_and_billing": {
+      "label": "প্ল্যান ও বিল"
+    },
+    "login": {
+      "label": "সাইন ইন"
+    },
+    "roles_and_access": {
+      "label": "রোল ও অ্যাক্সেস"
+    },
+    "branches": {
+      "label": "$t(labels:branch.plural)"
+    },
+    "notification_matrix": {
+      "label": "নোটিফিকেশনের পরিকল্পনা"
+    },
+    "campaigns": {
+      "label": "ক্যাম্পেইন"
+    },
+    "public_pages": {
+      "label": "পাবলিক পেজ"
+    },
+    "custom_parts": {
+      "label": "নিজস্ব অংশ"
+    }
+  }
+}

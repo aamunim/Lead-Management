@@ -27,3 +27,5 @@ insert into lint.allow (rule, object, reason) values
   ('platform_table', 'public.role_templates', 'Product-wide role templates per type profile (D26).');
 insert into lint.allow (rule, object, reason) values
   ('platform_table', 'app.record_entities', 'Developer registry of record types the access explainer can look up (0A.18); not tenant data.');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.config_groups', 'Product-wide catalogue of per-institution configuration groups and their owning tables (0B.01).');

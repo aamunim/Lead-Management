@@ -56,3 +56,15 @@ export async function clearCaches(store: KeyValueStore, clearers: Iterable<(even
   for (const clear of clearers) await clear(event);
   return keys.length;
 }
+
+/**
+ * May this key be written now? Only data of the signed-in person and their active institution (or their own
+ * institution-free data). A request that was still running at sign-out or a switch must not write the previous
+ * person's or institution's data back after the caches were cleared (found by the idle sign-out UI test, 0B.01).
+ */
+export function mayWriteKey(key: string, current: CacheScope): boolean {
+  const parsed = parseCacheKey(key);
+  if (!parsed) return true; // device preferences, not user data
+  if (!current.userId || parsed.userId !== current.userId) return false;
+  return parsed.institutionId === '-' || parsed.institutionId === (current.institutionId ?? '-');
+}

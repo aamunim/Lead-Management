@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSyncExternalStore } from 'react';
 import { AppState } from 'react-native';
 
-import { cacheKey, onCacheClear } from './cache';
+import { cacheKey, onCacheClear, writeCache } from './cache';
 import { currentClaims } from './session';
 import { onSettingsVersion } from './settings-version';
 import { supabase } from './supabase';
@@ -56,7 +56,7 @@ export async function loadSettings(force = false): Promise<void> {
     const next: Snapshot = { userId, institutionId, version: result.settings_version, values: result.values, loadedAt: Date.now() };
     publish(next);
     try {
-      await AsyncStorage.setItem(storageKey(userId, institutionId), JSON.stringify(next));
+      await writeCache(storageKey(userId, institutionId), next);
     } catch {
       // ignore
     }

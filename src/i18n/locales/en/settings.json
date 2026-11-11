@@ -1,0 +1,278 @@
+{
+  "keys": {
+    "activity": {
+      "label": "Team activity",
+      "help": "Track what the team does during working hours."
+    },
+    "reports": {
+      "label": "Reports",
+      "help": "Report settings."
+    },
+    "scorecard": {
+      "label": "Weekly scorecard",
+      "help": "The weekly scorecard of each person."
+    },
+    "credits": {
+      "label": "Credits and leaderboard",
+      "help": "Who gets credit for results; the leaderboard."
+    },
+    "credit_extras": {
+      "label": "Extra credits",
+      "help": "Extra credits on top of the normal ones."
+    },
+    "notifications": {
+      "label": "Notifications",
+      "help": "Who receives which notification."
+    },
+    "web": {
+      "label": "Website access",
+      "help": "Who may use the website (admins always can)."
+    },
+    "conversion": {
+      "label": "$t(labels:conversion.singular) flow",
+      "help": "The steps of a $t(labels:conversion.singular)."
+    },
+    "conversion_approval": {
+      "label": "$t(labels:conversion.singular) approval",
+      "help": "Approval needed during a $t(labels:conversion.singular)."
+    },
+    "clients": {
+      "label": "$t(labels:client.plural) tab",
+      "help": "The list of $t(labels:client.plural)."
+    },
+    "files": {
+      "label": "Files",
+      "help": "Files on or off, and who sees everyone's files."
+    },
+    "upload_rules": {
+      "label": "Upload rules",
+      "help": "Rules for uploaded papers (edited on the web)."
+    },
+    "photo_presets": {
+      "label": "Photo presets",
+      "help": "Presets of the photo studio."
+    },
+    "fees": {
+      "label": "Fees and payments",
+      "help": "Fees, payment methods, receipt design, reminders."
+    },
+    "receipt_prefix": {
+      "label": "Receipt number prefix",
+      "help": "Letters before each receipt number."
+    },
+    "assignment": {
+      "label": "Assignment",
+      "help": "How new $t(labels:lead.plural) are given to people (e.g. round robin)."
+    },
+    "board": {
+      "label": "Pipeline board",
+      "help": "The board of pipeline stages."
+    },
+    "lead_cards": {
+      "label": "$t(labels:lead.singular) cards",
+      "help": "What a card in the list shows."
+    },
+    "lead_filters": {
+      "label": "$t(labels:lead.singular) filters",
+      "help": "Filters of the list."
+    },
+    "lead_score": {
+      "label": "$t(labels:lead.singular) score",
+      "help": "Rules of the score."
+    },
+    "appointment": {
+      "label": "$t(labels:appointment.plural)",
+      "help": "$t(labels:appointment.plural) such as visits."
+    },
+    "message_templates": {
+      "label": "Message templates",
+      "help": "Ready texts for messages."
+    },
+    "speed_to_lead_minutes": {
+      "label": "First call within (minutes)",
+      "help": "A new $t(labels:lead.singular) not called within this time is escalated."
+    },
+    "early_reminder_minutes": {
+      "label": "Early reminder (minutes before)",
+      "help": "Reminder before a follow-up."
+    },
+    "repeat_reminder_minutes": {
+      "label": "Repeat reminder (every … minutes)",
+      "help": "How often the reminder repeats."
+    },
+    "escalate_team_lead_hours": {
+      "label": "Escalate to the team lead after (hours)",
+      "help": "When the team lead is told."
+    },
+    "escalate_admin_hours": {
+      "label": "Escalate to an admin after (hours)",
+      "help": "When an admin is told."
+    },
+    "call_sync": {
+      "label": "Call-log sync",
+      "help": "Sync the phone's call log."
+    },
+    "call_lock": {
+      "label": "Call lock",
+      "help": "Only one person calls a $t(labels:lead.singular) at a time."
+    },
+    "double_call": {
+      "label": "Double-call warning",
+      "help": "Warn before calling someone just called."
+    },
+    "contacts_import": {
+      "label": "Phone contacts",
+      "help": "Who may use the phone's contacts."
+    },
+    "ai_chance": {
+      "label": "Chance of $t(labels:conversion.singular)",
+      "help": "AI estimate of the chance."
+    },
+    "ai_credit": {
+      "label": "AI credit",
+      "help": "AI credit for results."
+    },
+    "ai_providers": {
+      "label": "AI provider and budget",
+      "help": "Provider, model and monthly budget (keys stay in the vault)."
+    },
+    "network": {
+      "label": "$t(labels:network.singular) and referrals",
+      "help": "The $t(labels:network.singular) and referrals."
+    },
+    "public_forms": {
+      "label": "Public forms",
+      "help": "Forms anyone can fill in."
+    },
+    "working_days": {
+      "label": "Working days and holidays",
+      "help": "Days the office works."
+    },
+    "working_hours": {
+      "label": "Working hours",
+      "help": "Hours the office works."
+    },
+    "quiet_hours": {
+      "label": "Quiet hours",
+      "help": "No messages or reminders in these hours."
+    },
+    "scorecard_day": {
+      "label": "Scorecard day",
+      "help": "Day the weekly scorecard is made."
+    },
+    "institution_name": {
+      "label": "Institution name",
+      "help": "The name everyone sees."
+    },
+    "time_zone": {
+      "label": "Time zone",
+      "help": "Time zone of the institution."
+    },
+    "currency": {
+      "label": "Currency",
+      "help": "Currency and how amounts are written."
+    },
+    "phone": {
+      "label": "Phone numbers",
+      "help": "Country code and number pattern."
+    },
+    "week_start": {
+      "label": "Week starts on",
+      "help": "First day of the week."
+    },
+    "payment_methods": {
+      "label": "Payment methods",
+      "help": "Methods people can pay with."
+    },
+    "address_placeholder": {
+      "label": "Address example",
+      "help": "Example address shown in forms."
+    },
+    "default_language": {
+      "label": "Default language",
+      "help": "Language for people who have not chosen one."
+    },
+    "bangla_digits": {
+      "label": "Bangla digits",
+      "help": "Where numbers are written with Bangla digits."
+    },
+    "branches_enabled": {
+      "label": "$t(labels:branch.plural)",
+      "help": "Whether the institution has $t(labels:branch.plural)."
+    },
+    "idle_signout_minutes": {
+      "label": "Sign out when idle (minutes)",
+      "help": "0 = never."
+    },
+    "min_app_version": {
+      "label": "Minimum app version",
+      "help": "Older apps must update."
+    },
+    "app_name": {
+      "label": "App name",
+      "help": "Name of the product."
+    },
+    "app_domain": {
+      "label": "Domain",
+      "help": "Domain of the product."
+    },
+    "privacy_contact_email": {
+      "label": "Privacy contact",
+      "help": "Email on the privacy page."
+    },
+    "developer_email": {
+      "label": "Feedback inbox",
+      "help": "Who receives feedback and error reports."
+    }
+  },
+  "groups": {
+    "branding": {
+      "label": "Branding"
+    },
+    "external_board_flow": {
+      "label": "External board flow"
+    },
+    "reset_password_format": {
+      "label": "Reset password format"
+    },
+    "locale": {
+      "label": "Formats and locale"
+    },
+    "lead_score_rules": {
+      "label": "Score rules"
+    },
+    "counters": {
+      "label": "Number series"
+    },
+    "external_accounts": {
+      "label": "Connected services"
+    },
+    "types_and_packs": {
+      "label": "Type, words and modules"
+    },
+    "plan_and_billing": {
+      "label": "Plan and billing"
+    },
+    "login": {
+      "label": "Sign-in"
+    },
+    "roles_and_access": {
+      "label": "Roles and access"
+    },
+    "branches": {
+      "label": "$t(labels:branch.plural)"
+    },
+    "notification_matrix": {
+      "label": "Notification plan"
+    },
+    "campaigns": {
+      "label": "Campaigns"
+    },
+    "public_pages": {
+      "label": "Public pages"
+    },
+    "custom_parts": {
+      "label": "Custom parts"
+    }
+  }
+}

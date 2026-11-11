@@ -80,6 +80,8 @@ jobs:
         run: npm run db:permissions
       - name: Bundled default labels match the database (0A.12)
         run: npm run check:labels
+      - name: Settings catalog — schema, owner, area permission and bn/en labels for every key (0B.01)
+        run: npm run check:settings
       - name: Database tests as real roles (0A.03+)
         run: npm run test:db
       - name: Role matrix — every template role × permission × scope (0A.20)

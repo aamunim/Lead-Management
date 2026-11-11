@@ -180,8 +180,8 @@ describe('Settings → Users and Roles', () => {
     await page.getByTestId('compare-rows').waitFor();
     assert.ok(await page.getByTestId('compare-audit.view').isVisible(), 'a difference is listed');
     await page.goto(`${web.base}/admin/new-permissions`);
-    await page.getByTestId('new-settings.users').waitFor({ timeout: 15000 });
-    assert.match(await page.getByTestId('new-settings.users').textContent(), /Given to:/);
+    await page.getByTestId('new-settings.team').waitFor({ timeout: 15000 });
+    assert.match(await page.getByTestId('new-settings.team').textContent(), /Given to:/);
     await page.close();
   });
 
