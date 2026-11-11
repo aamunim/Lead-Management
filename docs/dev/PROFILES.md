@@ -62,7 +62,7 @@ nursing / health use the **college** set; madrasa and English-medium use the **s
 
 ## Proposed contents (owner review, 0B.03 checkpoint)
 
-The content below is **Proposed** (Ch 7.10) until the owner approves it. Generated from `config/packs/education`.
+The content below was approved by the owner at the 0B.03 checkpoint (D44). Generated from `config/packs/education`.
 
 ### স্কুল (School, `school`)
 
