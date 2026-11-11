@@ -60,7 +60,7 @@ select pg_temp.check(pg_temp.claims_for(:user_both) -> 'active_institution_id' =
                      'hook: user in two institutions with no selection gets no active institution (D25)');
 select pg_temp.check(pg_temp.claims_for(:user_gone) -> 'active_institution_id' = 'null'::jsonb,
                      'hook: deactivated member gets no active institution');
-select pg_temp.check(pg_temp.claims_for(:user_platform) -> 'active_institution_id' = 'null'::jsonb,
+select pg_temp.check((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}') -> 'active_institution_id' = 'null'::jsonb,
                      'hook: platform member has no institution (platform and institution roles are separate)');
 select pg_temp.check(pg_temp.claims_for(:user_a) ->> 'sub' = :user_a, 'hook: keeps the standard claims');
 
@@ -182,7 +182,7 @@ select pg_temp.check((select display_name from public.profiles where user_id = :
 -- ---------------------------------------------------------------------------------------------------------------------
 -- 7. Platform roles stay separate; anonymous users see nothing
 -- ---------------------------------------------------------------------------------------------------------------------
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select pg_temp.check((select platform_role from public.platform_members) = 'master_admin',
                      'platform: a platform member sees their own platform role');
 select pg_temp.check((select count(*) from public.institutions) = 0,

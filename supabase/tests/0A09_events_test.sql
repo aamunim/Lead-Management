@@ -65,7 +65,7 @@ select pg_temp.check(pg_temp.error_of('select app.dispatch_events()') like 'perm
 reset role;
 
 -- 2. Writers are hooked in: setting / secret / membership changes leave an audit row and an event.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.setting_set('test.event_days', '5', :inst_a);
 select public.setting_reset('test.event_days', :inst_a);
 select public.secret_set('sms.test_events.key', 'abcd-efgh-ijkl-mnop-qrst', null, :inst_a);
@@ -121,7 +121,7 @@ select pg_temp.check(pg_temp.error_of('select public.ext_example_note_add(''hell
 reset role;
 
 -- 5. Extension on for A only: A uses it, B does not, and the core keeps working for both.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select pg_temp.check(pg_temp.error_of(format('select public.extension_set_enabled(%L, %L, true)', :inst_a, 'no_such_ext'))
                      like 'extension_unknown%', 'an unknown extension cannot be switched on');
 select public.extension_set_enabled(:inst_a, 'example', true);
@@ -146,7 +146,7 @@ reset role;
 
 -- 6. Dispatcher: the extension's listener runs only for institutions that have the extension on; errors are kept.
 update public.domain_events set processed_at = now() where processed_at is null;
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.setting_set('test.event_days', '6', :inst_a);
 select public.setting_set('test.event_days', '7', :inst_a);
 select public.setting_set('test.event_days', '8', :inst_b);
@@ -171,7 +171,7 @@ select pg_temp.check((select count(*) from public.domain_events where listener_e
 delete from public.event_listeners where listener_key = 'test.failing';
 
 -- 7. Switching it off: A's data is hidden, the RPC refuses, the core keeps working.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.extension_set_enabled(:inst_a, 'example', false);
 reset role;
 select pg_temp.act_as(pg_temp.claims_for(:user_a));
@@ -190,7 +190,7 @@ select pg_temp.check(not exists (select 1 from public.event_listeners where exte
                      '...and its listeners and switches');
 select pg_temp.check((select count(*) from public.domain_events where event_key = 'example.note_added') >= 1,
                      'its emitted events stay as history');
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.setting_set('test.event_days', '9', :inst_a);
 reset role;
 select pg_temp.as_backend();

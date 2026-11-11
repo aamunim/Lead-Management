@@ -18,6 +18,7 @@ fi
 psql_q -f scripts/demo/prepare.sql
 psql_q -v pw="$DEMO_PASSWORD" <<'SQL'
 delete from public.platform_members where user_id in (select id from auth.users where email like '%@example.test');
+delete from auth.mfa_factors where user_id in (select id from auth.users where email like '%@example.test');
 update auth.users set encrypted_password = extensions.crypt(:'pw', extensions.gen_salt('bf')), updated_at = now()
  where email like '%@example.test';
 select app.flush_access_queue();

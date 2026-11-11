@@ -88,7 +88,7 @@ select pg_temp.check(pg_temp.error_of('select public.label_set(''client'', ''Tra
   like 'permission_denied%', 'staff cannot rename words before permissions exist (settings.terminology)');
 insert into out select 'v_before', to_jsonb((public.labels_get() ->> 'settings_version')::bigint);
 reset role;
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 insert into out select 'set', public.label_set('client', 'Trainee', 'Trainees', '{"base":"প্রশিক্ষণার্থী"}', :inst_a);
 select pg_temp.check(pg_temp.error_of(format('select public.label_set(%L, %L, %L, %L, %L)', 'client', repeat('x', 41), 'Xs', '{"base":"x"}', :inst_a))
   like 'label_too_long%', 'a label longer than the key''s limit is refused (Ch 8.8)');
@@ -130,7 +130,7 @@ select pg_temp.check(pg_temp.error_of('insert into public.institution_labels (in
 reset role;
 
 -- 6. Platform lock: the Master Admin freezes the receipt title of A; the lock survives a reset by staff later.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select pg_temp.check(pg_temp.error_of(format('select public.label_lock(%L, %L, true)', :inst_a, 'client')) like 'label_not_lockable%',
   'only lockable keys can be locked');
 select public.label_lock(:inst_a, 'doc.receipt_title', true);

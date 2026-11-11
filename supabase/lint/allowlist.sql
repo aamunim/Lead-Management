@@ -29,3 +29,11 @@ insert into lint.allow (rule, object, reason) values
   ('platform_table', 'app.record_entities', 'Developer registry of record types the access explainer can look up (0A.18); not tenant data.');
 insert into lint.allow (rule, object, reason) values
   ('platform_table', 'public.config_groups', 'Product-wide catalogue of per-institution configuration groups and their owning tables (0B.01).');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.platform_alerts', 'Alerts for platform users (Master Admin side), read only by the recipient (0B.02).'),
+  ('platform_table', 'public.platform_invites', 'Pending platform-user invitations by email; platform side only (0B.02).'),
+  ('platform_table', 'public.platform_login_devices', 'Devices of platform users for new-device alerts; platform side only (0B.02).'),
+  ('platform_table', 'public.platform_role_permissions', 'Rights of each platform role (product-wide, 0B.02).'),
+  ('index_leading_institution', 'platform_audit_log_pkey', 'Platform audit log: institution_id is optional (most platform actions have none); read only on the platform side.'),
+  ('unique_includes_institution', 'platform_audit_log_pkey', 'Platform audit log: one id per row across the platform; institution_id is optional.'),
+  ('write_needs_can', 'public.platform_session_start', 'Self-service at panel sign-in: needs aal2 and an active platform membership of the caller; writes only the caller''s own device, alerts and invite.');

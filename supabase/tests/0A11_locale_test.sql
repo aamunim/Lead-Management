@@ -60,7 +60,7 @@ select pg_temp.check(app.parse_number('৳ 1,50,000.50') = 150000.50, 'currency 
 select pg_temp.check(pg_temp.error_of('select app.parse_number(''১২ক'')') like 'number_invalid%', 'text that is not a number is rejected');
 
 -- Institution rules change the result (no code change): another country code.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.setting_set('phone', '{"country_code":"91","national_prefix":"0","national_pattern":"^0[6-9][0-9]{9}$","example":"09812345678"}', :inst_b);
 reset role;
 select pg_temp.check(app.normalize_phone('+91 98123 45678', :inst_b) = '09812345678', 'B''s own phone rules are applied (country code 91)');
@@ -77,7 +77,7 @@ select pg_temp.check(pg_temp.error_of('alter table public.profiles disable trigg
   'even without the trigger, the CHECK refuses non-ASCII digits');
 
 -- 3. Settings validation beyond the schema.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select pg_temp.check(pg_temp.error_of(format('select public.setting_set(%L, %L, %L)', 'time_zone', '"Mars/Olympus"', :inst_a))
                      like 'setting_invalid%', 'an unknown time zone is rejected');
 select pg_temp.check(pg_temp.error_of(format('select public.setting_set(%L, %L, %L)', 'quiet_hours', '{"start":"22:00","end":"22:00"}', :inst_a))
@@ -93,7 +93,7 @@ select pg_temp.check(app.to_institution_time('2026-11-10 17:59:59+00', :inst_a):
                      '17:59:59 UTC is still the same day in Dhaka');
 select pg_temp.check(app.from_institution_time('2026-11-11 10:00', :inst_a) = '2026-11-11 04:00:00+00',
                      '10:00 in Dhaka is 04:00 UTC');
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.setting_set('time_zone', '"Europe/London"', :inst_b);
 reset role;
 select pg_temp.check(app.to_institution_time('2026-11-10 18:30:00+00', :inst_b)::date = '2026-11-10',

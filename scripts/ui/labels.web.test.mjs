@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import { after, before, describe, it } from 'node:test';
 
-import { INSTITUTION, adminSql, signInAs } from '../e2e/helpers.mjs';
+import { INSTITUTION, adminSql, signInAs, signInAsPlatform } from '../e2e/helpers.mjs';
 import { SCREENSHOTS, startWeb } from './helpers.mjs';
 
 let web;
@@ -50,7 +50,7 @@ describe('labels on the web build', () => {
   });
 
   it('renaming client → Trainee for A changes every sentence that uses the label (no code change)', async () => {
-    const admin = await signInAs('platform.admin@example.test');
+    const admin = await signInAsPlatform();
     const { error } = await admin.client.rpc('label_set', {
       p_key: 'client', p_en_singular: 'Trainee', p_en_plural: 'Trainees', p_bn_forms: { base: 'প্রশিক্ষণার্থী' }, p_institution_id: INSTITUTION.A,
     });

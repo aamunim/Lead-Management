@@ -84,7 +84,7 @@ select app.apply_role_template(:inst_a, 'college');
 -- Read ids as the owner: the Master Admin has no active institution, so RLS would hide A's roles from them.
 insert into out select 'admin', to_jsonb(id) from public.roles where institution_id = :inst_a and template_key = 'admin';
 insert into out select 'super', to_jsonb(id) from public.roles where institution_id = :inst_a and is_super_admin;
-select pg_temp.act_as(pg_temp.claims_for(:user_platform) || '{"aal":"aal1"}');
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}') );
 insert into out select 'custom', to_jsonb(public.role_create('Admission desk', (select (v #>> '{}')::uuid from out where k = 'admin'),
   '{assignable}', 75, :inst_a));
 reset role;
@@ -108,14 +108,18 @@ select pg_temp.check(exists (select 1 from public.role_permissions rp join publi
 select pg_temp.act_as(pg_temp.claims_for(:user_a));
 select pg_temp.check(pg_temp.error_of('select public.role_create(''X'')') like 'permission_denied%', 'staff cannot create roles before permissions exist');
 reset role;
-select pg_temp.act_as(pg_temp.claims_for(:user_platform) || '{"aal":"aal1"}');
+-- With a one-step session the platform admin has no platform rights at all (0B.02); the "sensitive change needs
+-- two-step sign-in" rule for institution admins is tested in 0A18 (mfa_required).
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}') || '{"aal":"aal1"}');
 select pg_temp.check(pg_temp.error_of(format('select public.role_set_grants(%L, %L, %L)', (select v #>> '{}' from out where k = 'custom'),
-  '{"settings.users":true,"integration.manage":true}', :inst_a)) like 'mfa_required%', 'adding a sensitive permission needs a two-step session');
+  '{"settings.users":true,"integration.manage":true}', :inst_a)) like 'permission_denied%', 'a platform admin without the second step can change nothing');
+reset role;
+select pg_temp.act_as(pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}');
 select pg_temp.check(pg_temp.error_of(format('select public.role_set_grants(%L, %L, %L)', (select v #>> '{}' from out where k = 'custom'),
   '{"platform.billing":true}', :inst_a)) like 'role_invalid%', 'platform permissions are refused by the RPC as well');
 select public.role_set_grants((select (v #>> '{}')::uuid from out where k = 'custom'), '{"settings.users":true,"test.view":"team"}', :inst_a);
 reset role;
-select pg_temp.act_as(pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}');
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}') || '{"aal":"aal2"}');
 insert into out select 'grants', public.role_set_grants((select (v #>> '{}')::uuid from out where k = 'custom'),
   '{"settings.users":true,"test.view":"team","integration.manage":true}', :inst_a);
 select pg_temp.check(pg_temp.error_of(format('select public.role_set_grants(%L, %L, %L)', (select v #>> '{}' from out where k = 'super'), '{}', :inst_a))

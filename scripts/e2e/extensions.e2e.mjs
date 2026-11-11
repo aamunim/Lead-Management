@@ -3,13 +3,13 @@
 import assert from 'node:assert/strict';
 import { after, before, describe, it } from 'node:test';
 
-import { INSTITUTION, adminSql, signInAs } from './helpers.mjs';
+import { INSTITUTION, adminSql, signInAs, signInAsPlatform } from './helpers.mjs';
 
 const BODY = `e2e note ${Date.now()}`;
 
 describe('extensions through the real API', () => {
   before(async () => {
-    const { client } = await signInAs('platform.admin@example.test');
+    const { client } = await signInAsPlatform();
     const { error } = await client.rpc('extension_set_enabled', {
       p_institution_id: INSTITUTION.A, p_extension_key: 'example', p_enabled: true,
     });
@@ -17,7 +17,7 @@ describe('extensions through the real API', () => {
   });
 
   after(async () => {
-    const { client } = await signInAs('platform.admin@example.test');
+    const { client } = await signInAsPlatform();
     await client.rpc('extension_set_enabled', { p_institution_id: INSTITUTION.A, p_extension_key: 'example', p_enabled: false });
     adminSql(`delete from ext_example.notes where body = '${BODY}'`);
   });

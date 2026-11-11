@@ -78,7 +78,7 @@ grant execute on function pg_temp.rec(text) to authenticated;
 
 -- 1. Admin in branch X, caller in branch Y (roadmap test), assigned by the Master Admin.
 insert into out select 'claims_before', pg_temp.claims_for(:user_both);
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 insert into ids select 'asg_admin_x', public.role_assign(:user_both, pg_temp.id('branch_admin'), null, pg_temp.id('x'), p_institution_id => :inst_a);
 insert into ids select 'asg_caller_y', public.role_assign(:user_both, pg_temp.id('caller_own'), null, pg_temp.id('y'), p_institution_id => :inst_a);
 reset role;
@@ -95,7 +95,7 @@ select pg_temp.check((select array_agg(left(label, 2) order by label) from publi
 reset role;
 
 -- Offering limit on an assignment: only listed offerings; records without an offering only for their creator.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.role_unassign(pg_temp.id('asg_admin_x'), :inst_a);
 insert into ids values ('off1', gen_random_uuid());
 insert into ids select 'asg_admin_x2', public.role_assign(:user_both, pg_temp.id('branch_admin'), null, pg_temp.id('x'), null, null,
@@ -116,7 +116,7 @@ reset role;
 -- 3. Team scope: a manager sees records owned by the people of the units they manage (and sub-units).
 insert into public.org_unit_members (institution_id, org_unit_id, user_id) values (:inst_a, pg_temp.id('team'), :user_both);
 insert into public.org_unit_managers (institution_id, org_unit_id, user_id) values (:inst_a, pg_temp.id('y'), :user_a);
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 insert into ids select 'asg_team', public.role_assign(:user_a, pg_temp.id('team_view'), p_institution_id => :inst_a);
 reset role;
 select pg_temp.act_as(pg_temp.claims_for(:user_a));
@@ -128,7 +128,7 @@ reset role;
 -- 4. Safeguards.
 insert into ids select 'principal', id from public.roles where institution_id = :inst_a and is_super_admin;
 insert into ids select 'admin_tpl', id from public.roles where institution_id = :inst_a and template_key = 'admin';
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 insert into ids select 'asg_super', public.role_assign(:user_a, pg_temp.id('principal'), p_institution_id => :inst_a);
 select pg_temp.check(pg_temp.error_of(format('select public.role_unassign(%L, %L)', pg_temp.id('asg_super'), :inst_a)) like 'last_super_admin%',
   'the last Super Admin cannot be removed');
@@ -146,7 +146,7 @@ reset role;
 select set_config('request.jwt.claims', '', true); -- owner set-up: no signed-in user
 with r as (insert into public.roles (institution_id, name) values (:inst_a, 'Role editor') returning id) insert into ids select 'role_editor', id from r;
 insert into public.role_permissions (institution_id, role_id, permission_key) values (:inst_a, pg_temp.id('role_editor'), 'settings.roles');
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.role_assign(:user_both, pg_temp.id('role_editor'), p_institution_id => :inst_a);
 reset role;
 select pg_temp.act_as(pg_temp.claims_for(:user_both) || '{"aal":"aal2"}');
@@ -155,7 +155,7 @@ select pg_temp.check(pg_temp.error_of(format('select public.role_set_grants(%L, 
 select pg_temp.check(pg_temp.error_of(format('select public.role_delete(%L)', pg_temp.id('caller_own'))) like 'role_has_members%',
   'a role with people cannot be deleted without moving them');
 reset role;
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 insert into out select 'moved', to_jsonb(public.role_delete(pg_temp.id('caller_own'), pg_temp.id('branch_admin'), :inst_a));
 select pg_temp.check(pg_temp.error_of(format('select public.role_delete(%L, null, %L)', pg_temp.id('principal'), :inst_a)) like 'role_invalid%',
   'system roles cannot be deleted');
@@ -180,7 +180,7 @@ select set_config('request.jwt.claims', '', true);
 insert into auth.users (instance_id, id, aud, role, email, created_at, updated_at)
 values ('00000000-0000-0000-0000-000000000000', '99999999-9999-4999-8999-999999999999', 'authenticated', 'authenticated', 'season@example.test', now(), now());
 insert into public.institution_members (institution_id, user_id, status) values (:inst_a, '99999999-9999-4999-8999-999999999999', 'active');
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 insert into ids select 'asg_temp', public.role_assign('99999999-9999-4999-8999-999999999999', pg_temp.id('branch_admin'), null, null, now(),
   now() + interval '30 days', null, :inst_a);
 reset role;
