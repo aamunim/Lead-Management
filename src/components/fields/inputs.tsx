@@ -27,7 +27,7 @@ const nextOrDone = (last?: boolean, onDone?: () => void) => () => {
 
 /**
  * Phone field (0A.11-T3): Bangla digits become ASCII as they are typed or pasted; on leaving the field the number is
- * normalised with the institution's rules (+880, spaces, dashes). The value given to the form is the normalised one.
+ * normalised with the institution's rules (country code, spaces, dashes). The value given to the form is the normalised one.
  * The server normalises again (never trust the client alone).
  */
 export function PhoneInput({ label, value, onChange, help, errorText, testID, required, last, onDone }: FieldProps<string>) {

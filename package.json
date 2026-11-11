@@ -49,7 +49,7 @@
     "check:config": "node scripts/validate-config.mjs",
     "export:web": "expo export --platform web",
     "export:web:local": "bash scripts/export-web-local.sh",
-    "check:i18n": "node --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-translations.mjs && node scripts/check-ui-strings.mjs && node scripts/permissions/check.mjs",
+    "check:i18n": "node --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-translations.mjs && node scripts/check-ui-strings.mjs && node scripts/permissions/check.mjs && node scripts/check-locale-literals.mjs",
     "check": "npm run typecheck && npm run check:config && npm run check:i18n && npm test",
     "test": "node --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test \"scripts/tests/*.test.mjs\"",
     "test:db": "bash scripts/db-test.sh",
@@ -67,7 +67,8 @@
     "screens:update": "UPDATE_SCREENSHOTS=1 node --test scripts/ui/matrix.web.test.mjs",
     "test:role-matrix": "node scripts/role-matrix/run.mjs",
     "bench": "node scripts/bench/run.mjs",
-    "seed:generate": "node scripts/seed/generate.mjs"
+    "seed:generate": "node scripts/seed/generate.mjs",
+    "check:settings": "node scripts/settings/check.mjs"
   },
   "private": true,
   "description": "Leadora: multi-institution lead and admission management platform."

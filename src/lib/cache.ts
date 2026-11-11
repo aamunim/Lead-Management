@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { cacheKey, clearCaches, type CacheScope, type ClearEvent } from './cache-core';
+import { cacheKey, clearCaches, mayWriteKey, type CacheScope, type ClearEvent } from './cache-core';
 
 // The app's cache namespace (0A.14-T2). Use cached(scope, …) for every stored piece of institution or user data;
 // register in-memory stores with onCacheClear(). session.ts calls clearAppCaches() on sign-out, switch, access change
@@ -33,7 +33,14 @@ export async function readCache<T>(key: string): Promise<T | null> {
   }
 }
 
+// Who is signed in now (set by session.ts on every auth change): late writes for anyone else are dropped.
+let owner: CacheScope = { userId: null, institutionId: null };
+export function setCacheOwner(scope: CacheScope): void {
+  owner = scope;
+}
+
 export async function writeCache(key: string, value: unknown): Promise<void> {
+  if (!mayWriteKey(key, owner)) return;
   try {
     await AsyncStorage.setItem(key, JSON.stringify(value));
   } catch {

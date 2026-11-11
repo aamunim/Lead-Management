@@ -138,3 +138,16 @@ end $$;
 create function leak_fixtures.public__role_assignments(p uuid) returns void language sql as $$ select leak_fixtures.access_for(p) $$;
 create function leak_fixtures.public__user_access(p uuid) returns void language sql as $$ select leak_fixtures.access_for(p) $$;
 create function leak_fixtures.public__access_rebuild_queue(p uuid) returns void language sql as $$ select leak_fixtures.access_for(p) $$;
+
+-- 0B.01 settings: a value per institution (A's is a marker), and the history row the change writes.
+create function leak_fixtures.public__app_settings(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_value text := case when p_institution = leak.id('inst_a') then 'LEAKA-0B01' else 'OTHER-0B01' end;
+begin
+  insert into public.app_settings (institution_id, key, value) values (p_institution, 'receipt_prefix', to_jsonb(v_value))
+  on conflict (institution_id, key) do update set value = excluded.value;
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values (v_value, 'setting value of A') on conflict do nothing;
+  end if;
+end $$;
+create function leak_fixtures.public__app_settings_history(p uuid) returns void language sql as $$ select leak_fixtures.public__app_settings(p) $$;

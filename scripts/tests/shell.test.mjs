@@ -135,3 +135,15 @@ describe('API wrapper', () => {
     assert.deepEqual(seen, ['7']);
   });
 });
+
+describe('cache writes after sign-out or a switch (0B.01 fix)', async () => {
+  const { mayWriteKey, cacheKey } = await import('../../src/lib/cache-core.ts');
+  const U = 'user-1';
+  it('only the signed-in person and their active institution may write', () => {
+    assert.equal(mayWriteKey(cacheKey({ userId: U, institutionId: 'A' }, 'settings'), { userId: U, institutionId: 'A' }), true);
+    assert.equal(mayWriteKey(cacheKey({ userId: U, institutionId: 'A' }, 'settings'), { userId: U, institutionId: 'B' }), false);
+    assert.equal(mayWriteKey(cacheKey({ userId: U, institutionId: 'A' }, 'settings'), { userId: null, institutionId: null }), false);
+    assert.equal(mayWriteKey(cacheKey({ userId: U, institutionId: null }, 'profile'), { userId: U, institutionId: 'B' }), true);
+    assert.equal(mayWriteKey('ui_language', { userId: null, institutionId: null }), true);
+  });
+});

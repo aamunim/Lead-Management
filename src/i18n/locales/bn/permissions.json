@@ -14,7 +14,7 @@
     },
     "terminology": {
       "label": "ব্যবহৃত শব্দ বদলানো",
-      "help": "প্রতিষ্ঠানের জন্য $t(labels:client.singular) বা $t(labels:offering.singular)-এর মতো শব্দের নাম বদলানো।"
+      "help": "প্রতিষ্ঠানের জন্য $t(labels:client.singular) বা $t(labels:offering.possessive) মতো শব্দের নাম বদলানো।"
     },
     "organisation": {
       "label": "$t(labels:branch.singular) ও টিম সামলানো",
@@ -35,6 +35,38 @@
     "security": {
       "label": "নিরাপত্তা সেটিংস",
       "help": "নিজে থেকে সাইন আউট আর অন্যান্য নিরাপত্তার নিয়ম। সংবেদনশীল।"
+    },
+    "team": {
+      "label": "টিম ও রিপোর্টের সেটিংস",
+      "help": "কার্যক্রম ট্র্যাকিং, রিপোর্ট, স্কোরকার্ড, ক্রেডিট, নোটিফিকেশন, কে ওয়েবসাইট ব্যবহার করবেন।"
+    },
+    "conversion": {
+      "label": "$t(labels:conversion.possessive) সেটিংস",
+      "help": "$t(labels:conversion.possessive) ধাপ, অনুমোদন, $t(labels:client.plural_oblique) ট্যাব, ফাইল আর ছবি।"
+    },
+    "fees": {
+      "label": "ফি-এর সেটিংস",
+      "help": "ফি, পেমেন্টের মাধ্যম, রসিদের ডিজাইন ও নম্বর, রিমাইন্ডার।"
+    },
+    "leads": {
+      "label": "$t(labels:lead.possessive) সেটিংস",
+      "help": "Assign, কার্ড, ফিল্টার, স্কোর, অ্যাপয়েন্টমেন্ট, টেমপ্লেট, রিমাইন্ডার আর এসকেলেশন।"
+    },
+    "pipeline": {
+      "label": "পাইপলাইনের সেটিংস",
+      "help": "পাইপলাইনের ধাপ আর বোর্ড।"
+    },
+    "calls": {
+      "label": "কলের সেটিংস",
+      "help": "কল লগ সিঙ্ক, কল লক, দুবার কলের সতর্কতা, ফোনের কন্টাক্ট।"
+    },
+    "ai": {
+      "label": "AI-এর সেটিংস",
+      "help": "AI ফিচার, প্রোভাইডার আর মাসিক বাজেট (কী থাকে ভল্টে)।"
+    },
+    "forms": {
+      "label": "ফর্ম ও $t(labels:network.possessive) সেটিংস",
+      "help": "পাবলিক ফর্ম, $t(labels:network.singular) আর রেফারেল।"
     }
   },
   "integration": {

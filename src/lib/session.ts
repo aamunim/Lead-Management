@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { clearAppCaches, onCacheClear } from './cache';
+import { clearAppCaches, onCacheClear, setCacheOwner } from './cache';
 import { supabase } from './supabase';
 
 // Session helpers for the tenancy rules (0A.03, docs/dev/TENANCY.md).
@@ -75,9 +75,16 @@ export async function signOutOtherDevices(): Promise<void> {
 
 /** Sign out on this device: the session goes and every cached piece of user / institution data is wiped (Ch 47.10). */
 export async function signOut(): Promise<void> {
+  setCacheOwner({ userId: null, institutionId: null }); // from now on, late answers write nothing
   await supabase.auth.signOut({ scope: 'local' }).catch(() => undefined);
   await clearAppCaches({ type: 'signOut' });
 }
+
+// The cache only accepts data of the person signed in now and their active institution (late writes are dropped).
+supabase.auth.onAuthStateChange((_event, session) => {
+  const claims = readClaims(session?.access_token);
+  setCacheOwner({ userId: session?.user.id ?? null, institutionId: claims.active_institution_id ?? null });
+});
 
 // A different person signs in on this device → remove what the previous person left behind (Ch 47.12 #5).
 const OWNER_KEY = 'cache_owner';

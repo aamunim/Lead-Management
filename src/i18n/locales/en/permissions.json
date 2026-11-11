@@ -35,6 +35,38 @@
     "security": {
       "label": "Security settings",
       "help": "Automatic sign-out and other security rules. Sensitive."
+    },
+    "team": {
+      "label": "Team and report settings",
+      "help": "Activity tracking, reports, scorecard, credits, notifications, who uses the website."
+    },
+    "conversion": {
+      "label": "$t(labels:conversion.singular) settings",
+      "help": "The $t(labels:conversion.singular) flow, approvals, the $t(labels:client.plural) tab, files and photos."
+    },
+    "fees": {
+      "label": "Fee settings",
+      "help": "Fees, payment methods, receipt design and receipt numbers, reminders."
+    },
+    "leads": {
+      "label": "$t(labels:lead.singular) settings",
+      "help": "Assignment, cards, filters, score, appointments, templates, reminders and escalations."
+    },
+    "pipeline": {
+      "label": "Pipeline settings",
+      "help": "Pipeline stages and the board."
+    },
+    "calls": {
+      "label": "Call settings",
+      "help": "Call-log sync, call lock, double-call warning, phone contacts."
+    },
+    "ai": {
+      "label": "AI settings",
+      "help": "AI features, provider and monthly budget (keys stay in the vault)."
+    },
+    "forms": {
+      "label": "Forms and $t(labels:network.singular) settings",
+      "help": "Public forms, the $t(labels:network.singular) and referrals."
     }
   },
   "integration": {

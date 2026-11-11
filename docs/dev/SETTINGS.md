@@ -1,4 +1,4 @@
-# Typed settings and per-institution counters (0A.08)
+# Typed settings, the Appendix A catalog and per-institution counters (0A.08, 0B.01)
 
 ## Settings are data
 
@@ -73,5 +73,48 @@ client numbers 2.04). Proven by a test where 50 parallel connections receive exa
 | `working_days`, `working_hours`, `quiet_hours`, `scorecard_day` | institution | 0A.11 | Office calendar (area `settings.office`); behaviour later (1A, 1B). |
 | `idle_signout_minutes` | institution | 0A.14 | Sign out after this many idle minutes (0 = never); area `settings.security`; see `SHELL.md`. |
 | `branches_enabled` | institution | 0A.15 | Branches are used (placeholder until modules / plan limits in 0B); see `ORG_UNITS.md`. |
+| Every Appendix A key (41 + `institution_name`) | institution | 0B.01 | Version-1 schemas; the owning milestone extends them. Neutral names (D42): `appointment` (campus visit), `network` (alumni), `clients` (students), `conversion` / `conversion_approval` (admission). List: `scripts/settings/gen_catalog_0B01.py`. |
+| `app_name`, `app_domain`, `privacy_contact_email`, `developer_email` | product | 0B.01 | Platform config, Master Admin side (T9). |
+
+**Areas (permission per area, Ch 11.5, R5):** `settings.team` (activity, reports, scorecard, credits, notifications,
+web), `settings.conversion` (conversion, approval, clients, files, uploads, photos), `settings.fees`, `settings.leads`
+(assignment, cards, filters, score, appointment, templates, reminder and escalation times), `settings.pipeline`
+(board), `settings.calls`, `settings.ai`, `settings.forms` (network, public forms), `settings.office` (= the roadmap's
+`settings.calendar`: working days / hours, quiet hours), `settings.locale`, `settings.general`, `settings.security`,
+`settings.organisation`. A settings permission never widens which records someone sees.
+
+**Proposed defaults (owner may review; each institution can change them):** first call within 5 minutes, early
+reminder 15 minutes before, repeat every 30 minutes, team lead after 2 hours, admin after 24 hours, receipt prefix
+`R-`. Feature keys default to off until their feature exists, except assignment, board, cards, filters, templates,
+double-call warning and reports.
+
+`institution_name` is registered for the catalog but lives in `institutions.name` (`stored_in`); `setting_set`
+refuses it. The other per-institution configuration (branding, counters, login, plans, …) is listed in
+`public.config_groups` with its owning tables and milestone (T3).
+
+## History, rollback and reading (0B.01)
+
+- Every change of `app_settings` writes `app_settings_history` (old / new value, schema version, who, when, reason;
+  a reset has new value null). Readable by people who may change that area and by `audit.view`.
+- `setting_rollback(history_id)` puts back the value from before that change (or the default), through
+  `setting_set` / `setting_reset`, so it is validated, permission-checked, audited and recorded again.
+- `get_setting(key)` / `get_settings(keys[])` (INVOKER; active institution from the session) return the value and
+  its source: `institution` → `type_profile` (0B.03) → `default`. The app keeps using `useSetting` (cache per user and
+  institution, cleared on switch).
+
+## Adding a setting key
+
+1. Add the key in a new migration: `insert into public.setting_definitions (key, scope, schema, default_value, area,
+   description, label_key, owner_module, owner_milestone)`. The default must validate against the schema (a database
+   check refuses it otherwise). Use a neutral key name (no industry words, Ch 8).
+2. `area` is the settings permission that guards it; a new area is added to a module manifest
+   (`config/modules/*.json`) with en / bn labels in `permissions.json`, then `npm run test:role-matrix -- --write`
+   and review the matrix diff.
+3. Add `keys.<key>.label` and `keys.<key>.help` to `src/i18n/locales/{en,bn}/settings.json`.
+4. Changing the shape of an existing key: raise `version`, add a `migrate_fn` that upgrades stored values, never edit
+   stored values by hand.
+5. Never write a locale value (time zone, currency sign, country code) in code — `npm run check:i18n` fails
+   (`scripts/check-locale-literals.mjs`). Read it with `useFormat()` / `useSetting()` / `app.setting_value()`.
+6. CI: `npm run check:settings` (schema, owner, area, labels) and `supabase/tests/0B01_settings_catalog_test.sql`.
 
 Besides the JSON Schema, `app.setting_extra_errors(key, value)` adds checks a schema cannot express (a time zone Postgres knows; start ≠ end of a time window). It runs in a trigger on `app_settings`.
