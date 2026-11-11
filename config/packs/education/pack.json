@@ -1,0 +1,906 @@
+{
+  "$comment": "Education pack (Ch 7.7, Ch 49.5). Content is Proposed (Ch 7.10) until the owner approves it at the 0B.03 checkpoint.",
+  "name": {
+    "en": "Education",
+    "bn": "শিক্ষা"
+  },
+  "description": {
+    "en": "Schools, colleges, universities, madrasas, coaching and training centres.",
+    "bn": "স্কুল, কলেজ, বিশ্ববিদ্যালয়, মাদ্রাসা, কোচিং ও ট্রেনিং প্রতিষ্ঠান।"
+  },
+  "labels": {
+    "after_steps": {
+      "en_singular": "Board flow",
+      "en_plural": "Board flows",
+      "bn": {
+        "base": "বোর্ড ফ্লো",
+        "plural": "বোর্ড ফ্লোগুলো",
+        "objective": "বোর্ড ফ্লো",
+        "possessive": "বোর্ড ফ্লোর",
+        "plural_oblique": "বোর্ড ফ্লোগুলোর"
+      }
+    },
+    "appointment": {
+      "en_singular": "Campus visit",
+      "en_plural": "Campus visits",
+      "bn": {
+        "base": "ক্যাম্পাস ভিজিট",
+        "plural": "ক্যাম্পাস ভিজিটগুলো",
+        "objective": "ক্যাম্পাস ভিজিট",
+        "possessive": "ক্যাম্পাস ভিজিটের",
+        "plural_oblique": "ক্যাম্পাস ভিজিটগুলোর"
+      }
+    },
+    "assessment": {
+      "en_singular": "Admission test",
+      "en_plural": "Admission tests",
+      "bn": {
+        "base": "ভর্তি পরীক্ষা",
+        "plural": "ভর্তি পরীক্ষাগুলো",
+        "objective": "ভর্তি পরীক্ষা",
+        "possessive": "ভর্তি পরীক্ষার",
+        "plural_oblique": "ভর্তি পরীক্ষাগুলোর"
+      }
+    },
+    "board_id": {
+      "en_singular": "Board ID",
+      "en_plural": "Board IDs",
+      "bn": {
+        "base": "বোর্ড আইডি",
+        "plural": "বোর্ড আইডিগুলো",
+        "objective": "বোর্ড আইডি",
+        "possessive": "বোর্ড আইডির",
+        "plural_oblique": "বোর্ড আইডিগুলোর"
+      }
+    },
+    "branch": {
+      "en_singular": "Branch",
+      "en_plural": "Branches",
+      "bn": {
+        "base": "শাখা",
+        "plural": "শাখাগুলো",
+        "objective": "শাখা",
+        "possessive": "শাখার",
+        "plural_oblique": "শাখাগুলোর"
+      }
+    },
+    "caller": {
+      "en_singular": "Caller",
+      "en_plural": "Callers",
+      "bn": {
+        "base": "কলার",
+        "plural": "কলাররা",
+        "objective": "কলারকে",
+        "possessive": "কলারের",
+        "plural_oblique": "কলারদের"
+      }
+    },
+    "client": {
+      "en_singular": "Student",
+      "en_plural": "Students",
+      "bn": {
+        "base": "শিক্ষার্থী",
+        "plural": "শিক্ষার্থীরা",
+        "objective": "শিক্ষার্থীকে",
+        "possessive": "শিক্ষার্থীর",
+        "plural_oblique": "শিক্ষার্থীদের"
+      }
+    },
+    "client_number": {
+      "en_singular": "Student ID",
+      "en_plural": "Student IDs",
+      "bn": {
+        "base": "শিক্ষার্থী আইডি",
+        "plural": "শিক্ষার্থী আইডিগুলো",
+        "objective": "শিক্ষার্থী আইডি",
+        "possessive": "শিক্ষার্থী আইডির",
+        "plural_oblique": "শিক্ষার্থী আইডিগুলোর"
+      }
+    },
+    "cohort": {
+      "en_singular": "Batch",
+      "en_plural": "Batches",
+      "bn": {
+        "base": "ব্যাচ",
+        "plural": "ব্যাচগুলো",
+        "objective": "ব্যাচ",
+        "possessive": "ব্যাচের",
+        "plural_oblique": "ব্যাচগুলোর"
+      }
+    },
+    "contact_person": {
+      "en_singular": "Guardian",
+      "en_plural": "Guardians",
+      "bn": {
+        "base": "অভিভাবক",
+        "plural": "অভিভাবকরা",
+        "objective": "অভিভাবককে",
+        "possessive": "অভিভাবকের",
+        "plural_oblique": "অভিভাবকদের"
+      }
+    },
+    "conversion": {
+      "en_singular": "Admission",
+      "en_plural": "Admissions",
+      "bn": {
+        "base": "ভর্তি",
+        "plural": "ভর্তিগুলো",
+        "objective": "ভর্তি",
+        "possessive": "ভর্তির",
+        "plural_oblique": "ভর্তিগুলোর"
+      }
+    },
+    "conversion_cancelled": {
+      "en_singular": "Admission cancelled",
+      "en_plural": "Admission cancelled",
+      "bn": {
+        "base": "ভর্তি বাতিল",
+        "plural": "ভর্তি বাতিলগুলো",
+        "objective": "ভর্তি বাতিল",
+        "possessive": "ভর্তি বাতিলের",
+        "plural_oblique": "ভর্তি বাতিলগুলোর"
+      }
+    },
+    "conversion_officer": {
+      "en_singular": "Admission Officer",
+      "en_plural": "Admission Officers",
+      "bn": {
+        "base": "ভর্তি কর্মকর্তা",
+        "plural": "ভর্তি কর্মকর্তারা",
+        "objective": "ভর্তি কর্মকর্তাকে",
+        "possessive": "ভর্তি কর্মকর্তার",
+        "plural_oblique": "ভর্তি কর্মকর্তাদের"
+      }
+    },
+    "converted": {
+      "en_singular": "Admitted",
+      "en_plural": "Admitted",
+      "bn": {
+        "base": "ভর্তি হয়েছে",
+        "plural": "ভর্তি হয়েছেগুলো",
+        "objective": "ভর্তি হয়েছে",
+        "possessive": "ভর্তি হয়েছের",
+        "plural_oblique": "ভর্তি হয়েছেগুলোর"
+      }
+    },
+    "discount": {
+      "en_singular": "Discount",
+      "en_plural": "Discounts",
+      "bn": {
+        "base": "ছাড়",
+        "plural": "ছাড়গুলো",
+        "objective": "ছাড়",
+        "possessive": "ছাড়ের",
+        "plural_oblique": "ছাড়গুলোর"
+      }
+    },
+    "doc.admit_card_title": {
+      "en_singular": "Admit Card",
+      "en_plural": "Admit Cards",
+      "bn": {
+        "base": "প্রবেশপত্র",
+        "plural": "প্রবেশপত্রগুলো",
+        "objective": "প্রবেশপত্র",
+        "possessive": "প্রবেশপত্রের",
+        "plural_oblique": "প্রবেশপত্রগুলোর"
+      }
+    },
+    "doc.application_form_title": {
+      "en_singular": "Application Form",
+      "en_plural": "Application Forms",
+      "bn": {
+        "base": "আবেদন ফর্ম",
+        "plural": "আবেদন ফর্মগুলো",
+        "objective": "আবেদন ফর্ম",
+        "possessive": "আবেদন ফর্মের",
+        "plural_oblique": "আবেদন ফর্মগুলোর"
+      }
+    },
+    "doc.id_card_title": {
+      "en_singular": "ID Card",
+      "en_plural": "ID Cards",
+      "bn": {
+        "base": "পরিচয়পত্র",
+        "plural": "পরিচয়পত্রগুলো",
+        "objective": "পরিচয়পত্র",
+        "possessive": "পরিচয়পত্রের",
+        "plural_oblique": "পরিচয়পত্রগুলোর"
+      }
+    },
+    "doc.receipt_title": {
+      "en_singular": "Money Receipt",
+      "en_plural": "Money Receipts",
+      "bn": {
+        "base": "মানি রসিদ",
+        "plural": "মানি রসিদগুলো",
+        "objective": "মানি রসিদ",
+        "possessive": "মানি রসিদের",
+        "plural_oblique": "মানি রসিদগুলোর"
+      }
+    },
+    "documents": {
+      "en_singular": "Paper",
+      "en_plural": "Papers",
+      "bn": {
+        "base": "কাগজপত্র",
+        "plural": "কাগজপত্রগুলো",
+        "objective": "কাগজপত্র",
+        "possessive": "কাগজপত্রের",
+        "plural_oblique": "কাগজপত্রগুলোর"
+      }
+    },
+    "external_board": {
+      "en_singular": "External board",
+      "en_plural": "External boards",
+      "bn": {
+        "base": "বোর্ড",
+        "plural": "বোর্ডগুলো",
+        "objective": "বোর্ড",
+        "possessive": "বোর্ডের",
+        "plural_oblique": "বোর্ডগুলোর"
+      }
+    },
+    "fee": {
+      "en_singular": "Fee",
+      "en_plural": "Fees",
+      "bn": {
+        "base": "ফি",
+        "plural": "ফিগুলো",
+        "objective": "ফি",
+        "possessive": "ফির",
+        "plural_oblique": "ফিগুলোর"
+      }
+    },
+    "installment": {
+      "en_singular": "Installment",
+      "en_plural": "Installments",
+      "bn": {
+        "base": "কিস্তি",
+        "plural": "কিস্তিগুলো",
+        "objective": "কিস্তি",
+        "possessive": "কিস্তির",
+        "plural_oblique": "কিস্তিগুলোর"
+      }
+    },
+    "lead": {
+      "en_singular": "Lead",
+      "en_plural": "Leads",
+      "bn": {
+        "base": "লিড",
+        "plural": "লিডরা",
+        "objective": "লিডকে",
+        "possessive": "লিডের",
+        "plural_oblique": "লিডদের"
+      }
+    },
+    "lost": {
+      "en_singular": "Lost",
+      "en_plural": "Lost",
+      "bn": {
+        "base": "হাতছাড়া",
+        "plural": "হাতছাড়াগুলো",
+        "objective": "হাতছাড়া",
+        "possessive": "হাতছাড়ার",
+        "plural_oblique": "হাতছাড়াগুলোর"
+      }
+    },
+    "merit_list": {
+      "en_singular": "Merit list",
+      "en_plural": "Merit lists",
+      "bn": {
+        "base": "মেধাতালিকা",
+        "plural": "মেধাতালিকাগুলো",
+        "objective": "মেধাতালিকা",
+        "possessive": "মেধাতালিকার",
+        "plural_oblique": "মেধাতালিকাগুলোর"
+      }
+    },
+    "module.clients": {
+      "en_singular": "Students",
+      "en_plural": "Students",
+      "bn": {
+        "base": "শিক্ষার্থী",
+        "plural": "শিক্ষার্থীগুলো",
+        "objective": "শিক্ষার্থী",
+        "possessive": "শিক্ষার্থীর",
+        "plural_oblique": "শিক্ষার্থীগুলোর"
+      }
+    },
+    "module.conversion_contribution": {
+      "en_singular": "Admission Contribution",
+      "en_plural": "Admission Contribution",
+      "bn": {
+        "base": "ভর্তিতে অবদান",
+        "plural": "ভর্তিতে অবদানগুলো",
+        "objective": "ভর্তিতে অবদান",
+        "possessive": "ভর্তিতে অবদানের",
+        "plural_oblique": "ভর্তিতে অবদানগুলোর"
+      }
+    },
+    "module.conversion_flow": {
+      "en_singular": "Admission flow",
+      "en_plural": "Admission flow",
+      "bn": {
+        "base": "ভর্তির ধাপ",
+        "plural": "ভর্তির ধাপগুলো",
+        "objective": "ভর্তির ধাপ",
+        "possessive": "ভর্তির ধাপের",
+        "plural_oblique": "ভর্তির ধাপগুলোর"
+      }
+    },
+    "module.leaderboard": {
+      "en_singular": "Leaderboard",
+      "en_plural": "Leaderboard",
+      "bn": {
+        "base": "লিডারবোর্ড",
+        "plural": "লিডারবোর্ডগুলো",
+        "objective": "লিডারবোর্ড",
+        "possessive": "লিডারবোর্ডের",
+        "plural_oblique": "লিডারবোর্ডগুলোর"
+      }
+    },
+    "module.leads": {
+      "en_singular": "Leads",
+      "en_plural": "Leads",
+      "bn": {
+        "base": "লিড",
+        "plural": "লিডগুলো",
+        "objective": "লিড",
+        "possessive": "লিডের",
+        "plural_oblique": "লিডগুলোর"
+      }
+    },
+    "module.network": {
+      "en_singular": "Alumni",
+      "en_plural": "Alumni",
+      "bn": {
+        "base": "প্রাক্তন শিক্ষার্থী",
+        "plural": "প্রাক্তন শিক্ষার্থীগুলো",
+        "objective": "প্রাক্তন শিক্ষার্থী",
+        "possessive": "প্রাক্তন শিক্ষার্থীর",
+        "plural_oblique": "প্রাক্তন শিক্ষার্থীগুলোর"
+      }
+    },
+    "module.referrals": {
+      "en_singular": "Referral inbox",
+      "en_plural": "Referral inbox",
+      "bn": {
+        "base": "রেফারেল ইনবক্স",
+        "plural": "রেফারেল ইনবক্সগুলো",
+        "objective": "রেফারেল ইনবক্স",
+        "possessive": "রেফারেল ইনবক্সের",
+        "plural_oblique": "রেফারেল ইনবক্সগুলোর"
+      }
+    },
+    "module.scorecard": {
+      "en_singular": "Weekly scorecard",
+      "en_plural": "Weekly scorecard",
+      "bn": {
+        "base": "সাপ্তাহিক স্কোরকার্ড",
+        "plural": "সাপ্তাহিক স্কোরকার্ডগুলো",
+        "objective": "সাপ্তাহিক স্কোরকার্ড",
+        "possessive": "সাপ্তাহিক স্কোরকার্ডের",
+        "plural_oblique": "সাপ্তাহিক স্কোরকার্ডগুলোর"
+      }
+    },
+    "network": {
+      "en_singular": "Alumnus",
+      "en_plural": "Alumni",
+      "bn": {
+        "base": "প্রাক্তন শিক্ষার্থী",
+        "plural": "প্রাক্তন শিক্ষার্থীরা",
+        "objective": "প্রাক্তন শিক্ষার্থীকে",
+        "possessive": "প্রাক্তন শিক্ষার্থীর",
+        "plural_oblique": "প্রাক্তন শিক্ষার্থীদের"
+      }
+    },
+    "offering": {
+      "en_singular": "Course",
+      "en_plural": "Courses",
+      "bn": {
+        "base": "কোর্স",
+        "plural": "কোর্সগুলো",
+        "objective": "কোর্স",
+        "possessive": "কোর্সের",
+        "plural_oblique": "কোর্সগুলোর"
+      }
+    },
+    "payment_plan": {
+      "en_singular": "Fee plan",
+      "en_plural": "Fee plans",
+      "bn": {
+        "base": "ফি ও কিস্তি",
+        "plural": "ফি ও কিস্তিগুলো",
+        "objective": "ফি ও কিস্তি",
+        "possessive": "ফি ও কিস্তির",
+        "plural_oblique": "ফি ও কিস্তিগুলোর"
+      }
+    },
+    "receipt": {
+      "en_singular": "Receipt",
+      "en_plural": "Receipts",
+      "bn": {
+        "base": "রসিদ",
+        "plural": "রসিদগুলো",
+        "objective": "রসিদ",
+        "possessive": "রসিদের",
+        "plural_oblique": "রসিদগুলোর"
+      }
+    },
+    "referrer": {
+      "en_singular": "Referrer",
+      "en_plural": "Referrers",
+      "bn": {
+        "base": "রেফারকারী",
+        "plural": "রেফারকারীরা",
+        "objective": "রেফারকারীকে",
+        "possessive": "রেফারকারীর",
+        "plural_oblique": "রেফারকারীদের"
+      }
+    },
+    "slot_group": {
+      "en_singular": "Section",
+      "en_plural": "Sections",
+      "bn": {
+        "base": "সেকশন",
+        "plural": "সেকশনগুলো",
+        "objective": "সেকশন",
+        "possessive": "সেকশনের",
+        "plural_oblique": "সেকশনগুলোর"
+      }
+    },
+    "team_lead": {
+      "en_singular": "Team Lead",
+      "en_plural": "Team Leads",
+      "bn": {
+        "base": "টিম লিড",
+        "plural": "টিম লিডরা",
+        "objective": "টিম লিডকে",
+        "possessive": "টিম লিডের",
+        "plural_oblique": "টিম লিডদের"
+      }
+    }
+  },
+  "stages": [
+    {
+      "key": "new",
+      "name": {
+        "en": "New",
+        "bn": "নতুন"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "contacted",
+      "name": {
+        "en": "Contacted",
+        "bn": "যোগাযোগ হয়েছে"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "visit",
+      "name": {
+        "en": "Visit",
+        "bn": "ভিজিট"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "test",
+      "name": {
+        "en": "Test",
+        "bn": "পরীক্ষা"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "admitted",
+      "name": {
+        "en": "Admitted",
+        "bn": "ভর্তি হয়েছে"
+      },
+      "kind": "won"
+    },
+    {
+      "key": "lost",
+      "name": {
+        "en": "Lost",
+        "bn": "হারানো"
+      },
+      "kind": "lost"
+    }
+  ],
+  "modules": [
+    {
+      "key": "slot_seats",
+      "name": {
+        "en": "Sections and seats",
+        "bn": "সেকশন ও সিট"
+      },
+      "default_on": true,
+      "built_in": "2.01"
+    },
+    {
+      "key": "contact_persons",
+      "name": {
+        "en": "Guardians",
+        "bn": "অভিভাবক"
+      },
+      "default_on": true,
+      "built_in": "1.21"
+    },
+    {
+      "key": "after_steps",
+      "name": {
+        "en": "Board flow",
+        "bn": "বোর্ড ফ্লো"
+      },
+      "default_on": false,
+      "built_in": "2.16"
+    },
+    {
+      "key": "assessment",
+      "name": {
+        "en": "Admission test",
+        "bn": "ভর্তি পরীক্ষা"
+      },
+      "default_on": false,
+      "built_in": "2.17"
+    },
+    {
+      "key": "merit_list",
+      "name": {
+        "en": "Merit list",
+        "bn": "মেধাতালিকা"
+      },
+      "default_on": false,
+      "built_in": "2.18"
+    },
+    {
+      "key": "network",
+      "name": {
+        "en": "Alumni",
+        "bn": "অ্যালামনাই"
+      },
+      "default_on": false,
+      "built_in": null
+    },
+    {
+      "key": "hostel",
+      "name": {
+        "en": "Hostel and transport",
+        "bn": "হোস্টেল ও পরিবহন"
+      },
+      "default_on": false,
+      "built_in": null
+    }
+  ],
+  "field_presets": [
+    {
+      "key": "ssc_gpa",
+      "name": {
+        "en": "SSC GPA",
+        "bn": "এসএসসি জিপিএ"
+      },
+      "type": "decimal",
+      "min": 0,
+      "max": 5
+    },
+    {
+      "key": "hsc_gpa",
+      "name": {
+        "en": "HSC GPA",
+        "bn": "এইচএসসি জিপিএ"
+      },
+      "type": "decimal",
+      "min": 0,
+      "max": 5
+    },
+    {
+      "key": "board",
+      "name": {
+        "en": "Board",
+        "bn": "বোর্ড"
+      },
+      "type": "choice",
+      "options": [
+        {
+          "key": "dhaka",
+          "name": {
+            "en": "Dhaka",
+            "bn": "ঢাকা"
+          }
+        },
+        {
+          "key": "rajshahi",
+          "name": {
+            "en": "Rajshahi",
+            "bn": "রাজশাহী"
+          }
+        },
+        {
+          "key": "cumilla",
+          "name": {
+            "en": "Cumilla",
+            "bn": "কুমিল্লা"
+          }
+        },
+        {
+          "key": "jashore",
+          "name": {
+            "en": "Jashore",
+            "bn": "যশোর"
+          }
+        },
+        {
+          "key": "chattogram",
+          "name": {
+            "en": "Chattogram",
+            "bn": "চট্টগ্রাম"
+          }
+        },
+        {
+          "key": "barishal",
+          "name": {
+            "en": "Barishal",
+            "bn": "বরিশাল"
+          }
+        },
+        {
+          "key": "sylhet",
+          "name": {
+            "en": "Sylhet",
+            "bn": "সিলেট"
+          }
+        },
+        {
+          "key": "dinajpur",
+          "name": {
+            "en": "Dinajpur",
+            "bn": "দিনাজপুর"
+          }
+        },
+        {
+          "key": "mymensingh",
+          "name": {
+            "en": "Mymensingh",
+            "bn": "ময়মনসিংহ"
+          }
+        },
+        {
+          "key": "madrasah",
+          "name": {
+            "en": "Madrasah",
+            "bn": "মাদ্রাসা"
+          }
+        },
+        {
+          "key": "technical",
+          "name": {
+            "en": "Technical",
+            "bn": "কারিগরি"
+          }
+        }
+      ]
+    },
+    {
+      "key": "roll",
+      "name": {
+        "en": "Exam roll",
+        "bn": "পরীক্ষার রোল"
+      },
+      "type": "text",
+      "max_length": 20
+    },
+    {
+      "key": "registration_no",
+      "name": {
+        "en": "Registration no.",
+        "bn": "রেজিস্ট্রেশন নম্বর"
+      },
+      "type": "text",
+      "max_length": 20
+    },
+    {
+      "key": "passing_year",
+      "name": {
+        "en": "Passing year",
+        "bn": "পাসের বছর"
+      },
+      "type": "year"
+    },
+    {
+      "key": "previous_institution",
+      "name": {
+        "en": "Previous institution",
+        "bn": "আগের প্রতিষ্ঠান"
+      },
+      "type": "text",
+      "max_length": 120
+    },
+    {
+      "key": "date_of_birth",
+      "name": {
+        "en": "Date of birth",
+        "bn": "জন্মতারিখ"
+      },
+      "type": "date"
+    },
+    {
+      "key": "birth_registration_no",
+      "name": {
+        "en": "Birth registration no.",
+        "bn": "জন্ম নিবন্ধন নম্বর"
+      },
+      "type": "text",
+      "max_length": 17
+    },
+    {
+      "key": "guardian_nid",
+      "name": {
+        "en": "Guardian's NID",
+        "bn": "অভিভাবকের এনআইডি"
+      },
+      "type": "text",
+      "max_length": 17
+    },
+    {
+      "key": "guardian_occupation",
+      "name": {
+        "en": "Guardian's occupation",
+        "bn": "অভিভাবকের পেশা"
+      },
+      "type": "text",
+      "max_length": 60
+    },
+    {
+      "key": "group",
+      "name": {
+        "en": "Group / department",
+        "bn": "বিভাগ"
+      },
+      "type": "choice",
+      "options": [
+        {
+          "key": "science",
+          "name": {
+            "en": "Science",
+            "bn": "বিজ্ঞান"
+          }
+        },
+        {
+          "key": "humanities",
+          "name": {
+            "en": "Humanities",
+            "bn": "মানবিক"
+          }
+        },
+        {
+          "key": "business",
+          "name": {
+            "en": "Business studies",
+            "bn": "ব্যবসায় শিক্ষা"
+          }
+        }
+      ]
+    },
+    {
+      "key": "shift",
+      "name": {
+        "en": "Shift",
+        "bn": "শিফট"
+      },
+      "type": "choice",
+      "options": [
+        {
+          "key": "morning",
+          "name": {
+            "en": "Morning",
+            "bn": "প্রভাতী"
+          }
+        },
+        {
+          "key": "day",
+          "name": {
+            "en": "Day",
+            "bn": "দিবা"
+          }
+        },
+        {
+          "key": "evening",
+          "name": {
+            "en": "Evening",
+            "bn": "সান্ধ্য"
+          }
+        }
+      ]
+    },
+    {
+      "key": "version",
+      "name": {
+        "en": "Version",
+        "bn": "ভার্সন"
+      },
+      "type": "choice",
+      "options": [
+        {
+          "key": "bangla",
+          "name": {
+            "en": "Bangla",
+            "bn": "বাংলা"
+          }
+        },
+        {
+          "key": "english",
+          "name": {
+            "en": "English",
+            "bn": "ইংরেজি"
+          }
+        }
+      ]
+    },
+    {
+      "key": "preferred_time",
+      "name": {
+        "en": "Preferred time",
+        "bn": "পছন্দের সময়"
+      },
+      "type": "choice",
+      "options": [
+        {
+          "key": "morning",
+          "name": {
+            "en": "Morning",
+            "bn": "সকাল"
+          }
+        },
+        {
+          "key": "afternoon",
+          "name": {
+            "en": "Afternoon",
+            "bn": "বিকেল"
+          }
+        },
+        {
+          "key": "evening",
+          "name": {
+            "en": "Evening",
+            "bn": "সন্ধ্যা"
+          }
+        }
+      ]
+    },
+    {
+      "key": "current_occupation",
+      "name": {
+        "en": "Current class / job",
+        "bn": "বর্তমান ক্লাস / চাকরি"
+      },
+      "type": "text",
+      "max_length": 80
+    }
+  ],
+  "sensitive_fields": [
+    {
+      "field": "guardian_nid",
+      "never_to_ai": true,
+      "view_audit": true,
+      "retention_days": 1825,
+      "reason": {
+        "en": "National ID of a parent.",
+        "bn": "অভিভাবকের জাতীয় পরিচয়পত্র।"
+      }
+    },
+    {
+      "field": "birth_registration_no",
+      "never_to_ai": true,
+      "view_audit": true,
+      "retention_days": 1825,
+      "reason": {
+        "en": "Identity number of a child.",
+        "bn": "শিশুর পরিচয় নম্বর।"
+      }
+    }
+  ]
+}

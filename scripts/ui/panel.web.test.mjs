@@ -1,6 +1,6 @@
 // UI tests (0B.02) for the Master Admin panel on the web build: its own sign-in page, the second step is always
 // needed (no way around it), first-time authenticator set-up, a new device raises an alert, each platform role sees
-// only its menus, the platform users screen, and screenshots in light / dark × bn / en.
+// only its menus, the platform users screen, profiles and packs (0B.03), and screenshots in light / dark × bn / en.
 import assert from 'node:assert/strict';
 import { after, before, describe, it } from 'node:test';
 
@@ -15,7 +15,11 @@ const cleanUp = () => adminSql(`delete from public.platform_members where user_i
   delete from public.platform_login_devices; delete from public.platform_alerts;
   update public.platform_members set status = 'active', extra_permissions = '{}' where user_id in
     ('e1000000-0000-4000-8000-0000000000e1', 'e2000000-0000-4000-8000-0000000000e2', 'e3000000-0000-4000-8000-0000000000e3');
-  update public.profiles set preferred_language = null where email like 'platform.%@example.test';`);
+  update public.profiles set preferred_language = null where email like 'platform.%@example.test';
+  update public.industries set signup_open = (key = 'education');
+  set session_replication_role = replica;
+  delete from public.type_profiles where key = 'training' and version > 1;
+  set session_replication_role = default;`);
 before(async () => {
   web = await startWeb();
   cleanUp();
@@ -147,6 +151,69 @@ describe('Master Admin panel', () => {
     await ctx.close();
   });
 
+  it('profiles and packs: view, a broken change is refused, publish a new version, open industries', async () => {
+    const ctx = await newContext();
+    const page = await ctx.newPage();
+    await panelSignIn(page, 'platform.admin@example.test');
+    await page.getByTestId('panel-dashboard').waitFor({ timeout: 20000 });
+    await page.getByTestId('panel-menu-profiles').click();
+    await page.getByTestId('profile-health').waitFor({ timeout: 20000 });
+    assert.equal(await page.locator('[data-testid^="profile-"]').count(), 9, 'nine education profiles');
+    assert.equal(await page.getByTestId('industry-open-healthcare').getAttribute('aria-disabled'), 'true', 'an industry without a pack cannot be opened');
+    await page.screenshot({ path: `${SCREENSHOTS}/panel-profiles.png`, fullPage: true });
+
+    await page.getByTestId('profile-training').click();
+    await page.getByTestId('profile-stages').waitFor({ timeout: 20000 });
+    assert.match(await page.getByTestId('profile-stages').textContent(), /Enrolled/);
+    await page.getByTestId('profile-edit').click();
+    const json = JSON.parse(await page.getByTestId('profile-json-input').inputValue());
+    await page.getByTestId('profile-json-input').fill(JSON.stringify({ ...json, client_number_pattern: 'NO-COUNTER' }));
+    await page.getByTestId('profile-validate').click();
+    await page.getByTestId('profile-problems').waitFor({ timeout: 15000 });
+    assert.match(await page.getByTestId('profile-problems').textContent(), /NO-COUNTER/);
+    await page.screenshot({ path: `${SCREENSHOTS}/panel-profile-problems.png`, fullPage: true });
+
+    await page.getByTestId('profile-json-input').fill(JSON.stringify(json, null, 2));
+    await page.getByTestId('profile-name-en-input').fill('Skills training institute');
+    await page.getByTestId('profile-notes-input').fill('clearer name');
+    await page.getByTestId('profile-validate').click();
+    await page.getByTestId('profile-valid').waitFor({ timeout: 15000 });
+    await page.getByTestId('profile-save').click();
+    await page.getByTestId('profile-publish').waitFor({ timeout: 15000 });
+    assert.match(await page.getByTestId('profile-version').textContent(), /Draft v2/);
+    await page.getByTestId('profile-publish').click();
+    await page.getByTestId('confirm-ok').click();
+    await page.waitForFunction(() => /Published v2/.test(document.querySelector('[data-testid="profile-version"]')?.textContent ?? ''), null, { timeout: 15000 });
+    assert.equal(await page.getByTestId('profile-v1').count(), 1, 'version 1 stays in the history');
+    assert.match(adminSql(`select payload -> 'name' ->> 'en' from public.type_profiles where key = 'training' and version = 2 and status = 'published'`),
+      /Skills training institute/);
+    await page.screenshot({ path: `${SCREENSHOTS}/panel-profile.png`, fullPage: true });
+
+    await page.goto(`${web.base}/panel/profiles`);
+    const openNow = async (want) => {
+      for (let n = 0; n < 50 && !new RegExp(`\\b${want ? 't' : 'f'}\\b`).test(adminSql(`select signup_open from public.industries where key = 'education'`)); n += 1) {
+        await page.waitForTimeout(300);
+      }
+      assert.match(adminSql(`select signup_open from public.industries where key = 'education'`), new RegExp(`\\b${want ? 't' : 'f'}\\b`));
+    };
+    await page.getByTestId('industry-open-education').click();
+    await openNow(false);
+    await page.getByTestId('industry-open-education').click();
+    await openNow(true);
+    await ctx.close();
+  });
+
+  it('profiles and packs need platform.profiles (Support is refused)', async () => {
+    const ctx = await newContext();
+    const page = await ctx.newPage();
+    await panelSignIn(page, 'platform.support@example.test');
+    await page.getByTestId('panel-menu-dashboard').waitFor({ timeout: 20000 });
+    assert.equal(await page.getByTestId('panel-menu-profiles').count(), 0);
+    await page.goto(`${web.base}/panel/profile/profile/school`);
+    await page.getByTestId('panel-no-access').waitFor({ timeout: 20000 });
+    await ctx.close();
+  });
+
   for (const [scheme, language] of [['light', 'en'], ['dark', 'en'], ['light', 'bn'], ['dark', 'bn']]) {
     it(`screenshots: ${language} ${scheme}`, async () => {
       adminSql(`update public.profiles set preferred_language = '${language}' where email = 'platform.admin@example.test'`);
@@ -161,6 +228,10 @@ describe('Master Admin panel', () => {
       await page.getByTestId('panel-institution-tabs').waitFor({ timeout: 20000 });
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), 'no sideways scroll');
       await page.screenshot({ path: `${SCREENSHOTS}/panel-institutions-${language}-${scheme}.png`, fullPage: true });
+      await page.goto(`${web.base}/panel/profile/profile/school`);
+      await page.getByTestId('profile-stages').waitFor({ timeout: 20000 });
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), 'no sideways scroll (profile)');
+      await page.screenshot({ path: `${SCREENSHOTS}/panel-profile-${language}-${scheme}.png`, fullPage: true });
       await ctx.close();
     });
   }

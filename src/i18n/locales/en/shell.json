@@ -6,7 +6,8 @@
     "submit": "Sign in",
     "failed": "The email or password is not right. Please check and try again.",
     "idleSignedOut": "You were signed out because the app was not used for a while.",
-    "languageLink": "বাংলা / English"
+    "languageLink": "বাংলা / English",
+    "panelLink": "Platform staff"
   },
   "tabs": {
     "home": "Home",

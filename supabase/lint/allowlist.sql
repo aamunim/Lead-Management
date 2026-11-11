@@ -37,3 +37,8 @@ insert into lint.allow (rule, object, reason) values
   ('index_leading_institution', 'platform_audit_log_pkey', 'Platform audit log: institution_id is optional (most platform actions have none); read only on the platform side.'),
   ('unique_includes_institution', 'platform_audit_log_pkey', 'Platform audit log: one id per row across the platform; institution_id is optional.'),
   ('write_needs_can', 'public.platform_session_start', 'Self-service at panel sign-in: needs aal2 and an active platform membership of the caller; writes only the caller''s own device, alerts and invite.');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.data_schemas', 'Product-wide JSON schemas for pack / profile data (0B.03).'),
+  ('platform_table', 'public.industries', 'Product-wide industry list for the sign-up wizard (0B.03, Ch 6.3).'),
+  ('platform_table', 'public.industry_packs', 'Product-wide versioned industry packs edited by the Master Admin (0B.03, Ch 49).'),
+  ('platform_table', 'public.type_profiles', 'Product-wide versioned type profiles edited by the Master Admin (0B.03, Ch 7).');

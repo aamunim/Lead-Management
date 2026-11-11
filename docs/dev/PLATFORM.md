@@ -32,7 +32,7 @@ Keys are two-part (`module.action`), so the roadmap's names map to:
 | `platform.developer.view` | `platform.developer` | ✓ | | | ✓ |
 | — | `platform.product_settings`, `platform.extensions`, `platform.labels_lock` | ✓ | | | |
 
-The rights per role are **Proposed** (least privilege, 0B.02-T5) and are approved by the owner at the checkpoint;
+The rights per role (least privilege, 0B.02-T5) were approved by the owner (D43);
 they live in `platform_role_permissions` (data, not code).
 
 ## Sign-in, devices and alerts
@@ -54,6 +54,10 @@ Guards: only a Master Admin makes or changes a Master Admin; nobody changes them
 
 First Master Admin, command line only:
 `DB_URL=… ADMIN_EMAIL=… ADMIN_PASSWORD=… node scripts/platform/create-master-admin.mjs`.
+On staging / production without a local setup: put the password in the environment secret `MASTER_ADMIN_PASSWORD`
+(14+ characters), then Actions → **create-master-admin** → choose the environment and type the email. The person
+opens the panel from "Platform staff" on the app's sign-in page (or `/panel/sign-in` on the web) and sets up an
+authenticator app at the first sign-in.
 
 ## Audit
 
@@ -63,7 +67,7 @@ user agent from the request. The table is append-only. The institution-facing vi
 
 ## Panel shell
 
-Menu (Ch 5.3, **Proposed**): Dashboard, Institutions (0B.07), Groups (1.19), Profiles and packs (0B.03), Providers
+Menu (Ch 5.3, approved, D43): Dashboard, Institutions (0B.07), Groups (1.19), Profiles and packs (built in 0B.03, see `PROFILES.md`), Providers
 (0B.11), Announcements (1.33), Requests (0B.07), Developer inbox (1.18), Platform users. Each item needs its right;
 pages built later say when they arrive. Every institution will get the tabs Overview, Messaging, Notifications,
 Payments, Integrations, Domain, Plan and billing, Words, Audit (filled by later milestones).

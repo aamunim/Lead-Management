@@ -1,0 +1,443 @@
+{
+  "$comment": "Content is Proposed (Ch 7.10) until the owner approves it at the 0B.03 checkpoint.",
+  "name": {
+    "en": "English-medium school",
+    "bn": "ইংলিশ-মিডিয়াম স্কুল"
+  },
+  "description": {
+    "en": "Admission by grade with a test and interview; O / A level board registration.",
+    "bn": "গ্রেড অনুযায়ী ভর্তি, পরীক্ষা ও ইন্টারভিউসহ; O / A লেভেল বোর্ডে রেজিস্ট্রেশন।"
+  },
+  "role_template_set": "school",
+  "labels": {
+    "lead": {
+      "en_singular": "Enquiry",
+      "en_plural": "Enquiries",
+      "bn": {
+        "base": "জিজ্ঞাসা"
+      }
+    },
+    "offering": {
+      "en_singular": "Grade",
+      "en_plural": "Grades",
+      "bn": {
+        "base": "গ্রেড"
+      }
+    },
+    "slot_group": {
+      "en_singular": "Section",
+      "en_plural": "Sections",
+      "bn": {
+        "base": "সেকশন"
+      }
+    },
+    "cohort": {
+      "en_singular": "Academic year",
+      "en_plural": "Academic years",
+      "bn": {
+        "base": "শিক্ষাবর্ষ"
+      }
+    }
+  },
+  "stages": [
+    {
+      "key": "new",
+      "name": {
+        "en": "New",
+        "bn": "নতুন"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "contacted",
+      "name": {
+        "en": "Contacted",
+        "bn": "যোগাযোগ হয়েছে"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "visit",
+      "name": {
+        "en": "Visit",
+        "bn": "ভিজিট"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "assessment",
+      "name": {
+        "en": "Test and interview",
+        "bn": "পরীক্ষা ও ইন্টারভিউ"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "offer",
+      "name": {
+        "en": "Offer",
+        "bn": "অফার"
+      },
+      "kind": "open"
+    },
+    {
+      "key": "admitted",
+      "name": {
+        "en": "Admitted",
+        "bn": "ভর্তি হয়েছে"
+      },
+      "kind": "won"
+    },
+    {
+      "key": "lost",
+      "name": {
+        "en": "Lost",
+        "bn": "হারানো"
+      },
+      "kind": "lost"
+    }
+  ],
+  "documents": [
+    {
+      "key": "birth_certificate",
+      "name": {
+        "en": "Birth registration certificate",
+        "bn": "জন্ম নিবন্ধন সনদ"
+      },
+      "required": true
+    },
+    {
+      "key": "photo",
+      "name": {
+        "en": "Passport-size photo",
+        "bn": "পাসপোর্ট সাইজের ছবি"
+      },
+      "required": true
+    },
+    {
+      "key": "report_card",
+      "name": {
+        "en": "Last report card",
+        "bn": "শেষ রিপোর্ট কার্ড"
+      },
+      "required": true
+    },
+    {
+      "key": "guardian_nid",
+      "name": {
+        "en": "Guardian's NID copy",
+        "bn": "অভিভাবকের এনআইডির কপি"
+      },
+      "required": true
+    }
+  ],
+  "fees": {
+    "heads": [
+      {
+        "key": "admission",
+        "name": {
+          "en": "Admission fee",
+          "bn": "ভর্তি ফি"
+        },
+        "frequency": "once"
+      },
+      {
+        "key": "development",
+        "name": {
+          "en": "Development fee",
+          "bn": "ডেভেলপমেন্ট ফি"
+        },
+        "frequency": "annual"
+      },
+      {
+        "key": "tuition",
+        "name": {
+          "en": "Monthly tuition",
+          "bn": "মাসিক বেতন"
+        },
+        "frequency": "monthly"
+      }
+    ],
+    "installments": false,
+    "waivers": true
+  },
+  "custom_fields": [
+    "date_of_birth",
+    "previous_institution",
+    "guardian_occupation",
+    "guardian_nid",
+    "birth_registration_no"
+  ],
+  "modules": {
+    "slot_seats": true,
+    "contact_persons": true,
+    "assessment": true,
+    "merit_list": false,
+    "after_steps": true,
+    "network": true,
+    "hostel": false
+  },
+  "settings": {
+    "appointment": {
+      "enabled": true
+    },
+    "fees": {
+      "enabled": true
+    },
+    "lead_score": {
+      "enabled": true
+    },
+    "conversion": {
+      "enabled": true
+    },
+    "clients": {
+      "enabled": true
+    },
+    "network": {
+      "enabled": true
+    }
+  },
+  "message_templates": [
+    {
+      "key": "follow_up",
+      "purpose": "follow_up",
+      "text": {
+        "en": "Dear {name}, thank you for your interest in {institution}. Call us at {phone} for any question.",
+        "bn": "প্রিয় {name}, {institution}-এ আগ্রহের জন্য ধন্যবাদ। যেকোনো প্রশ্নে {phone} নম্বরে কল করুন।"
+      }
+    },
+    {
+      "key": "visit_reminder",
+      "purpose": "appointment",
+      "text": {
+        "en": "Reminder: your visit to {institution} is on {date} at {time}.",
+        "bn": "মনে করিয়ে দিচ্ছি: {date} তারিখ {time}-এ {institution}-এ আপনার ভিজিট।"
+      }
+    },
+    {
+      "key": "test_date",
+      "purpose": "assessment",
+      "text": {
+        "en": "The admission test for {offering} is on {date} at {time}. Please bring the admit card.",
+        "bn": "{offering}-এর ভর্তি পরীক্ষা {date} তারিখ {time}-এ। প্রবেশপত্র সাথে আনুন।"
+      }
+    },
+    {
+      "key": "result",
+      "purpose": "result",
+      "text": {
+        "en": "The result for {offering} is published. {name}: {result}.",
+        "bn": "{offering}-এর ফলাফল প্রকাশিত হয়েছে। {name}: {result}।"
+      }
+    },
+    {
+      "key": "fee_due",
+      "purpose": "fee_due",
+      "text": {
+        "en": "Dear guardian, the fee of {amount} for {name} is due on {date}.",
+        "bn": "সম্মানিত অভিভাবক, {name}-এর {amount} টাকা ফি {date} তারিখের মধ্যে দিন।"
+      }
+    },
+    {
+      "key": "documents_due",
+      "purpose": "documents",
+      "text": {
+        "en": "Please submit these documents for {name}: {documents}.",
+        "bn": "{name}-এর এই কাগজগুলো জমা দিন: {documents}।"
+      }
+    }
+  ],
+  "client_number_pattern": "{YYYY}{GRADE}{000}",
+  "lead_score": {
+    "points": {
+      "called": 1,
+      "answered": 2,
+      "visit_done": 10,
+      "assessment_done": 12,
+      "documents_given": 5,
+      "not_answered": -1
+    }
+  },
+  "lost_reasons": [
+    {
+      "key": "fee_too_high",
+      "name": {
+        "en": "Fee too high",
+        "bn": "ফি বেশি"
+      }
+    },
+    {
+      "key": "chose_other",
+      "name": {
+        "en": "Chose another institution",
+        "bn": "অন্য প্রতিষ্ঠানে ভর্তি"
+      }
+    },
+    {
+      "key": "not_reachable",
+      "name": {
+        "en": "Not reachable",
+        "bn": "যোগাযোগ করা যায়নি"
+      }
+    },
+    {
+      "key": "not_eligible",
+      "name": {
+        "en": "Not eligible",
+        "bn": "যোগ্যতা নেই"
+      }
+    },
+    {
+      "key": "distance",
+      "name": {
+        "en": "Too far",
+        "bn": "দূরত্ব বেশি"
+      }
+    },
+    {
+      "key": "next_session",
+      "name": {
+        "en": "Next session",
+        "bn": "পরের সেশনে"
+      }
+    },
+    {
+      "key": "no_interest",
+      "name": {
+        "en": "No longer interested",
+        "bn": "আগ্রহ নেই"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "key": "facebook",
+      "name": {
+        "en": "Facebook",
+        "bn": "ফেসবুক"
+      }
+    },
+    {
+      "key": "walk_in",
+      "name": {
+        "en": "Walk-in",
+        "bn": "সরাসরি এসেছেন"
+      }
+    },
+    {
+      "key": "phone_call",
+      "name": {
+        "en": "Phone call",
+        "bn": "ফোন কল"
+      }
+    },
+    {
+      "key": "website",
+      "name": {
+        "en": "Website",
+        "bn": "ওয়েবসাইট"
+      }
+    },
+    {
+      "key": "referral",
+      "name": {
+        "en": "Referral",
+        "bn": "রেফারেল"
+      }
+    },
+    {
+      "key": "banner",
+      "name": {
+        "en": "Banner / leaflet",
+        "bn": "ব্যানার / লিফলেট"
+      }
+    },
+    {
+      "key": "sms",
+      "name": {
+        "en": "SMS",
+        "bn": "এসএমএস"
+      }
+    }
+  ],
+  "tags": [
+    {
+      "key": "hot",
+      "name": {
+        "en": "Hot",
+        "bn": "আগ্রহী"
+      }
+    },
+    {
+      "key": "scholarship_query",
+      "name": {
+        "en": "Asked about scholarship",
+        "bn": "বৃত্তির খোঁজ"
+      }
+    },
+    {
+      "key": "sibling",
+      "name": {
+        "en": "Sibling studies here",
+        "bn": "ভাইবোন পড়ে"
+      }
+    }
+  ],
+  "report_presets": [
+    "daily_activity",
+    "pipeline_funnel",
+    "source_performance",
+    "caller_scorecard",
+    "conversion_by_offering",
+    "follow_ups_due"
+  ],
+  "ai_words": {
+    "en": [
+      "grade",
+      "O level",
+      "A level",
+      "interview",
+      "development fee",
+      "parents"
+    ],
+    "bn": [
+      "গ্রেড",
+      "ও লেভেল",
+      "এ লেভেল",
+      "ইন্টারভিউ",
+      "ডেভেলপমেন্ট ফি",
+      "অভিভাবক"
+    ]
+  },
+  "field_rules": [
+    {
+      "role": "caller",
+      "field": "guardian_nid",
+      "access": "masked"
+    },
+    {
+      "role": "caller",
+      "field": "discount_history",
+      "access": "hidden"
+    },
+    {
+      "role": "accountant",
+      "field": "phone",
+      "access": "masked"
+    }
+  ],
+  "notification_recipients": {
+    "default": "contact_person"
+  },
+  "blocks": {
+    "assessment": {
+      "kind": "written_and_viva"
+    },
+    "after_steps": {
+      "board": {
+        "en": "Edexcel / Cambridge",
+        "bn": "এডেক্সেল / কেমব্রিজ"
+      }
+    }
+  }
+}

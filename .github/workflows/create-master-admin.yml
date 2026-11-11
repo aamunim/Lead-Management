@@ -1,0 +1,48 @@
+# First Master Admin of an environment (0B.02-T8): runs scripts/platform/create-master-admin.mjs against that
+# environment's database. Never a public page. The password comes from the environment secret MASTER_ADMIN_PASSWORD
+# (at least 14 characters; never typed into the run form, never logged). The person then signs in at the panel
+# (/panel/sign-in, or "Platform staff" on the app's sign-in page) and sets up an authenticator (second step).
+name: create-master-admin
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Environment
+        type: choice
+        options: [staging, production]
+        default: staging
+      email:
+        description: Email of the Master Admin
+        type: string
+        required: true
+      force:
+        description: Allow even when an active Master Admin exists (recovering a lost account)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check required secrets
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          ADMIN_PASSWORD: ${{ secrets.MASTER_ADMIN_PASSWORD }}
+        run: |
+          [ -n "$DB_URL" ] || { echo "::error::SUPABASE_DB_URL secret is missing"; exit 1; }
+          [ -n "$ADMIN_PASSWORD" ] || { echo "::error::MASTER_ADMIN_PASSWORD secret is missing (environment ${{ inputs.target }})"; exit 1; }
+      - name: Install psql
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
+      - name: Create the Master Admin
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          ADMIN_PASSWORD: ${{ secrets.MASTER_ADMIN_PASSWORD }}
+          ADMIN_EMAIL: ${{ inputs.email }}
+          FORCE: ${{ inputs.force && '1' || '' }}
+        run: node scripts/platform/create-master-admin.mjs
