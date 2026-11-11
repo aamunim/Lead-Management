@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { after, describe, it } from 'node:test';
 
-import { INSTITUTION, adminSql, signInAs } from './helpers.mjs';
+import { INSTITUTION, adminSql, signInAs, signInAsPlatform } from './helpers.mjs';
 
 describe('label dictionary through the real API', () => {
   after(() => {
@@ -25,7 +25,7 @@ describe('label dictionary through the real API', () => {
   });
 
   it('renaming client → Trainee for A changes A\'s words (and the module name), not B\'s', async () => {
-    const admin = await signInAs('platform.admin@example.test');
+    const admin = await signInAsPlatform();
     const set = await admin.client.rpc('label_set', {
       p_key: 'client', p_en_singular: 'Trainee', p_en_plural: 'Trainees', p_bn_forms: { base: 'প্রশিক্ষণার্থী' }, p_institution_id: INSTITUTION.A,
     });
@@ -40,7 +40,7 @@ describe('label dictionary through the real API', () => {
   });
 
   it('a word too long for menus is refused with a contract error', async () => {
-    const admin = await signInAs('platform.admin@example.test');
+    const admin = await signInAsPlatform();
     const { error } = await admin.client.rpc('label_set', {
       p_key: 'module.leaderboard', p_en_singular: 'The Most Outstanding Performers', p_en_plural: 'x', p_bn_forms: { base: 'x' }, p_institution_id: INSTITUTION.A,
     });

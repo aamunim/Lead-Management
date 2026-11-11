@@ -127,7 +127,7 @@ reset role;
 select pg_temp.check(exists (select 1 from public.user_access where institution_id = :inst_a and user_id = :user_both and permission_key = 'settings.users'),
   'reactivate: access is back');
 -- Last Super Admin and outranking.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select pg_temp.check(pg_temp.error_of(format('select public.user_deactivate(%L, null, %L)', :user_owner, :inst_a)) = 'last_super_admin',
   'deactivate: never the last Super Admin');
 reset role;

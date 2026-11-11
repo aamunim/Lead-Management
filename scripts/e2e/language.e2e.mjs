@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { after, describe, it } from 'node:test';
 
-import { INSTITUTION, adminSql, signInAs } from './helpers.mjs';
+import { INSTITUTION, adminSql, signInAs, signInAsPlatform } from './helpers.mjs';
 
 describe('UI language through the real API', () => {
   after(async () => {
@@ -19,7 +19,7 @@ describe('UI language through the real API', () => {
   });
 
   it('the institution default applies, and the person\'s own choice wins over it', async () => {
-    const admin = await signInAs('platform.admin@example.test');
+    const admin = await signInAsPlatform();
     const set = await admin.client.rpc('setting_set', { p_key: 'default_language', p_value: 'bn', p_institution_id: INSTITUTION.A });
     assert.equal(set.error, null);
     const { client } = await signInAs('a.member@example.test');

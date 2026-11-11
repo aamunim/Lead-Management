@@ -37,7 +37,7 @@ select pg_temp.check(public.settings_get_all() -> 'values' ->> 'default_language
 reset role;
 
 -- 2. Institution A defaults to Bangla → A's members get Bangla; B is unchanged.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.setting_set('default_language', '"bn"', :inst_a);
 select pg_temp.check(pg_temp.error_of(format('select public.setting_set(%L, %L, %L)', 'default_language', '"fr"', :inst_a))
                      like 'setting_invalid%', 'an unsupported institution language is rejected');

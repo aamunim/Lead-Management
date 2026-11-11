@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { after, describe, it } from 'node:test';
 
-import { INSTITUTION, adminSql, signInAs } from './helpers.mjs';
+import { INSTITUTION, adminSql, signInAs, signInAsPlatform } from './helpers.mjs';
 
 const A_MEMBER = '11111111-1111-4111-8111-111111111111';
 
@@ -21,7 +21,7 @@ describe('role assignments through the real API', () => {
 
   it('the Admin role (given by the Master Admin) opens it; removing it closes it on the next request', async () => {
     adminSql(`select app.apply_role_template('${INSTITUTION.A}', 'college')`);
-    const admin = await signInAs('platform.admin@example.test');
+    const admin = await signInAsPlatform();
     const roles = adminSql(`select id from public.roles where institution_id = '${INSTITUTION.A}' and template_key = 'admin'`);
     const roleId = roles.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)[0];
     const assigned = await admin.client.rpc('role_assign', { p_user_id: A_MEMBER, p_role_id: roleId, p_institution_id: INSTITUTION.A });

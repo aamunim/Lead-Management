@@ -101,7 +101,7 @@ select pg_temp.check(public.label_reset('caller') -> 'label' ->> 'en_singular' =
 reset role;
 select pg_temp.check(exists (select 1 from public.audit_log where institution_id = :inst_a and action = 'label.changed' and target_id = 'caller'
   and before ->> 'en_singular' = 'Telecaller' and after ->> 'en_singular' = 'Caller'), 'reset audited with old and new values');
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.label_lock(:inst_a, 'doc.receipt_title', true);
 reset role;
 select pg_temp.act_as(pg_temp.claims_for(:user_owner));

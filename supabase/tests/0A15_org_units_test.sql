@@ -42,7 +42,7 @@ select pg_temp.check(public.branches_enabled() = false, 'branches are off by def
 select pg_temp.check(pg_temp.error_of('select public.org_unit_create(''Sales'', ''department'')') like 'permission_denied%',
   'staff cannot change the organisation before permissions exist');
 reset role;
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select pg_temp.check(pg_temp.error_of(format('select public.branch_create(%L, p_institution_id => %L)', 'Dhanmondi', :inst_a))
   like 'branches_disabled%', 'a branch cannot be created while branches are off');
 select public.setting_set('branches_enabled', 'true', :inst_a);
@@ -79,7 +79,7 @@ select pg_temp.check((select (u ->> 'depth')::int from out, jsonb_array_elements
   '...and the depth of each unit');
 
 -- 3. Moves keep the closure right; cycles are refused.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select pg_temp.check(pg_temp.error_of(format('select public.org_unit_move(%L, %L, %L)', pg_temp.id('d1'), pg_temp.id('t1'), :inst_a))
   like 'org_unit_cycle%', 'moving a unit under its own team is refused (no cycles)');
 select pg_temp.check(pg_temp.error_of(format('select public.org_unit_move(%L, %L, %L)', pg_temp.id('d1'), pg_temp.id('d1'), :inst_a))
@@ -94,7 +94,7 @@ select pg_temp.check((select count(*) from public.org_unit_closure where institu
   '...with exactly one closure row per ancestor (itself, the new department, the new branch)');
 
 -- 4. Archive, never delete: only empty units.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select pg_temp.check(pg_temp.error_of(format('select public.org_unit_archive(%L, %L)', pg_temp.id('t1'), :inst_a))
   like 'org_unit_not_empty%', 'a unit with members or managers cannot be archived');
 select pg_temp.check(pg_temp.error_of(format('select public.branch_archive(%L, %L)', pg_temp.id('b3'), :inst_a))
@@ -107,7 +107,7 @@ select pg_temp.check((select archived_at is not null from public.org_units where
 select pg_temp.check(pg_temp.error_of(format('delete from public.org_units where id = %L', pg_temp.id('b1'))) like '%foreign key%',
   'deleting a branch that still has units, details or managers is refused by the database');
 update public.institution_members set branch_id = pg_temp.id('b2') where institution_id = :inst_a and user_id = :user_a;
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.org_unit_archive(pg_temp.id('t2'), :inst_a);
 select public.org_unit_archive(pg_temp.id('d2'), :inst_a);
 select public.set_manager(pg_temp.id('b2'), :user_a, false, :inst_a);
@@ -122,7 +122,7 @@ select pg_temp.check((select count(*) from public.org_units) = 0 and jsonb_array
 select pg_temp.check(pg_temp.error_of(format('select public.org_unit_create(%L, %L, null, %L)', 'X', 'team', :inst_a)) like 'permission_denied%',
   'B cannot change A''s organisation');
 reset role;
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.setting_set('branches_enabled', 'false', :inst_a);
 reset role;
 select pg_temp.act_as(pg_temp.claims_for(:user_a));

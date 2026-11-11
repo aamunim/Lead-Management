@@ -208,6 +208,31 @@
     {
       "key": "platform.support_access",
       "sensitive": true
+    },
+    {
+      "key": "platform.view",
+      "sensitive": true,
+      "introduced_in_release": "0B.02"
+    },
+    {
+      "key": "platform.integrations",
+      "sensitive": true,
+      "introduced_in_release": "0B.02"
+    },
+    {
+      "key": "platform.profiles",
+      "sensitive": true,
+      "introduced_in_release": "0B.02"
+    },
+    {
+      "key": "platform.users",
+      "sensitive": true,
+      "introduced_in_release": "0B.02"
+    },
+    {
+      "key": "platform.developer",
+      "sensitive": true,
+      "introduced_in_release": "0B.02"
     }
   ],
   "fields": [

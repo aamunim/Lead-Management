@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import assert from 'node:assert/strict';
 import { after, before, describe, it } from 'node:test';
 
-import { adminSql, API_URL, INSTITUTION, PUBLIC_KEY, SEED_PASSWORD } from './helpers.mjs';
+import { adminSql, API_URL, INSTITUTION, PUBLIC_KEY, SEED_PASSWORD, totp } from './helpers.mjs';
 
 const KEY = 'e2e.followup_days';
 
@@ -26,6 +26,12 @@ async function device(email, appVersion = '0.1.0') {
   });
   const { error } = await client.auth.signInWithPassword({ email, password: SEED_PASSWORD });
   assert.equal(error, null);
+  if (email.startsWith('platform.')) {
+    // Platform users act only with the second step (0B.02).
+    const { data: factors } = await client.auth.mfa.listFactors();
+    const verified = await client.auth.mfa.challengeAndVerify({ factorId: factors.totp[0].id, code: totp() });
+    assert.equal(verified.error, null);
+  }
   return { client, seen };
 }
 

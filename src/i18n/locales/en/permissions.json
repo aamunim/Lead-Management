@@ -111,6 +111,26 @@
     "support_access": {
       "label": "Support access",
       "help": "Open an institution to help it, with its permission and fully logged."
+    },
+    "view": {
+      "label": "See the panel",
+      "help": "Dashboard and institution lists, read only."
+    },
+    "integrations": {
+      "label": "Manage providers",
+      "help": "Provider catalogue and platform connections."
+    },
+    "profiles": {
+      "label": "Manage type profiles and packs",
+      "help": "Industry packs, type profiles and their defaults."
+    },
+    "users": {
+      "label": "Manage platform users",
+      "help": "Invite platform users, change their role, deactivate them."
+    },
+    "developer": {
+      "label": "Developer inbox",
+      "help": "Feedback and error reports."
     }
   }
 }

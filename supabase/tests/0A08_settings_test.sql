@@ -52,7 +52,7 @@ select pg_temp.act_as(pg_temp.claims_for(:user_a));
 select pg_temp.check(pg_temp.error_of('select public.setting_set(''test.followup_days'', ''7'')') like 'permission_denied%',
                      'staff cannot write settings before permissions exist (fail-closed)');
 reset role;
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 insert into out select 'set7', public.setting_set('test.followup_days', '7', :inst_a);
 select public.setting_set('test.followup_days', '9', :inst_a);
 select pg_temp.check(pg_temp.error_of(format('select public.setting_set(%L, %L, %L)', 'test.followup_days', '0', :inst_a)) like 'setting_invalid%',
@@ -97,7 +97,7 @@ select pg_temp.check((public.settings_get_all() -> 'values' -> 'test.followup_da
 reset role;
 
 -- 5. Reset to default.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 insert into out select 'reset', public.setting_reset('test.followup_days', :inst_a);
 reset role;
 select pg_temp.check((select v -> 'value' from out where k = 'reset') = '5', 'reset returns to the next layer (type-profile default)');
@@ -105,7 +105,7 @@ select pg_temp.check(not exists (select 1 from public.app_settings where institu
                      'reset removes the override');
 
 -- 6. Settings migrations: a definition moves to version 2 (integer -> object); stored values are upgraded.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.setting_set('test.followup_days', '9', :inst_a);
 reset role;
 create function app.test_migrate_followup(p_value jsonb, p_from integer) returns jsonb language sql set search_path = '' as $$
@@ -129,7 +129,7 @@ select pg_temp.act_as(pg_temp.claims_for(:user_a));
 select pg_temp.check(pg_temp.error_of('select public.product_setting_set(''min_app_version'', ''"0.2.0"'')') like 'permission_denied%',
                      'staff cannot change product settings');
 reset role;
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select pg_temp.check(pg_temp.error_of('select public.product_setting_set(''min_app_version'', ''"abc"'')') like 'setting_invalid%',
                      'product settings are validated too');
 select public.product_setting_set('min_app_version', '"0.2.0"');

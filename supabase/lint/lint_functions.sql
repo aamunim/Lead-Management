@@ -190,7 +190,7 @@ begin
     -- R17 every write RPC checks permission with can() (0A.17-T8, Ch 11.16 #6): a public DEFINER function that inserts,
     -- updates or deletes must call app.can() or a helper built on it (*_write_allowed, holds_all_of_*, is_platform_admin).
     if r.prosecdef and r.obj like 'public.%' and has_function_privilege('authenticated', r.oid, 'execute') and r.prosrc ~* '\m(insert\s+into|update\s+public\.|delete\s+from)\M'
-       and r.prosrc !~ '(app\.can|_write_allowed|app\.holds_all_of_[a-z]+|app\.is_platform_admin)\('
+       and r.prosrc !~ '(app\.can|_write_allowed|app\.holds_all_of_[a-z]+|app\.is_platform_admin|app\.is_platform)\('
        and not lint.is_allowed('write_needs_can', r.obj) then
       rule := 'write_needs_can'; object := r.obj;
       message := 'Write RPC without a permission check: call app.can() (or allow-list it with a reason).';

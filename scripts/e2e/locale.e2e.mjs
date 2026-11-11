@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { after, describe, it } from 'node:test';
 
-import { INSTITUTION, adminSql, anonymousClient, signInAs } from './helpers.mjs';
+import { INSTITUTION, adminSql, anonymousClient, signInAs, signInAsPlatform } from './helpers.mjs';
 
 describe('locale through the real API', () => {
   after(() => {
@@ -23,7 +23,7 @@ describe('locale through the real API', () => {
   });
 
   it('server_time follows the institution\'s time zone setting', async () => {
-    const admin = await signInAs('platform.admin@example.test');
+    const admin = await signInAsPlatform();
     const set = await admin.client.rpc('setting_set', { p_key: 'time_zone', p_value: 'Europe/London', p_institution_id: INSTITUTION.B });
     assert.equal(set.error, null);
     const b = await signInAs('b.member@example.test');
@@ -33,7 +33,7 @@ describe('locale through the real API', () => {
   });
 
   it('an unknown time zone is refused', async () => {
-    const admin = await signInAs('platform.admin@example.test');
+    const admin = await signInAsPlatform();
     const { error } = await admin.client.rpc('setting_set', { p_key: 'time_zone', p_value: 'Mars/Olympus', p_institution_id: INSTITUTION.B });
     assert.equal(error?.message, 'setting_invalid');
   });

@@ -40,7 +40,7 @@ select pg_temp.check(pg_temp.error_of(format('select public.secret_set(%L, %L)',
 reset role;
 
 -- 2. The Master Admin sets A's SMS key; only a hint comes back.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 insert into out select 'set1', public.secret_set('sms.primary.api_key', :key1, null, :inst_a)::text;
 reset role;
 select pg_temp.check((select v::jsonb ->> 'hint' from out where k = 'set1') = 'sk-l…9911', 'set returns only the hint key…xxxx');
@@ -73,7 +73,7 @@ reset role;
 select pg_temp.check((select v from out where k = 'read1') = :key1, 'service_role reads the current value');
 
 -- 5. Rotation: a new value with a future start date; the old one keeps working until then.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.secret_set('sms.primary.api_key', :key2, now() + interval '1 day', :inst_a);
 reset role;
 select pg_temp.as_service();
@@ -91,7 +91,7 @@ reset role;
 select pg_temp.check((select v from out where k = 'read3') = :key2, 'rotation: new value in force after valid_from');
 select pg_temp.check((select count(*) from public.institution_secrets where institution_id = :inst_a and rotated_at is not null) = 1,
                      'rotation: the previous version is marked rotated');
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select pg_temp.check(pg_temp.error_of(format('select public.secret_set(%L, %L, now() - interval ''1 day'', %L)',
                      'sms.primary.api_key', :key2, :inst_a)) = 'secret_valid_from_in_past', 'rotation into the past is refused');
 reset role;
@@ -100,7 +100,7 @@ reset role;
 select pg_temp.check(app.secret_hint('1234pass') = '••••', 'short secrets get a hint without characters');
 
 -- 7. Revoke destroys the values but keeps who/when for the audit trail.
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select pg_temp.check(public.secret_revoke('sms.primary.api_key', :inst_a) = 2, 'revoke marks every version revoked');
 reset role;
 select pg_temp.as_service();
@@ -115,7 +115,7 @@ select pg_temp.check((select count(*) from public.institution_secrets
                      'after revoke the metadata (who, when) remains');
 
 -- 8. Purge on institution closure (service_role only).
-select pg_temp.act_as(pg_temp.claims_for(:user_platform));
+select pg_temp.act_as((pg_temp.claims_for(:user_platform) || '{"aal":"aal2"}'));
 select public.secret_set('email.smtp.password', 'a-long-smtp-password-1234', null, :inst_a);
 reset role;
 select pg_temp.act_as(pg_temp.claims_for(:user_a));

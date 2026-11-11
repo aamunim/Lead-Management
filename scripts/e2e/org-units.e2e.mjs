@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { after, describe, it } from 'node:test';
 
-import { INSTITUTION, adminSql, signInAs } from './helpers.mjs';
+import { INSTITUTION, adminSql, signInAs, signInAsPlatform } from './helpers.mjs';
 
 describe('org units through the real API', () => {
   after(() => {
@@ -15,7 +15,7 @@ describe('org units through the real API', () => {
   });
 
   it('the Master Admin builds a branch → department → team; A reads it in one call', async () => {
-    const admin = await signInAs('platform.admin@example.test');
+    const admin = await signInAsPlatform();
     const on = await admin.client.rpc('setting_set', { p_key: 'branches_enabled', p_value: true, p_institution_id: INSTITUTION.A });
     assert.equal(on.error, null);
     const branch = await admin.client.rpc('branch_create', { p_name: 'E2E Campus', p_phone: '+880 1711-223344', p_institution_id: INSTITUTION.A });
@@ -34,7 +34,7 @@ describe('org units through the real API', () => {
   });
 
   it('a cycle is refused with a contract error', async () => {
-    const admin = await signInAs('platform.admin@example.test');
+    const admin = await signInAsPlatform();
     const a = await signInAs('a.member@example.test');
     const units = (await a.client.rpc('org_tree_get')).data.units;
     const dept = units.find((u) => u.kind === 'department');

@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import assert from 'node:assert/strict';
 import { after, describe, it } from 'node:test';
 
-import { API_URL, INSTITUTION, local, signInAs } from './helpers.mjs';
+import { API_URL, INSTITUTION, local, signInAs, signInAsPlatform } from './helpers.mjs';
 
 const REF = `sms.e2e_${Date.now()}.api_key`;
 const VALUE = `sk-e2e-${Date.now()}-do-not-leak-xyz123`;
@@ -12,7 +12,7 @@ const service = createClient(API_URL, local.SECRET_KEY ?? local.SERVICE_ROLE_KEY
 
 describe('per-institution secrets through the real API', () => {
   after(async () => {
-    const { client } = await signInAs('platform.admin@example.test');
+    const { client } = await signInAsPlatform();
     await client.rpc('secret_revoke', { p_ref: REF, p_institution_id: INSTITUTION.A });
   });
 
@@ -23,7 +23,7 @@ describe('per-institution secrets through the real API', () => {
   });
 
   it('the Master Admin sets A\'s key and gets only the hint back', async () => {
-    const { client } = await signInAs('platform.admin@example.test');
+    const { client } = await signInAsPlatform();
     const { data, error } = await client.rpc('secret_set', { p_ref: REF, p_value: VALUE, p_institution_id: INSTITUTION.A });
     assert.equal(error, null);
     assert.equal(data.hint, `${VALUE.slice(0, 4)}…${VALUE.slice(-4)}`);
