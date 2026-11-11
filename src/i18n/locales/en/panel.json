@@ -1,0 +1,92 @@
+{
+  "title": "Master Admin panel",
+  "signIn": {
+    "title": "Panel sign-in",
+    "intro": "For platform staff only. Staff of an institution sign in in the app.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Continue",
+    "failed": "The email or password is not right.",
+    "notPlatform": "This account is not a platform user.",
+    "step2Title": "Second step",
+    "step2Intro": "Enter the 6-digit code from your authenticator app.",
+    "code": "Code",
+    "verify": "Sign in",
+    "wrongCode": "This code is not right or has expired. Try the new code.",
+    "enrollTitle": "Set up your authenticator",
+    "enrollIntro": "Every platform account needs a second step. Add this key to an authenticator app (for example Google Authenticator or Microsoft Authenticator), then enter the code it shows.",
+    "key": "Key",
+    "openApp": "Open in an authenticator app",
+    "signOut": "Sign out",
+    "codeHelp": "From your authenticator app (changes every 30 seconds)."
+  },
+  "newDevice": "You signed in from a new device. Every Master Admin was told.",
+  "menu": {
+    "dashboard": "Dashboard",
+    "institutions": "Institutions",
+    "groups": "Groups",
+    "profiles": "Profiles and packs",
+    "providers": "Providers",
+    "announcements": "Announcements",
+    "requests": "Requests",
+    "inbox": "Developer inbox",
+    "users": "Platform users"
+  },
+  "soon": "Coming in {{milestone}}",
+  "institutionTabs": {
+    "title": "Each institution will have these tabs",
+    "overview": "Overview",
+    "messaging": "Messaging",
+    "notifications": "Notifications",
+    "payments": "Payments",
+    "integrations": "Integrations",
+    "domain": "Domain",
+    "plan": "Plan and billing",
+    "labels": "Words",
+    "audit": "Audit"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "signedInAs": "Signed in as {{email}} · {{role}}",
+    "alerts": "Alerts",
+    "noAlerts": "No alerts.",
+    "newDeviceAlert": "New device: {{email}} from {{ip}}"
+  },
+  "users": {
+    "title": "Platform users",
+    "intro": "One person per account. Invite by email; the invite becomes active when that person signs in to the panel with the second step.",
+    "invite": "Invite",
+    "inviteTitle": "Invite a platform user",
+    "email": "Email",
+    "role": "Role",
+    "invited": "Invitation saved",
+    "invites": "Invited, not signed in yet",
+    "cancelInvite": "Cancel invitation",
+    "edit": "Change",
+    "save": "Save",
+    "saved": "Saved",
+    "status": {
+      "active": "Active",
+      "deactivated": "Deactivated"
+    },
+    "setupRights": "Setup rights (enter an institution to help set it up)",
+    "noSecondFactor": "No second step yet",
+    "lastSeen": "Last seen {{date}}",
+    "reason": "Reason (kept in the platform audit log)",
+    "deactivate": "Deactivate",
+    "reactivate": "Reactivate"
+  },
+  "roles": {
+    "master_admin": "Master Admin",
+    "support": "Support",
+    "billing": "Billing",
+    "developer": "Developer"
+  },
+  "roleHelp": {
+    "master_admin": "Everything, including other platform users.",
+    "support": "Sees the panel, read only.",
+    "billing": "Billing only.",
+    "developer": "Developer inbox and error reports only."
+  },
+  "noAccess": "Your platform role does not include this page."
+}
