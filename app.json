@@ -41,6 +41,14 @@
       "android",
       "web"
     ],
-    "extra": {}
+    "extra": {
+      "eas": {
+        "projectId": "c6d60187-cf94-4862-b1fc-abf65b2875f1"
+      }
+    },
+    "owner": "tareqmzayed",
+    "updates": {
+      "url": "https://u.expo.dev/c6d60187-cf94-4862-b1fc-abf65b2875f1"
+    }
   }
 }

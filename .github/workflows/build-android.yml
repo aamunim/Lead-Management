@@ -73,6 +73,7 @@ jobs:
           npx expo config --type public --json > resolved-config.json
           node -e "const c=require('./resolved-config.json'); if(!c.android||!c.android.googleServicesFile){console.error('googleServicesFile missing from app config');process.exit(1)} console.log('package:',c.android.package)"
 
+      # google-services.json is git-ignored; .easignore lets EAS include the file written above (it is never committed).
       - name: Build locally on the runner
         run: eas build --local --non-interactive --platform android --profile "${{ inputs.profile }}" --output "build-output"
 
