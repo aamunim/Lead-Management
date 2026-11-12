@@ -55,7 +55,9 @@
     "noApprovals": "No institution is waiting.",
     "signedUp": "Signed up {{date}}",
     "possibleDuplicate": "Possible duplicate",
-    "manyTrials": "Many trials"
+    "manyTrials": "Many trials",
+    "editRequests": "Edit mode requests",
+    "approveEdit": "Approve"
   },
   "users": {
     "title": "Platform users",
@@ -255,7 +257,7 @@
     "neverLoggedIn": "No sign-in yet",
     "types": "Types: {{names}}",
     "superAdmins": "Super Admins: {{emails}}",
-    "enter": "Enter institution (comes with 0B.08)",
+    "enter": "Enter institution",
     "warnings": "Check before approving",
     "trialFlag": "Many open trials: {{person}} by this person, {{phone}} with this phone (limit {{limit}}).",
     "match": {
@@ -301,7 +303,18 @@
       "suspended": "Suspended",
       "ends_soon": "Plan ends soon",
       "limit_reached": "A limit is reached"
-    }
+    },
+    "enterTitle": "Enter {{name}}",
+    "enterHelp": "Read only, for the time you choose. The institution sees who entered, when and why.",
+    "enterReason": "Reason (shown to the institution)",
+    "enterMinutes": "For",
+    "enterConfirm": "Enter (read only)",
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes"
   },
-  "later": "a later milestone"
+  "later": "a later milestone",
+  "auditTab": {
+    "empty": "Nothing yet.",
+    "support": "Support"
+  }
 }

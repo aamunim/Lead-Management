@@ -37,6 +37,8 @@ export default function SettingsTab() {
       show: can('settings.modules') },
     { href: '/admin/plan', title: t('menu.plan'), help: t('menu.planHelp'), icon: 'workspace-premium', testID: 'settings-plan',
       show: can('billing.view') },
+    { href: '/admin/support-log', title: t('menu.supportLog'), help: t('menu.supportLogHelp'), icon: 'support-agent', testID: 'settings-support-log',
+      show: can('settings.security') },
     { href: '/admin/audit', title: t('menu.audit'), help: t('menu.auditHelp'), icon: 'history', testID: 'settings-audit', show: can('audit.view') },
   ];
   const items = all.filter((i) => i.show);

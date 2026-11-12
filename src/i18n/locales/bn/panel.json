@@ -55,7 +55,9 @@
     "noApprovals": "কোনো প্রতিষ্ঠান অপেক্ষায় নেই।",
     "signedUp": "সাইন-আপ {{date}}",
     "possibleDuplicate": "সম্ভাব্য একই প্রতিষ্ঠান",
-    "manyTrials": "অনেক ট্রায়াল"
+    "manyTrials": "অনেক ট্রায়াল",
+    "editRequests": "এডিট মোডের অনুরোধ",
+    "approveEdit": "অনুমোদন"
   },
   "users": {
     "title": "প্ল্যাটফর্ম ইউজার",
@@ -255,7 +257,7 @@
     "neverLoggedIn": "এখনো সাইন-ইন হয়নি",
     "types": "ধরন: {{names}}",
     "superAdmins": "Super Admin: {{emails}}",
-    "enter": "প্রতিষ্ঠানে ঢুকুন (0B.08-এ আসবে)",
+    "enter": "প্রতিষ্ঠানে ঢুকুন",
     "warnings": "অনুমোদনের আগে দেখুন",
     "trialFlag": "অনেক চলমান ট্রায়াল: এই ব্যক্তির {{person}}টি, এই ফোনে {{phone}}টি (সীমা {{limit}})।",
     "match": {
@@ -301,7 +303,18 @@
       "suspended": "স্থগিত",
       "ends_soon": "প্ল্যান শিগগির শেষ",
       "limit_reached": "একটি সীমায় পৌঁছেছে"
-    }
+    },
+    "enterTitle": "{{name}}-এ ঢুকুন",
+    "enterHelp": "শুধু দেখার জন্য, যতক্ষণ বাছবেন। কে, কখন, কেন ঢুকেছেন তা প্রতিষ্ঠান দেখতে পাবে।",
+    "enterReason": "কারণ (প্রতিষ্ঠান দেখবে)",
+    "enterMinutes": "সময়",
+    "enterConfirm": "ঢুকুন (শুধু দেখা)",
+    "minutes_one": "{{count}} মিনিট",
+    "minutes_other": "{{count}} মিনিট"
   },
-  "later": "পরের মাইলস্টোনে"
+  "later": "পরের মাইলস্টোনে",
+  "auditTab": {
+    "empty": "এখনো কিছু নেই।",
+    "support": "সাপোর্ট"
+  }
 }

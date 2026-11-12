@@ -82,5 +82,15 @@
     "unlockPrompt": "Unlock the app",
     "pinLabel": "PIN",
     "signOutInstead": "Sign out instead"
+  },
+  "support": {
+    "bannerReadOnly": "Support view of {{name}} — read only — ends in {{time}}",
+    "bannerEdit": "Support view of {{name}} — EDIT MODE — ends in {{time}}",
+    "exit": "Exit",
+    "askEdit": "Ask for edit mode",
+    "askEditTitle": "Ask for edit mode",
+    "askEditHelp": "Another Master Admin approves it. The reason is shown to the institution.",
+    "reason": "Reason",
+    "editAsked": "Edit mode requested"
   }
 }

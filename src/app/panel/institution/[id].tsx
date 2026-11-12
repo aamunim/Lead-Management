@@ -12,6 +12,7 @@ import { BottomSheet, Button, EmptyState, ErrorState, Skeleton, TextField, useSn
 import { INSTITUTION_TABS } from '@/ui/panel/menu';
 import { usePanel } from '@/ui/panel/PanelContext';
 import { PanelShell } from '@/ui/panel/PanelShell';
+import { AuditTab } from '@/ui/panel/AuditTab';
 import { OverviewTab } from '@/ui/panel/OverviewTab';
 import { PlanTab } from '@/ui/panel/PlanTab';
 
@@ -64,6 +65,7 @@ export default function PanelInstitution() {
           choices={INSTITUTION_TABS.map((k) => ({ value: k, label: tDynamic(`panel:institutionTabs.${k}`), testID: `institution-tab-${k}` }))} />
       </View>
       {tab === 'overview' ? <OverviewTab institutionId={id} />
+        : tab === 'audit' ? <AuditTab institutionId={id} />
         : tab === 'plan' ? <PlanTab institutionId={id} />
         : tab !== 'labels' ? <EmptyState icon="construction" title={t('soon', { milestone: t('later') })} testID="institution-tab-soon" />
         : error ? <ErrorState error={error} onRetry={() => void load()} /> : !data ? <Skeleton lines={8} /> : (

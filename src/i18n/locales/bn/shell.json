@@ -82,5 +82,15 @@
     "unlockPrompt": "অ্যাপ খুলুন",
     "pinLabel": "PIN",
     "signOutInstead": "বরং সাইন আউট করুন"
+  },
+  "support": {
+    "bannerReadOnly": "{{name}}-এর সাপোর্ট ভিউ — শুধু দেখা — {{time}} পরে শেষ",
+    "bannerEdit": "{{name}}-এর সাপোর্ট ভিউ — এডিট মোড — {{time}} পরে শেষ",
+    "exit": "বেরিয়ে যান",
+    "askEdit": "এডিট মোড চান",
+    "askEditTitle": "এডিট মোড চাওয়া",
+    "askEditHelp": "অন্য একজন Master Admin অনুমোদন করবেন। কারণটি প্রতিষ্ঠান দেখতে পাবে।",
+    "reason": "কারণ",
+    "editAsked": "এডিট মোড চাওয়া হয়েছে"
   }
 }

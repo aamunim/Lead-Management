@@ -27,7 +27,8 @@ const cleanUp = () => adminSql(`delete from public.platform_members where user_i
     discount_percent = 0, billing_cycle = 'monthly' where institution_id = 'a0000000-0000-4000-8000-00000000000a';
   update public.institution_plan set plan_key = 'starter', plan_version = 1 where plan_key = 'starter';
   delete from public.plans where key = 'starter' and version > 1;
-  delete from public.institutions where slug = 'life-ui-test';`);
+  delete from public.institutions where slug = 'life-ui-test';
+  delete from public.support_sessions;`);
 before(async () => {
   web = await startWeb();
   cleanUp();
@@ -331,6 +332,47 @@ describe('Master Admin panel', () => {
     assert.match(adminSql(`select count(*) from public.institution_status_history h join public.institutions i on i.id = h.institution_id
       where i.slug = 'life-ui-test'`), /\b5\b/);
     await ctx.close();
+  });
+
+  it('support entry: reason and time limit, read-only banner, writes refused, exit; the Super Admin sees the log', async () => {
+    const ctx = await newContext();
+    const page = await ctx.newPage();
+    await panelSignIn(page, 'platform.admin@example.test');
+    await page.getByTestId('panel-dashboard').waitFor({ timeout: 20000 });
+    await page.goto(`${web.base}/panel/institution/a0000000-0000-4000-8000-00000000000a`);
+    await page.getByTestId('overview-enter').click();
+    await page.getByTestId('enter-reason-input').fill('help with the fee settings');
+    await page.getByTestId('enter-minutes-15').click();
+    await page.getByTestId('enter-confirm').click();
+    await page.getByTestId('support-banner').waitFor({ timeout: 20000 });
+    assert.match(await page.getByTestId('support-banner-text').textContent(), /read only.*1[45]:\d\d/);
+    await page.screenshot({ path: `${SCREENSHOTS}/support-banner.png`, fullPage: true });
+    // A write is refused on the server.
+    await page.goto(`${web.base}/admin/custom-fields`);
+    await page.getByTestId('fields-add').click();
+    await page.getByTestId('field-en-input').fill('Support test');
+    await page.getByTestId('field-bn-input').fill('সাপোর্ট টেস্ট');
+    await page.getByTestId('field-save').click();
+    await page.getByText(/read only/i).nth(1).waitFor({ timeout: 15000 });
+    assert.match(adminSql(`select count(*) from public.custom_field_definitions where key = 'support_test'`), /\b0\b/);
+    await page.goto(`${web.base}/home`);
+    await page.getByTestId('support-exit').click();
+    await page.waitForURL(/\/panel/, { timeout: 20000 });
+    assert.match(adminSql(`select count(*) from public.support_sessions where ended_at is null`), /\b0\b/);
+    await ctx.close();
+
+    const owner = await newContext();
+    const p2 = await owner.newPage();
+    await p2.goto(`${web.base}/sign-in`);
+    await p2.getByTestId('sign-in-email-input').fill('owner.admin@example.test');
+    await p2.getByTestId('sign-in-password-input').fill('password123');
+    await p2.getByTestId('sign-in-submit').click();
+    await p2.getByTestId('home').waitFor({ timeout: 20000 });
+    await p2.goto(`${web.base}/admin/support-log`);
+    await p2.locator('[data-testid^="support-entry-"]').first().waitFor({ timeout: 20000 });
+    assert.match(await p2.locator('[data-testid^="support-entry-"]').first().textContent(), /help with the fee settings/);
+    await p2.screenshot({ path: `${SCREENSHOTS}/support-log.png`, fullPage: true });
+    await owner.close();
   });
 
   it('profiles and packs need platform.profiles (Support is refused)', async () => {

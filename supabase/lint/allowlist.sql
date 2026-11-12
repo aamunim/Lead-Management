@@ -51,3 +51,8 @@ insert into lint.allow (rule, object, reason) values
   ('platform_table', 'public.addons', 'Product-wide add-on catalog (0B.05, Ch 9.4).');
 insert into lint.allow (rule, object, reason) values
   ('platform_table', 'app.status_guard_exempt', 'Developer list of tables a read-only institution may still write, with reasons (0B.07).');
+insert into lint.allow (rule, object, reason) values
+  ('index_leading_institution', 'support_sessions_id_key', 'Token checks look a support session up by its id before any institution is known (0B.08).'),
+  ('unique_includes_institution', 'support_sessions_id_key', 'A support session id is unique across the platform: the token carries only the id (0B.08).'),
+  ('index_leading_institution', 'support_sessions_open_idx', 'The sign-in hook finds a platform user''s open session before any institution is known (0B.08).'),
+  ('write_needs_can', 'public.support_session_end', 'Ends only the caller''s own support sessions (leaving is always allowed); audited on both sides.');

@@ -5,10 +5,11 @@ import { View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { useTranslation } from '@/i18n';
 import { fetchApprovalQueue, type QueueRow } from '@/lib/lifecycle';
+import { approveEdit, fetchEditRequests, type EditRequest } from '@/lib/support';
 import { fetchPlatformAlerts, type PlatformAlert } from '@/lib/platform';
 import { useFormat } from '@/lib/locale';
 import { Badge, Row } from '@/ui/admin/parts';
-import { Skeleton } from '@/ui/components';
+import { Button, Skeleton } from '@/ui/components';
 import { PANEL_MENU } from '@/ui/panel/menu';
 import { usePanel } from '@/ui/panel/PanelContext';
 import { PanelShell } from '@/ui/panel/PanelShell';
@@ -21,10 +22,13 @@ export default function PanelDashboard() {
   const { state, can } = usePanel();
   const [alerts, setAlerts] = useState<PlatformAlert[] | null>(null);
   const [queue, setQueue] = useState<QueueRow[] | null>(null);
+  const [edits, setEdits] = useState<EditRequest[]>([]);
+  const loadEdits = () => void fetchEditRequests().then(({ data }) => setEdits(data ?? []));
   useEffect(() => {
     if (state.status !== 'ready') return;
     void fetchPlatformAlerts().then(({ data }) => setAlerts(data ?? []));
     if (can('platform.view')) void fetchApprovalQueue().then(({ data }) => setQueue(data ?? []));
+    if (state.session.platform_role === 'master_admin') loadEdits();
   }, [state.status, can]);
   // A role without the dashboard (Developer) starts on its first page.
   if (state.status === 'ready' && !can('platform.view')) {
@@ -33,6 +37,15 @@ export default function PanelDashboard() {
   }
   return (
     <PanelShell permission="platform.view" title={t('dashboard.title')} testID="panel-dashboard">
+      {edits.length ? (
+        <View style={{ gap: 8 }} testID="panel-edit-requests">
+          <AppText variant="titleSmall">{t('dashboard.editRequests')}</AppText>
+          {edits.map((e) => (
+            <Row key={e.id} icon="edit-note" title={`${e.institution} · ${e.by}`} subtitle={e.edit_reason} testID={`edit-request-${e.id}`}
+              badge={<Button variant="tonal" label={t('dashboard.approveEdit')} onPress={() => void approveEdit(e.id).then(loadEdits)} testID={`edit-approve-${e.id}`} />} />
+          ))}
+        </View>
+      ) : null}
       <AppText variant="titleSmall">{t('dashboard.approvals')}</AppText>
       {!queue ? <Skeleton lines={2} /> : queue.length === 0 ? <AppText testID="panel-no-approvals">{t('dashboard.noApprovals')}</AppText> : (
         <View style={{ gap: 8 }} testID="panel-approvals">

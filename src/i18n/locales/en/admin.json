@@ -23,7 +23,9 @@
     "plan": "Plan and usage",
     "planHelp": "Plan, end date, limits and usage",
     "fields": "Custom fields",
-    "fieldsHelp": "Your own fields for leads, clients and the network"
+    "fieldsHelp": "Your own fields for leads, clients and the network",
+    "supportLog": "Support access",
+    "supportLogHelp": "Who from the platform entered, when and why"
   },
   "users": {
     "title": "Users",
@@ -632,5 +634,25 @@
     "readOnly": "Read only: you can see and export everything but not change it. Tell your Admin.",
     "trialEnds_one": "Your trial ends in {{count}} day.",
     "trialEnds_other": "Your trial ends in {{count}} days."
+  },
+  "supportLog": {
+    "title": "Support access",
+    "intro": "Every time platform staff entered your institution: who, when, why, for how long, and what they did.",
+    "empty": "Nobody from the platform has entered your institution.",
+    "entry": "{{by}} · {{date}}",
+    "edit": "Edit mode",
+    "readOnly": "Read only",
+    "ended": "Left {{date}}",
+    "until": "Until {{date}}",
+    "reason": "Reason: {{reason}}",
+    "editReason": "Edit reason: {{reason}}",
+    "writes_one": "{{count}} change made",
+    "writes_other": "{{count}} changes made",
+    "actions": {
+      "support.started": "Entered (read only)",
+      "support.ended": "Left",
+      "support.edit_requested": "Asked for edit mode",
+      "support.edit_approved": "Edit mode approved"
+    }
   }
 }

@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 
@@ -8,6 +9,7 @@ import { useLanguageState } from '@/lib/language';
 import { NEXT, createExport, fetchOverview, getExport, saveJson, setStatus, type InstitutionStatus, type Overview } from '@/lib/lifecycle';
 import { useFormat } from '@/lib/locale';
 import { pick } from '@/lib/packs';
+import { startSupport } from '@/lib/support';
 import { Badge, Chips, Row, Section, tDynamic } from '@/ui/admin/parts';
 import { BottomSheet, Button, ErrorState, Skeleton, TextField, useSnackbar } from '@/ui/components';
 
@@ -15,7 +17,7 @@ import { usePanel } from './PanelContext';
 
 // Institution → Overview (0B.07-T9; Ch 5.4): information, status with its history, problems, types, usage, Super
 // Admins, last sign-in, duplicate and trial warnings, full exports, and the status actions (approve, read only,
-// suspend, reactivate, close after a full export). "Enter institution" arrives with 0B.08.
+// suspend, reactivate, close after a full export), and "Enter institution" (0B.08: reason + time limit, read only).
 export function OverviewTab({ institutionId, onChanged }: { institutionId: string; onChanged?: () => void }) {
   const { t } = useTranslation('panel');
   const { language } = useLanguageState();
@@ -28,6 +30,8 @@ export function OverviewTab({ institutionId, onChanged }: { institutionId: strin
   const [change, setChange] = useState<InstitutionStatus | null>(null);
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
+  const [entering, setEntering] = useState(false);
+  const [entry, setEntry] = useState({ reason: '', minutes: '30' });
 
   const load = useCallback(async () => {
     setError(null);
@@ -55,6 +59,13 @@ export function OverviewTab({ institutionId, onChanged }: { institutionId: strin
       onChanged?.();
       void load();
     }
+  };
+  const enter = async () => {
+    setBusy(true);
+    const r = await startSupport(institutionId, entry.reason.trim(), Number(entry.minutes));
+    setBusy(false);
+    if (r.error) return snackbar.show({ text: errorText(r.error).message });
+    router.replace('/home');
   };
   const makeExport = async () => {
     setBusy(true);
@@ -85,7 +96,9 @@ export function OverviewTab({ institutionId, onChanged }: { institutionId: strin
         <AppText variant="caption">{t('overview.types', { names: data.profiles.map((p) => pick(p.name, language)).join(' + ') || '—' })}</AppText>
         <AppText variant="caption">{t('overview.superAdmins', { emails: data.super_admins.join(', ') || '—' })}</AppText>
         <AppText variant="caption">{data.usage.filter((u) => u.used > 0).map((u) => `${tDynamic(`admin:limits.metrics.${u.metric}`)}: ${u.limit === null ? u.used : `${u.used}/${u.limit}`}`).join(' · ')}</AppText>
-        <Button variant="text" icon="login" label={t('overview.enter')} disabled onPress={() => undefined} testID="overview-enter" />
+        {can('platform.support_access') && i.status !== 'closed' ? (
+          <Button variant="tonal" icon="login" label={t('overview.enter')} onPress={() => setEntering(true)} testID="overview-enter" />
+        ) : null}
       </Section>
 
       {data.duplicates.length || data.trial.flagged ? (
@@ -117,6 +130,17 @@ export function OverviewTab({ institutionId, onChanged }: { institutionId: strin
         ))}
       </Section>
 
+      {entering ? (
+        <BottomSheet visible onClose={() => setEntering(false)} title={t('overview.enterTitle', { name: i.name })} testID="enter-sheet"
+          footer={<Button label={t('overview.enterConfirm')} loading={busy} fullWidth disabled={entry.reason.trim().length < 5}
+            onPress={() => void enter()} testID="enter-confirm" />}>
+          <AppText>{t('overview.enterHelp')}</AppText>
+          <TextField label={t('overview.enterReason')} kind="multiline" value={entry.reason} maxLength={500}
+            onChangeText={(v) => setEntry((e) => ({ ...e, reason: v }))} testID="enter-reason" />
+          <Chips label={t('overview.enterMinutes')} selected={entry.minutes} onSelect={(v) => setEntry((e) => ({ ...e, minutes: v }))}
+            choices={['15', '30', '60', '120'].map((m) => ({ value: m, label: t('overview.minutes', { count: Number(m) }), testID: `enter-minutes-${m}` }))} />
+        </BottomSheet>
+      ) : null}
       {change ? (
         <BottomSheet visible onClose={() => setChange(null)} title={t('overview.confirmTitle', { status: tDynamic(`panel:institutions.status.${change}`) })}
           testID="status-sheet"

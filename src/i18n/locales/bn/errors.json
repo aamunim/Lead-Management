@@ -53,6 +53,10 @@
   "status_transition_invalid": "বর্তমান অবস্থা থেকে প্রতিষ্ঠান ওই অবস্থায় যেতে পারে না।",
   "reason_required": "একটি কারণ লিখুন।",
   "export_required": "আগে পূর্ণ এক্সপোর্ট করুন; এক্সপোর্ট ছাড়া প্রতিষ্ঠান বন্ধ করা যায় না।",
+  "support_read_only": "সাপোর্ট ভিউ শুধু দেখার। কিছু বদলাতে এডিট মোড চান (অন্য একজন Master Admin অনুমোদন করবেন)।",
+  "support_session_ended": "সাপোর্ট সেশন শেষ হয়েছে।",
+  "support_minutes_invalid": "৫ থেকে ২৪০ মিনিট বাছুন।",
+  "self_approval": "অন্য একজন Master Admin-কে এটি অনুমোদন করতে হবে।",
   "actions": {
     "sign_in": "সাইন ইন করুন",
     "choose_institution": "প্রতিষ্ঠান বেছে নিন",

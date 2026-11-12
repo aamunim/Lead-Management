@@ -32,6 +32,7 @@ Read in this order before working on any milestone:
 28. `MODULES_PLANS.md` — modules, plans (versions, prices, trial), limits and usage counters.
 29. `CUSTOM_FIELDS.md` — custom field definitions, typed values, presets, sensitive fields, filter indexes.
 30. `LIFECYCLE.md` — institution states, read-only guard, approval checks, full export, close and purge.
-31. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-32. `../PLAN_BN.md` — background. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**: when the two differ, the roadmap wins. When a detail is in neither the roadmap nor this developer guide, take it from the plan chapter the milestone points to. Owner decisions are recorded in the roadmap (section 12), not in the plan.
-33. `PROGRESS.md` — which milestones are done.
+31. `SUPPORT.md` — support entry: reason, time limit, read only, edit approval, audit and the institution's log.
+32. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+33. `../PLAN_BN.md` — background. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**: when the two differ, the roadmap wins. When a detail is in neither the roadmap nor this developer guide, take it from the plan chapter the milestone points to. Owner decisions are recorded in the roadmap (section 12), not in the plan.
+34. `PROGRESS.md` — which milestones are done.

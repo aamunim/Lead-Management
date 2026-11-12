@@ -168,3 +168,15 @@ begin
   end if;
 end $$;
 create function leak_fixtures.public__custom_field_values(p uuid) returns void language sql as $$ select leak_fixtures.public__custom_field_definitions(p) $$;
+
+-- 0B.08 support sessions: one per institution, entered by the platform Master Admin (the reason of A's is a marker).
+create function leak_fixtures.public__support_sessions(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_reason text := case when p_institution = leak.id('inst_a') then 'LEAKA-0B08 support reason' else 'OTHER-0B08 support reason' end;
+begin
+  insert into public.support_sessions (institution_id, platform_user_id, reason, started_at, expires_at, ended_at)
+  values (p_institution, '55555555-5555-4555-8555-555555555555', v_reason, now() - interval '2 hours', now() - interval '1 hour', now() - interval '1 hour');
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('LEAKA-0B08', 'support session reason of A') on conflict do nothing;
+  end if;
+end $$;
