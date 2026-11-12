@@ -59,12 +59,13 @@ const ROUTES = [
   { name: 'support-log', file: '(app)/admin/support-log.tsx', path: '/admin/support-log', ready: 'support-log-empty' },
   { name: 'checklist', file: '(app)/admin/checklist.tsx', path: '/admin/checklist', ready: 'checklist' },
   { name: 'branding', file: '(app)/admin/branding.tsx', path: '/admin/branding', ready: 'branding-color' },
+  { name: 'connections', file: '(app)/admin/connections.tsx', path: '/admin/connections', ready: 'connections-none' },
 ];
 // Not in the matrix on purpose: redirects and developer-only screens.
 // The Master Admin panel needs a two-step sign-in; its screens are captured by scripts/ui/panel.web.test.mjs.
 const SKIPPED = new Set(['index.tsx', 'dev-sign-in.tsx', 'dev/form.tsx', 'dev/gallery.tsx',
   'panel/sign-in.tsx', 'panel/index.tsx', 'panel/users.tsx', 'panel/[section].tsx', 'panel/profiles.tsx', 'panel/profile/[kind]/[key].tsx',
-  'panel/institutions.tsx', 'panel/institution/[id].tsx', 'panel/institution-new.tsx', 'panel/product-labels.tsx', 'panel/plans.tsx']);
+  'panel/institutions.tsx', 'panel/institution/[id].tsx', 'panel/institution-new.tsx', 'panel/providers.tsx', 'panel/product-labels.tsx', 'panel/plans.tsx']);
 
 function routeFiles(dir = 'src/app') {
   const out = [];

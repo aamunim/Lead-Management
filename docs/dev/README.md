@@ -35,6 +35,7 @@ Read in this order before working on any milestone:
 31. `SUPPORT.md` — support entry: reason, time limit, read only, edit approval, audit and the institution's log.
 32. `SIGNUP.md` — setup wizard and self sign-up: public preview, rate limits, pending + Super Admin, no messaging before approval, panel creation with invitation.
 33. `SETUP_CHECKLIST.md` — setup checklist (owners, rules, progress, trial-end alert), branding, copy setup between institutions.
-34. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-35. `../PLAN_BN.md` — background. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**: when the two differ, the roadmap wins. When a detail is in neither the roadmap nor this developer guide, take it from the plan chapter the milestone points to. Owner decisions are recorded in the roadmap (section 12), not in the plan.
-36. `PROGRESS.md` — which milestones are done.
+34. `INTEGRATIONS.md` — integration hub core: providers, connections, write-only keys and rotation, resolver, who pays, close hook.
+35. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+36. `../PLAN_BN.md` — background. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**: when the two differ, the roadmap wins. When a detail is in neither the roadmap nor this developer guide, take it from the plan chapter the milestone points to. Owner decisions are recorded in the roadmap (section 12), not in the plan.
+37. `PROGRESS.md` — which milestones are done.

@@ -209,3 +209,11 @@ begin
     insert into leak.markers values ('LEAKA-0B10', 'checklist note of A') on conflict do nothing;
   end if;
 end $$;
+
+-- 0B.11: who pays for SMS (no free text: the institution's row itself is the probe), and a connection whose label is
+-- the marker (integration_connections has a generic-insert-safe shape, this keeps the marker explicit).
+create function leak_fixtures.public__institution_service_payers(p_institution uuid) returns void language plpgsql as $$
+begin
+  insert into public.institution_service_payers (institution_id, kind, payer) values (p_institution, 'sms', 'direct')
+  on conflict (institution_id, kind) do nothing;
+end $$;

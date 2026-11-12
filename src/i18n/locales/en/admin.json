@@ -29,7 +29,9 @@
     "checklist": "Setup checklist",
     "checklistHelp": "What is left to set up, and who does it.",
     "branding": "Branding",
-    "brandingHelp": "Name, short name, logo and colour."
+    "brandingHelp": "Name, short name, logo and colour.",
+    "connections": "Connections",
+    "connectionsHelp": "Status of SMS, email and other connections."
   },
   "users": {
     "title": "Users",
@@ -757,5 +759,14 @@
     "readOnly": "You can see the branding but not change it.",
     "contrastLight": "Light mode: {{result}}.",
     "contrastDark": "Dark mode: {{result}}."
+  },
+  "connections": {
+    "title": "Connections",
+    "intro": "Whether your SMS, email and other connections work. The platform sets them up and holds the keys.",
+    "none": "No connections yet: the platform sets them up with you.",
+    "platformPays": "through the platform",
+    "lastSuccess": "last worked {{date}}",
+    "problem": "problem: {{side}}",
+    "noTraffic": "not used yet"
   }
 }

@@ -255,6 +255,10 @@
     "setup_alert_days_before_trial_end": {
       "label": "Setup alert before trial end (days)",
       "help": "Support is told this many days before a trial ends if setup is incomplete. Proposed: 3."
+    },
+    "key_rotation_reminder_days": {
+      "label": "Key rotation reminder (days)",
+      "help": "Remind the Master Admin to rotate a provider key after this many days. Proposed: 365."
     }
   },
   "groups": {

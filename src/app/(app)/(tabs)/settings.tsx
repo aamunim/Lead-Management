@@ -41,6 +41,8 @@ export default function SettingsTab() {
       show: can('settings.custom_fields') },
     { href: '/admin/modules', title: t('menu.modules'), help: t('menu.modulesHelp'), icon: 'extension', testID: 'settings-modules',
       show: can('settings.modules') },
+    { href: '/admin/connections', title: t('menu.connections'), help: t('menu.connectionsHelp'), icon: 'hub', testID: 'settings-connections',
+      show: can('integration.view_status') },
     { href: '/admin/plan', title: t('menu.plan'), help: t('menu.planHelp'), icon: 'workspace-premium', testID: 'settings-plan',
       show: can('billing.view') },
     { href: '/admin/support-log', title: t('menu.supportLog'), help: t('menu.supportLogHelp'), icon: 'support-agent', testID: 'settings-support-log',

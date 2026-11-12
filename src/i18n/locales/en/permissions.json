@@ -89,6 +89,10 @@
     "manage": {
       "label": "Manage integrations and keys",
       "help": "Connect SMS, email and payment providers and store their keys. Sensitive."
+    },
+    "view_status": {
+      "label": "See connection status",
+      "help": "See whether SMS, email and other connections work, and whose side a problem is on (never keys or settings)."
     }
   },
   "audit": {

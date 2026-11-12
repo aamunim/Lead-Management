@@ -58,7 +58,8 @@
     "manyTrials": "অনেক ট্রায়াল",
     "editRequests": "এডিট মোডের অনুরোধ",
     "approveEdit": "অনুমোদন",
-    "setupAlert": "{{name}}: ট্রায়াল শিগগির শেষ, সেটআপ {{done}}/{{total}}"
+    "setupAlert": "{{name}}: ট্রায়াল শিগগির শেষ, সেটআপ {{done}}/{{total}}",
+    "keyAlert": "কী {{hint}}{{name}} বদলান ({{date}} থেকে)"
   },
   "users": {
     "title": "প্ল্যাটফর্ম ইউজার",
@@ -345,6 +346,94 @@
       "labels": "শব্দ (পরিভাষা)",
       "settings": "সেটিংস",
       "custom_fields": "কাস্টম ফিল্ড"
+    }
+  },
+  "integrations": {
+    "title": "কানেকশন",
+    "help": "এই প্রতিষ্ঠানের SMS, ইমেইল ও অন্য সেবা। কী শুধু লেখা যায়: কেবল একটি ইঙ্গিত দেখানো হয়।",
+    "none": "এখনো কোনো কানেকশন নেই।",
+    "add": "কানেকশন যোগ",
+    "edit": "{{label}} বদলান",
+    "save": "সেভ",
+    "saved": "সেভ হয়েছে।",
+    "provider": "প্রোভাইডার",
+    "label": "নাম",
+    "modeLabel": "মোড",
+    "mode": {
+      "sandbox": "স্যান্ডবক্স",
+      "live": "লাইভ"
+    },
+    "priorityLabel": "ক্রম",
+    "priority": "#{{n}}",
+    "disabled": "বন্ধ",
+    "keyHint": "{{field}} {{hint}} ({{days}} দিন পুরনো)",
+    "keyMissing": "{{field}} বসানো হয়নি",
+    "liveTested": "লাইভ টেস্ট {{date}}",
+    "liveUntested": "বাল্ক পাঠানোর আগে লাইভ টেস্ট লাগবে",
+    "lastSuccess": "শেষ সফল {{date}}",
+    "lastError": "শেষ ত্রুটি {{code}} ({{side}})",
+    "adapterLater": "অ্যাডাপ্টার পরে আসবে",
+    "side": {
+      "platform": "প্ল্যাটফর্মের দিক",
+      "institution": "প্রতিষ্ঠানের দিক",
+      "provider": "প্রোভাইডারের দিক"
+    },
+    "secrets": "কী",
+    "secretsHelp": "শুধু লেখা যায়: কী সরাসরি ভল্টে যায়, আর কখনো দেখানো হয় না। ভবিষ্যতের তারিখ দিলে সেদিন থেকে নতুন কী চলবে; ততদিন পুরনোটি চলবে।",
+    "secretField": "কী",
+    "secretValue": "নতুন কী",
+    "secretFrom": "যেদিন থেকে (ঐচ্ছিক)",
+    "secretFromHelp": "YYYY-MM-DD; খালি = এখনই",
+    "secretSave": "কী সেভ",
+    "secretSaved": "কী সেভ হয়েছে; দেখানোর জন্য শুধু ইঙ্গিত রাখা হয়েছে।",
+    "liveMark": "লাইভ টেস্ট সফল চিহ্ন দিন",
+    "liveClear": "লাইভ টেস্ট বাতিল",
+    "disable": "বন্ধ করুন",
+    "enable": "চালু করুন",
+    "payers": "খরচ কে দেবে",
+    "payersHelp": "নিজের: প্রতিষ্ঠানের নিজের অ্যাকাউন্ট। প্ল্যাটফর্ম: প্ল্যাটফর্মের গেটওয়ে, বিল প্রতিষ্ঠানকে।",
+    "payer": {
+      "direct": "নিজের অ্যাকাউন্ট",
+      "platform": "প্ল্যাটফর্ম"
+    },
+    "audit": "পরিবর্তনের লগ",
+    "noAudit": "এখনো কোনো পরিবর্তন নেই।",
+    "kind": {
+      "sms": "SMS",
+      "email": "ইমেইল",
+      "payment": "পেমেন্ট",
+      "ai": "AI",
+      "storage": "স্টোরেজ",
+      "push": "পুশ",
+      "pdf_image": "PDF / ছবি",
+      "domain": "ডোমেইন",
+      "app": "অ্যাপ"
+    },
+    "actions": {
+      "connection.created": "কানেকশন তৈরি",
+      "connection.changed": "কানেকশন বদল",
+      "secret.set": "কী বসানো হয়েছে",
+      "secret.rotation_scheduled": "কী বদলের তারিখ ঠিক হয়েছে",
+      "connection.live_test_passed": "লাইভ টেস্ট সফল",
+      "connection.live_test_cleared": "লাইভ টেস্ট বাতিল",
+      "connection.enabled": "কানেকশন চালু",
+      "connection.disabled": "কানেকশন বন্ধ",
+      "payer.changed": "খরচ কে দেবে বদল",
+      "institution.closed_cleanup": "বন্ধ: কানেকশন বন্ধ, কী মুছে ফেলা হয়েছে"
+    }
+  },
+  "providers": {
+    "intro": "প্রোভাইডারের তালিকা এবং প্ল্যাটফর্মের নিজের গেটওয়ে, যা প্ল্যাটফর্ম খরচ দিলে বা প্রতিষ্ঠানের নিজের না থাকলে ব্যবহার হয়।",
+    "platformConnections": "প্ল্যাটফর্ম গেটওয়ে",
+    "platformHelp": "প্ল্যাটফর্মের ডিফল্ট SMS গেটওয়ে ও মেইল।",
+    "catalog": "তালিকা",
+    "needs": "লাগবে {{fields}}",
+    "adapter": "অ্যাডাপ্টার {{version}}",
+    "status": {
+      "active": "চালু",
+      "beta": "বেটা",
+      "planned": "পরিকল্পিত",
+      "retired": "বাদ"
     }
   }
 }

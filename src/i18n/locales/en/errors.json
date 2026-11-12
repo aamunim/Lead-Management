@@ -63,6 +63,9 @@
   "checklist_item_locked": "This item ticks itself, or another side does it.",
   "branding_invalid": "Check the name and the logo file.",
   "copy_source_invalid": "Choose another institution to copy from.",
+  "connection_invalid": "Check the connection: provider, name, mode and settings.",
+  "secret_value_invalid": "Enter the key (at least 4 characters).",
+  "secret_valid_from_in_past": "The start date cannot be in the past.",
   "actions": {
     "sign_in": "Sign in",
     "choose_institution": "Choose institution",

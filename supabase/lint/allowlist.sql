@@ -62,3 +62,12 @@ insert into lint.allow (rule, object, reason) values
 insert into lint.allow (rule, object, reason) values
   ('platform_table', 'public.setup_checklist_items', 'Product-wide setup checklist items (Proposed list), not per institution (0B.10).'),
   ('platform_table', 'public.copy_areas', 'Developer registry of configuration areas that can be copied between institutions (0B.10).');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.integration_providers', 'Product-wide provider catalog (0B.11, Ch 42.2).'),
+  ('platform_table', 'public.integration_error_kinds', 'Product-wide list of integration error codes and whose side each is on (0B.11, I10).'),
+  ('platform_table', 'public.platform_connections', 'The platform''s own gateways (default SMS / mail), not owned by an institution (0B.11, D15).'),
+  ('platform_table', 'public.platform_secrets', 'Vault references of the platform gateways'' keys; no institution (0B.11, D4).'),
+  ('platform_table', 'public.integration_audit', 'Audit of connection and key changes for institutions and the platform; read only through panel RPCs (0B.11).');
+insert into lint.allow (rule, object, reason) values
+  ('index_leading_institution', 'integration_audit_pkey', 'Platform audit table with an optional institution; rows are found by id (0B.11).'),
+  ('unique_includes_institution', 'integration_audit_pkey', 'Platform audit table: the id is unique across the platform (0B.11).');

@@ -1,0 +1,31 @@
+# Secret scanning (0A.02, 0B.11-T10; Ch 51 lesson 12). gitleaks reads this file from the repository root in CI
+# (.github/workflows/ci.yml, job secret-scan). The default rules stay on; these add the provider credential formats the
+# integration hub stores in Vault (never in code). Rules are checked by scripts/tests/gitleaks-rules.test.mjs.
+title = "Leadora secret scan"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "sslcommerz-store-password"
+description = "SSLCommerz store password"
+regex = '''(?i)store_?passw(?:or)?d["']?\s*[:=,]\s*["']([A-Za-z0-9@._-]{8,64})["']'''
+keywords = ["store_passwd", "store_password", "storepassword", "storepasswd"]
+
+[[rules]]
+id = "sms-gateway-api-key"
+description = "SMS gateway API key in code or config"
+regex = '''(?i)(?:sms|bulksms|gateway)[_-]?(?:api)?[_-]?(?:key|token|secret)["']?\s*[:=,]\s*["']([A-Za-z0-9_\-]{16,128})["']'''
+keywords = ["sms", "gateway"]
+
+[[rules]]
+id = "google-oauth-refresh-token"
+description = "Google OAuth refresh token (Drive)"
+regex = '''\b(1//0[A-Za-z0-9_-]{40,})'''
+keywords = ["1//0"]
+
+[[rules]]
+id = "smtp-password"
+description = "SMTP password in code or config"
+regex = '''(?i)smtp[_-]?pass(?:word)?["']?\s*[:=,]\s*["']([^"'\s]{8,128})["']'''
+keywords = ["smtp"]

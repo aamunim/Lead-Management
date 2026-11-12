@@ -63,6 +63,9 @@
   "checklist_item_locked": "এই কাজটি নিজে থেকেই টিক পড়ে, অথবা অন্য পক্ষ করে।",
   "branding_invalid": "নাম ও লোগো ফাইল দেখে নিন।",
   "copy_source_invalid": "কপির জন্য অন্য প্রতিষ্ঠান বাছুন।",
+  "connection_invalid": "কানেকশন দেখে নিন: প্রোভাইডার, নাম, মোড ও সেটিংস।",
+  "secret_value_invalid": "কী লিখুন (অন্তত ৪ অক্ষর)।",
+  "secret_valid_from_in_past": "শুরুর তারিখ অতীতে হতে পারে না।",
   "actions": {
     "sign_in": "সাইন ইন করুন",
     "choose_institution": "প্রতিষ্ঠান বেছে নিন",

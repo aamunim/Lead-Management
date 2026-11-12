@@ -58,7 +58,8 @@
     "manyTrials": "Many trials",
     "editRequests": "Edit mode requests",
     "approveEdit": "Approve",
-    "setupAlert": "{{name}}: trial ends soon, setup {{done}}/{{total}}"
+    "setupAlert": "{{name}}: trial ends soon, setup {{done}}/{{total}}",
+    "keyAlert": "Rotate key {{hint}}{{name}} (set {{date}})"
   },
   "users": {
     "title": "Platform users",
@@ -345,6 +346,94 @@
       "labels": "Words (terminology)",
       "settings": "Settings",
       "custom_fields": "Custom fields"
+    }
+  },
+  "integrations": {
+    "title": "Connections",
+    "help": "SMS, email and other services of this institution. Keys are write-only: only a hint is ever shown.",
+    "none": "No connections yet.",
+    "add": "Add connection",
+    "edit": "Change {{label}}",
+    "save": "Save",
+    "saved": "Saved.",
+    "provider": "Provider",
+    "label": "Name",
+    "modeLabel": "Mode",
+    "mode": {
+      "sandbox": "Sandbox",
+      "live": "Live"
+    },
+    "priorityLabel": "Order",
+    "priority": "#{{n}}",
+    "disabled": "Off",
+    "keyHint": "{{field}} {{hint}} ({{days}} days old)",
+    "keyMissing": "{{field}} not set",
+    "liveTested": "live test {{date}}",
+    "liveUntested": "live test needed before bulk sending",
+    "lastSuccess": "last success {{date}}",
+    "lastError": "last error {{code}} ({{side}})",
+    "adapterLater": "adapter arrives later",
+    "side": {
+      "platform": "platform's side",
+      "institution": "institution's side",
+      "provider": "provider's side"
+    },
+    "secrets": "Keys",
+    "secretsHelp": "Write-only: the key goes straight to the vault and is never shown again. A future date schedules a rotation; the current key works until then.",
+    "secretField": "Key",
+    "secretValue": "New key",
+    "secretFrom": "Use from (optional)",
+    "secretFromHelp": "YYYY-MM-DD; empty = now",
+    "secretSave": "Save key",
+    "secretSaved": "Key saved; only its hint is kept for display.",
+    "liveMark": "Mark live test passed",
+    "liveClear": "Clear live test",
+    "disable": "Turn off",
+    "enable": "Turn on",
+    "payers": "Who pays",
+    "payersHelp": "Direct: the institution's own account. Platform: the platform's gateway, billed to the institution.",
+    "payer": {
+      "direct": "own account",
+      "platform": "platform"
+    },
+    "audit": "Change log",
+    "noAudit": "No changes yet.",
+    "kind": {
+      "sms": "SMS",
+      "email": "Email",
+      "payment": "Payment",
+      "ai": "AI",
+      "storage": "Storage",
+      "push": "Push",
+      "pdf_image": "PDF / image",
+      "domain": "Domain",
+      "app": "App"
+    },
+    "actions": {
+      "connection.created": "Connection created",
+      "connection.changed": "Connection changed",
+      "secret.set": "Key set",
+      "secret.rotation_scheduled": "Key rotation scheduled",
+      "connection.live_test_passed": "Live test passed",
+      "connection.live_test_cleared": "Live test cleared",
+      "connection.enabled": "Connection enabled",
+      "connection.disabled": "Connection disabled",
+      "payer.changed": "Payer changed",
+      "institution.closed_cleanup": "Closed: connections disabled, keys destroyed"
+    }
+  },
+  "providers": {
+    "intro": "The provider catalog and the platform's own gateways, used when the platform pays or an institution has none.",
+    "platformConnections": "Platform gateways",
+    "platformHelp": "The default SMS gateway and mail of the platform.",
+    "catalog": "Catalog",
+    "needs": "needs {{fields}}",
+    "adapter": "adapter {{version}}",
+    "status": {
+      "active": "Active",
+      "beta": "Beta",
+      "planned": "Planned",
+      "retired": "Retired"
     }
   }
 }

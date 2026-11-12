@@ -61,6 +61,15 @@
       "introduced_in_release": "0B.10"
     },
     {
+      "key": "integration.view_status",
+      "scopable": false,
+      "sensitive": false,
+      "defaults": {
+        "admin": true
+      },
+      "introduced_in_release": "0B.11"
+    },
+    {
       "key": "settings.organisation",
       "scopable": false,
       "sensitive": false,

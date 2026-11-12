@@ -13,6 +13,7 @@ import { INSTITUTION_TABS } from '@/ui/panel/menu';
 import { usePanel } from '@/ui/panel/PanelContext';
 import { PanelShell } from '@/ui/panel/PanelShell';
 import { AuditTab } from '@/ui/panel/AuditTab';
+import { IntegrationsTab } from '@/ui/panel/IntegrationsTab';
 import { OverviewTab } from '@/ui/panel/OverviewTab';
 import { PlanTab } from '@/ui/panel/PlanTab';
 
@@ -67,6 +68,7 @@ export default function PanelInstitution() {
       {tab === 'overview' ? <OverviewTab institutionId={id} />
         : tab === 'audit' ? <AuditTab institutionId={id} />
         : tab === 'plan' ? <PlanTab institutionId={id} />
+        : tab === 'integrations' ? <IntegrationsTab institutionId={id} />
         : tab !== 'labels' ? <EmptyState icon="construction" title={t('soon', { milestone: t('later') })} testID="institution-tab-soon" />
         : error ? <ErrorState error={error} onRetry={() => void load()} /> : !data ? <Skeleton lines={8} /> : (
           <Section title={t('labelsTab.title')} testID="institution-labels">
