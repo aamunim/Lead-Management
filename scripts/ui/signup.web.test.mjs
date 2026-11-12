@@ -61,6 +61,8 @@ describe('Institution setup wizard', () => {
       await page.getByTestId('wizard-create').click();
       await page.getByTestId('signup-done').waitFor({ timeout: 30000 });
       await shot(page, `wizard-5-done-${language}-${scheme}`);
+      // The language chosen before sign-up stays (the new login keeps it).
+      assert.equal(await page.getByTestId('sign-up-title').innerText(), language === 'bn' ? 'আপনার প্রতিষ্ঠান সেটআপ করুন' : 'Set up your institution');
 
       const row = adminSql(`select i.status || '|' || i.eiin || '|' || (select string_agg(profile_key, '+' order by position) from public.institution_profiles p where p.institution_id = i.id)
         || '|' || (select count(*) from public.seeded_items s where s.institution_id = i.id and s.area = 'custom_fields')

@@ -63,7 +63,7 @@ export const fetchInstitutionInvites = (institutionId: string) =>
  * The login for the Super Admin (step 4): a new account, or an existing one (D25: a member of another institution
  * joins with the same login). Returns 'confirm' when the email has to be confirmed before the institution is made.
  */
-export async function ensureLogin(mode: 'new' | 'existing', email: string, password: string):
+export async function ensureLogin(mode: 'new' | 'existing', email: string, password: string, language: string):
   Promise<{ state: 'ready' | 'confirm' } | { error: 'exists' | 'failed' | 'weak' }> {
   const { data: current } = await supabase.auth.getSession();
   if (current.session?.user.email?.toLowerCase() === email.trim().toLowerCase()) return { state: 'ready' };
@@ -71,7 +71,8 @@ export async function ensureLogin(mode: 'new' | 'existing', email: string, passw
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     return error ? { error: 'failed' } : { state: 'ready' };
   }
-  const { data, error } = await supabase.auth.signUp({ email: email.trim(), password });
+  // The language chosen on this device goes with the new login (stored on its profile when it is created).
+  const { data, error } = await supabase.auth.signUp({ email: email.trim(), password, options: { data: { preferred_language: language } } });
   if (error) {
     if (/already/i.test(error.message)) return { error: 'exists' };
     if (/password/i.test(error.message)) return { error: 'weak' };

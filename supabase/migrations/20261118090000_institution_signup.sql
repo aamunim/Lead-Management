@@ -204,6 +204,19 @@ begin
   end if;
 end $$;
 
+-- A login made in the wizard keeps the language chosen on the device before sign-up (sent with the sign-up as
+-- user metadata; only 'bn' / 'en' are taken). Without it a Bangla sign-up continued in English.
+create or replace function app.handle_new_auth_user() returns trigger
+language plpgsql security definer set search_path = '' as $$
+declare
+  v_language text := new.raw_user_meta_data ->> 'preferred_language';
+begin
+  insert into public.profiles (user_id, email, phone, preferred_language)
+  values (new.id, new.email, new.phone, case when v_language in ('bn', 'en') then v_language end)
+  on conflict (user_id) do nothing;
+  return new;
+end $$;
+
 -- Creates the institution with its types and records the sign-up; shared by self sign-up and the platform.
 create or replace function app.institution_create(p_clean jsonb, p_source text, p_request_key uuid, p_email text, p_phone text)
 returns uuid language plpgsql security definer set search_path = '' as $$
@@ -226,6 +239,16 @@ begin
                          jsonb_build_object('source', p_source, 'profiles', p_clean -> 'profiles'));
   return v_id;
 end $$;
+
+-- Deleting an institution (the purge job, 0B.07) cascades to its role assignments, whose access trigger queued a rebuild
+-- for the institution being deleted and failed. Found by 0B.09 (the first purged institution with role assignments).
+create or replace function app.queue_access_rebuild(p_institution uuid, p_users uuid[]) returns void
+language sql security definer set search_path = '' as $$
+  insert into public.access_rebuild_queue (institution_id, user_id)
+  select p_institution, u from unnest(p_users) u
+   where u is not null and exists (select 1 from public.institutions i where i.id = p_institution)
+  on conflict do nothing
+$$;
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- 3. Public, before sign-in: what the chosen types would set up (Ch 6.3 step 5). Nothing about any institution.

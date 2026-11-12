@@ -75,7 +75,7 @@ export default function SignUpScreen() {
     setBusy(true);
     setLoginError(null);
     if (!signedInEmail) {
-      const login = await ensureLogin(mode, email, password);
+      const login = await ensureLogin(mode, email, password, language);
       if ('error' in login) {
         setBusy(false);
         setLoginError(t(`signup.login.${login.error}`));
@@ -97,7 +97,7 @@ export default function SignUpScreen() {
   };
   const confirmed = async () => {
     setBusy(true);
-    const login = await ensureLogin('existing', email, password);
+    const login = await ensureLogin('existing', email, password, language);
     setBusy(false);
     if ('error' in login) return snackbar.show({ text: t('signup.notConfirmed') });
     void create();

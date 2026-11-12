@@ -163,4 +163,18 @@ reset role;
 select pg_temp.check((pg_temp.v('made2') ->> 'attached')::boolean and exists (select 1 from public.institution_members
   where user_id = :newbie and institution_id = (pg_temp.v('made2') ->> 'institution_id')::uuid), 'an existing login is attached at once');
 
+-- 8. A login made in the wizard keeps the language chosen on the device.
+insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
+                        created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change)
+values ('00000000-0000-0000-0000-000000000000', 'c9000000-0000-4000-8000-0000000000c3', 'authenticated', 'authenticated', 'bangla.signup@example.test', '',
+        now(), '{"provider":"email","providers":["email"]}', '{"preferred_language":"bn"}', now(), now(), '', '', '', '');
+select pg_temp.check((select preferred_language from public.profiles where user_id = 'c9000000-0000-4000-8000-0000000000c3') = 'bn',
+  'a new login keeps the language chosen before sign-up');
+
+-- 8. Deleting (purging) an institution with people and roles works (the access trigger skips a deleted institution).
+delete from public.institutions where id = (pg_temp.v('made') ->> 'institution_id')::uuid;
+select pg_temp.check(not exists (select 1 from public.institutions where id = (pg_temp.v('made') ->> 'institution_id')::uuid)
+  and not exists (select 1 from public.role_assignments where institution_id = (pg_temp.v('made') ->> 'institution_id')::uuid),
+  'an institution with people and roles can be purged');
+
 rollback;
