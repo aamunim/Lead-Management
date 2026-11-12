@@ -9,10 +9,13 @@ import { useLanguageState } from '@/lib/language';
 import { NEXT, createExport, fetchOverview, getExport, saveJson, setStatus, type InstitutionStatus, type Overview } from '@/lib/lifecycle';
 import { useFormat } from '@/lib/locale';
 import { pick } from '@/lib/packs';
+import { applyCopy, COPY_AREAS, fetchPlatformChecklist, markPlatformChecklist, previewCopy, type Checklist, type CopyArea } from '@/lib/setup';
 import { fetchInstitutionInvites } from '@/lib/signup';
 import { startSupport } from '@/lib/support';
-import { Badge, Chips, Row, Section, tDynamic } from '@/ui/admin/parts';
+import { Badge, CheckRow, Chips, Row, Section, SelectField, tDynamic } from '@/ui/admin/parts';
 import { BottomSheet, Button, ErrorState, Skeleton, TextField, useSnackbar } from '@/ui/components';
+import { ChecklistView } from '@/ui/setup/ChecklistView';
+import { fetchPanelInstitutions, type PanelInstitution } from '@/lib/platform-institutions';
 
 import { usePanel } from './PanelContext';
 
@@ -34,6 +37,8 @@ export function OverviewTab({ institutionId, onChanged }: { institutionId: strin
   const [entering, setEntering] = useState(false);
   const [entry, setEntry] = useState({ reason: '', minutes: '30' });
   const [invites, setInvites] = useState<{ id: string; email: string; invited_at: string; accepted_at: string | null }[]>([]);
+  const [checklist, setChecklist] = useState<Checklist | null>(null);
+  const [copying, setCopying] = useState<{ sources: PanelInstitution[]; source: string | null; areas: string[]; preview: CopyArea[] | null } | null>(null);
 
   const load = useCallback(async () => {
     setError(null);
@@ -42,6 +47,8 @@ export function OverviewTab({ institutionId, onChanged }: { institutionId: strin
     else setData(r.data);
     const inv = await fetchInstitutionInvites(institutionId);
     setInvites(inv.data ?? []);
+    const cl = await fetchPlatformChecklist(institutionId);
+    setChecklist(cl.data);
   }, [institutionId]);
   useEffect(() => {
     void load();
@@ -70,6 +77,30 @@ export function OverviewTab({ institutionId, onChanged }: { institutionId: strin
     setBusy(false);
     if (r.error) return snackbar.show({ text: errorText(r.error).message });
     router.replace('/home');
+  };
+  const markItem = async (item: string, done: boolean) => {
+    setBusy(true);
+    const r = await markPlatformChecklist(institutionId, item, done);
+    setBusy(false);
+    if (r.error) return snackbar.show({ text: errorText(r.error).message });
+    setChecklist(r.data);
+  };
+  const openCopy = async () => {
+    const r = await fetchPanelInstitutions();
+    if (r.error) return snackbar.show({ text: errorText(r.error).message });
+    setCopying({ sources: (r.data ?? []).filter((x) => x.id !== institutionId), source: null, areas: [...COPY_AREAS], preview: null });
+  };
+  const runCopy = async (confirm: boolean) => {
+    if (!copying?.source) return;
+    setBusy(true);
+    const r = confirm ? await applyCopy(institutionId, copying.source, copying.areas) : await previewCopy(institutionId, copying.source, copying.areas);
+    setBusy(false);
+    if (r.error || !r.data) return snackbar.show({ text: r.error ? errorText(r.error).message : '' });
+    if (confirm) {
+      snackbar.show({ text: t('copy.done') });
+      setCopying(null);
+      void load();
+    } else setCopying({ ...copying, preview: r.data.areas });
   };
   const makeExport = async () => {
     setBusy(true);
@@ -104,6 +135,15 @@ export function OverviewTab({ institutionId, onChanged }: { institutionId: strin
           <Button variant="tonal" icon="login" label={t('overview.enter')} onPress={() => setEntering(true)} testID="overview-enter" />
         ) : null}
       </Section>
+
+      {checklist ? (
+        <Section title={t('overview.checklist')} testID="overview-checklist"
+          action={can('platform.institutions') ? <Button variant="text" icon="content-copy" label={t('copy.open')} onPress={() => void openCopy()}
+            testID="overview-copy" /> : undefined}>
+          <ChecklistView list={checklist} busy={busy} canMark={(item) => can('platform.institutions') && item.owner !== 'super_admin'}
+            onMark={(item, done) => void markItem(item.key, done)} />
+        </Section>
+      ) : null}
 
       {invites.length ? (
         <Section title={t('create.invites')} testID="overview-invites">
@@ -143,6 +183,24 @@ export function OverviewTab({ institutionId, onChanged }: { institutionId: strin
         ))}
       </Section>
 
+      {copying ? (
+        <BottomSheet visible onClose={() => setCopying(null)} title={t('copy.title', { name: i.name })} testID="copy-sheet"
+          footer={copying.preview ? <Button label={t('copy.confirm')} loading={busy} fullWidth onPress={() => void runCopy(true)} testID="copy-confirm" />
+            : <Button variant="tonal" label={t('copy.preview')} loading={busy} fullWidth disabled={!copying.source || copying.areas.length === 0}
+              onPress={() => void runCopy(false)} testID="copy-preview" />}>
+          <AppText>{t('copy.help')}</AppText>
+          <SelectField label={t('copy.source')} value={copying.source} testID="copy-source"
+            choices={copying.sources.map((x) => ({ value: x.id, label: x.name, testID: `copy-source-${x.slug}` }))}
+            onChange={(v) => setCopying({ ...copying, source: v, preview: null })} />
+          {COPY_AREAS.map((a) => (
+            <CheckRow key={a} label={tDynamic(`panel:copy.areas.${a}`)} checked={copying.areas.includes(a)} testID={`copy-area-${a}`}
+              help={copying.preview?.find((p) => p.area === a) ? t('copy.counts', { add: copying.preview.find((p) => p.area === a)?.add ?? 0,
+                keep: copying.preview.find((p) => p.area === a)?.keep ?? 0 }) : undefined}
+              onToggle={() => setCopying({ ...copying, preview: null,
+                areas: copying.areas.includes(a) ? copying.areas.filter((x) => x !== a) : [...copying.areas, a] })} />
+          ))}
+        </BottomSheet>
+      ) : null}
       {entering ? (
         <BottomSheet visible onClose={() => setEntering(false)} title={t('overview.enterTitle', { name: i.name })} testID="enter-sheet"
           footer={<Button label={t('overview.enterConfirm')} loading={busy} fullWidth disabled={entry.reason.trim().length < 5}

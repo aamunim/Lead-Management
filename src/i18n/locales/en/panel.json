@@ -57,7 +57,8 @@
     "possibleDuplicate": "Possible duplicate",
     "manyTrials": "Many trials",
     "editRequests": "Edit mode requests",
-    "approveEdit": "Approve"
+    "approveEdit": "Approve",
+    "setupAlert": "{{name}}: trial ends soon, setup {{done}}/{{total}}"
   },
   "users": {
     "title": "Platform users",
@@ -167,7 +168,9 @@
     },
     "users_one": "{{count}} user",
     "users_other": "{{count}} users",
-    "lastLogin": "last sign-in {{date}}"
+    "lastLogin": "last sign-in {{date}}",
+    "setupLeft_one": "Setup: {{count}} left",
+    "setupLeft_other": "Setup: {{count}} left"
   },
   "labelsTab": {
     "title": "Words of this institution",
@@ -310,7 +313,8 @@
     "enterMinutes": "For",
     "enterConfirm": "Enter (read only)",
     "minutes_one": "{{count}} minute",
-    "minutes_other": "{{count}} minutes"
+    "minutes_other": "{{count}} minutes",
+    "checklist": "Setup checklist"
   },
   "later": "a later milestone",
   "auditTab": {
@@ -327,5 +331,20 @@
     "invites": "Super Admin invitations",
     "inviteOpen": "Waiting for {{email}} to sign in",
     "inviteAccepted": "{{email}} joined"
+  },
+  "copy": {
+    "open": "Copy setup",
+    "title": "Copy setup into {{name}}",
+    "help": "Copies configuration only (words, settings, custom fields) from another institution; never its records. What this institution already has is kept.",
+    "source": "Copy from",
+    "preview": "Show what will be copied",
+    "confirm": "Copy",
+    "done": "Setup copied.",
+    "counts": "{{add}} to add, {{keep}} kept",
+    "areas": {
+      "labels": "Words (terminology)",
+      "settings": "Settings",
+      "custom_fields": "Custom fields"
+    }
   }
 }

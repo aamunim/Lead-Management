@@ -52,6 +52,15 @@
       "introduced_in_release": "0B.06"
     },
     {
+      "key": "settings.branding",
+      "scopable": false,
+      "sensitive": false,
+      "defaults": {
+        "admin": true
+      },
+      "introduced_in_release": "0B.10"
+    },
+    {
       "key": "settings.organisation",
       "scopable": false,
       "sensitive": false,

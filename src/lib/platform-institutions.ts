@@ -9,6 +9,7 @@ import { supabase } from './supabase';
 export type PanelInstitution = {
   id: string; name: string; slug: string; status: string; industry: string; profiles: { key: string; version: number; name: Text }[];
   plan: { key: string; name: Text; expires_at: string | null } | null; users: number; last_login: string | null; problems: string[];
+  setup?: { done: number; total: number; percent: number };
 };
 export type InstitutionLabel = { key: string; group: string; lockable: boolean; label: LabelValue & { source: string; locked?: boolean } };
 export type ProductLabel = { key: string; group: string; max_length: number; en_singular: string | null; en_plural: string | null; bn_forms: BnForms | null };

@@ -243,6 +243,18 @@
     "signup_limit_per_person_day": {
       "label": "Sign-ups per login or phone per day",
       "help": "More institution sign-ups than this by one login or phone in a day are refused. Proposed: 3."
+    },
+    "brand_color": {
+      "label": "Brand colour",
+      "help": "The institution's colour, shown after sign-in. A colour without enough contrast is used for accents only."
+    },
+    "brand_logo_path": {
+      "label": "Logo",
+      "help": "The institution's logo file, shown after sign-in."
+    },
+    "setup_alert_days_before_trial_end": {
+      "label": "Setup alert before trial end (days)",
+      "help": "Support is told this many days before a trial ends if setup is incomplete. Proposed: 3."
     }
   },
   "groups": {

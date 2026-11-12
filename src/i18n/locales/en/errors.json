@@ -60,6 +60,9 @@
   "signup_invalid": "Some answers are not right. Check the name, EIIN, code and phone numbers.",
   "signup_rate_limited": "Too many sign-ups were made from here. Please try again later or contact us.",
   "signup_closed": "Self sign-up is closed for now. Please contact us to set up your institution.",
+  "checklist_item_locked": "This item ticks itself, or another side does it.",
+  "branding_invalid": "Check the name and the logo file.",
+  "copy_source_invalid": "Choose another institution to copy from.",
   "actions": {
     "sign_in": "Sign in",
     "choose_institution": "Choose institution",

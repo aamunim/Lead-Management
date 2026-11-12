@@ -57,7 +57,8 @@
     "possibleDuplicate": "সম্ভাব্য একই প্রতিষ্ঠান",
     "manyTrials": "অনেক ট্রায়াল",
     "editRequests": "এডিট মোডের অনুরোধ",
-    "approveEdit": "অনুমোদন"
+    "approveEdit": "অনুমোদন",
+    "setupAlert": "{{name}}: ট্রায়াল শিগগির শেষ, সেটআপ {{done}}/{{total}}"
   },
   "users": {
     "title": "প্ল্যাটফর্ম ইউজার",
@@ -167,7 +168,9 @@
     },
     "users_one": "{{count}} জন ইউজার",
     "users_other": "{{count}} জন ইউজার",
-    "lastLogin": "শেষ সাইন-ইন {{date}}"
+    "lastLogin": "শেষ সাইন-ইন {{date}}",
+    "setupLeft_one": "সেটআপ: {{count}}টি বাকি",
+    "setupLeft_other": "সেটআপ: {{count}}টি বাকি"
   },
   "labelsTab": {
     "title": "এই প্রতিষ্ঠানের শব্দ",
@@ -310,7 +313,8 @@
     "enterMinutes": "সময়",
     "enterConfirm": "ঢুকুন (শুধু দেখা)",
     "minutes_one": "{{count}} মিনিট",
-    "minutes_other": "{{count}} মিনিট"
+    "minutes_other": "{{count}} মিনিট",
+    "checklist": "সেটআপ চেকলিস্ট"
   },
   "later": "পরের মাইলস্টোনে",
   "auditTab": {
@@ -327,5 +331,20 @@
     "invites": "সুপার অ্যাডমিন আমন্ত্রণ",
     "inviteOpen": "{{email}}-এর সাইন-ইনের অপেক্ষা",
     "inviteAccepted": "{{email}} যুক্ত হয়েছেন"
+  },
+  "copy": {
+    "open": "সেটআপ কপি",
+    "title": "{{name}}-এ সেটআপ কপি",
+    "help": "অন্য প্রতিষ্ঠান থেকে শুধু কনফিগারেশন (শব্দ, সেটিংস, কাস্টম ফিল্ড) কপি হয়; কোনো রেকর্ড নয়। এই প্রতিষ্ঠানের নিজের যা আছে তা থাকবে।",
+    "source": "যেখান থেকে কপি",
+    "preview": "কী কপি হবে দেখুন",
+    "confirm": "কপি করুন",
+    "done": "সেটআপ কপি হয়েছে।",
+    "counts": "{{add}}টি যোগ হবে, {{keep}}টি থাকবে",
+    "areas": {
+      "labels": "শব্দ (পরিভাষা)",
+      "settings": "সেটিংস",
+      "custom_fields": "কাস্টম ফিল্ড"
+    }
   }
 }

@@ -79,6 +79,10 @@
     "custom_fields": {
       "label": "Custom fields",
       "help": "Add, change, order, group and retire the institution's own fields for leads, clients and the network."
+    },
+    "branding": {
+      "label": "Branding",
+      "help": "Change the institution's name, short name, logo and colour."
     }
   },
   "integration": {

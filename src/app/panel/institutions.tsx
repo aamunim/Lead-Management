@@ -49,7 +49,8 @@ export default function PanelInstitutions() {
             <Row key={i.id} icon="apartment" title={i.name} testID={`institution-${i.slug}`}
               subtitle={[tDynamic(`panel:institutions.status.${i.status}`), i.plan ? pick(i.plan.name, language) : null,
                 i.profiles.length ? i.profiles.map((p) => pick(p.name, language)).join(' + ') : t('institutions.noTypes'),
-                t('institutions.users', { count: i.users }), i.last_login ? t('institutions.lastLogin', { date: format.dateTime(i.last_login) }) : null]
+                t('institutions.users', { count: i.users }),
+                i.setup && i.setup.percent < 100 ? t('institutions.setupLeft', { count: i.setup.total - i.setup.done }) : null, i.last_login ? t('institutions.lastLogin', { date: format.dateTime(i.last_login) }) : null]
                 .filter(Boolean).join(' · ')}
               badge={i.problems.length ? <Badge label={tDynamic(`panel:overview.problems.${i.problems[0]}`)} tone="error" /> : undefined}
               onPress={() => router.push(`/panel/institution/${i.id}`)} />

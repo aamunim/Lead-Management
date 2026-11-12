@@ -57,6 +57,8 @@ const ROUTES = [
   { name: 'plan', file: '(app)/admin/plan.tsx', path: '/admin/plan', ready: 'usage-users' },
   { name: 'custom-fields', file: '(app)/admin/custom-fields.tsx', path: '/admin/custom-fields', ready: 'fields-add' },
   { name: 'support-log', file: '(app)/admin/support-log.tsx', path: '/admin/support-log', ready: 'support-log-empty' },
+  { name: 'checklist', file: '(app)/admin/checklist.tsx', path: '/admin/checklist', ready: 'checklist' },
+  { name: 'branding', file: '(app)/admin/branding.tsx', path: '/admin/branding', ready: 'branding-color' },
 ];
 // Not in the matrix on purpose: redirects and developer-only screens.
 // The Master Admin panel needs a two-step sign-in; its screens are captured by scripts/ui/panel.web.test.mjs.

@@ -4,6 +4,7 @@ import { useAuthState } from '@/lib/auth-state';
 import { EmptyState, Screen } from '@/ui/components';
 import { LimitBanner } from '@/ui/limits/LimitBanner';
 import { StatusBanner } from '@/ui/limits/StatusBanner';
+import { SetupCard } from '@/ui/setup/SetupCard';
 import { useConfirmExitOnBack } from '@/ui/shell/navigation';
 import { useTheme } from '@/ui/theme';
 
@@ -20,6 +21,7 @@ export default function HomeTab() {
       <AppText style={{ color: colors.onSurfaceVariant }} testID="home-subtitle">{tCommon('home.subtitle')}</AppText>
       <StatusBanner />
       <LimitBanner />
+      <SetupCard />
       <EmptyState icon="construction" title={t('home.comingSoon')} />
     </Screen>
   );

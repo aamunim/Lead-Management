@@ -59,3 +59,6 @@ insert into lint.allow (rule, object, reason) values
 insert into lint.allow (rule, object, reason) values
   ('platform_table', 'public.institution_signups', 'Platform record of institution sign-ups for rate limits and review; written before the institution exists (0B.09).'),
   ('index_leading_institution', 'institution_invites_email_idx', 'A confirmed login finds its open Super Admin invitations by email before any institution is known (0B.09).');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.setup_checklist_items', 'Product-wide setup checklist items (Proposed list), not per institution (0B.10).'),
+  ('platform_table', 'public.copy_areas', 'Developer registry of configuration areas that can be copied between institutions (0B.10).');

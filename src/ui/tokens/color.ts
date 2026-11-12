@@ -4,6 +4,8 @@
 // text/background pair is checked against WCAG contrast (4.5:1 for text, 3:1 for large text and UI outlines).
 
 export const DEFAULT_BRAND = '#3557D4'; // platform brand blue (Ch 47.2); institutions override it (0B branding)
+/** Ready-made institution colours offered in Settings → Branding (0B.10); any #RRGGBB code is accepted too. */
+export const BRAND_PRESETS = ['#3557D4', '#0F766E', '#7C3AED', '#B91C1C', '#C2410C', '#15803D', '#1E293B'];
 
 type Rgb = { r: number; g: number; b: number }; // 0..1
 type Oklch = { l: number; c: number; h: number };

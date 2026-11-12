@@ -197,3 +197,15 @@ begin
     insert into leak.markers values ('leaka-0b09', 'Super Admin invitation email of A') on conflict do nothing;
   end if;
 end $$;
+
+-- 0B.10: a checklist item ticked by hand (the note is the marker).
+create function leak_fixtures.public__institution_checklist(p_institution uuid) returns void language plpgsql as $$
+begin
+  insert into public.institution_checklist (institution_id, item_key, status, note, completed_at)
+  values (p_institution, 'pipeline_words', 'done',
+          case when p_institution = leak.id('inst_a') then 'LEAKA-0B10 checklist note' else 'OTHER-0B10 checklist note' end, now())
+  on conflict (institution_id, item_key) do update set note = excluded.note;
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('LEAKA-0B10', 'checklist note of A') on conflict do nothing;
+  end if;
+end $$;

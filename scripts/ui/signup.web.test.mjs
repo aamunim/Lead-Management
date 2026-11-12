@@ -8,7 +8,8 @@ import { adminSql, totp } from '../e2e/helpers.mjs';
 import { SCREENSHOTS, startWeb } from './helpers.mjs';
 
 let web;
-const cleanUp = () => adminSql(`delete from public.institutions where name like 'UI Wizard %';
+const cleanUp = () => adminSql(`delete from public.platform_login_devices; delete from public.platform_alerts;
+  delete from public.institutions where name like 'UI Wizard %';
   delete from public.institution_signups where email like 'ui.wizard%@example.test' or user_id in
     (select id from auth.users where email like 'ui.wizard%@example.test');
   delete from auth.users where email like 'ui.wizard%@example.test';`);

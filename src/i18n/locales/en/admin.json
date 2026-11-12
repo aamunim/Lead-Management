@@ -25,7 +25,11 @@
     "fields": "Custom fields",
     "fieldsHelp": "Your own fields for leads, clients and the network",
     "supportLog": "Support access",
-    "supportLogHelp": "Who from the platform entered, when and why"
+    "supportLogHelp": "Who from the platform entered, when and why",
+    "checklist": "Setup checklist",
+    "checklistHelp": "What is left to set up, and who does it.",
+    "branding": "Branding",
+    "brandingHelp": "Name, short name, logo and colour."
   },
   "users": {
     "title": "Users",
@@ -654,5 +658,102 @@
       "support.edit_requested": "Asked for edit mode",
       "support.edit_approved": "Edit mode approved"
     }
+  },
+  "checklist": {
+    "title": "Setup checklist",
+    "intro": "What is left before you are fully set up, and who does it.",
+    "progress": "{{done}} of {{total}} done ({{percent}}%)",
+    "owner": {
+      "super_admin": "You",
+      "master_admin": "Platform",
+      "both": "You + platform"
+    },
+    "later": "Arrives in phase {{phase}}",
+    "auto": "Ticks itself when done",
+    "doneBy": "Done {{date}} by {{by}}",
+    "optional": "Optional",
+    "video": "Watch the short guide",
+    "complete": "Everything available now is set up.",
+    "merchantNote": "Online payment needs your own merchant account; you can take payments by hand until then.",
+    "cardTitle": "Finish setting up",
+    "open": "Open the checklist",
+    "items": {
+      "branding": {
+        "title": "Branding",
+        "help": "Short name, logo and colour shown after sign-in."
+      },
+      "branches": {
+        "title": "$t(labels:branch.plural)",
+        "help": "Add your $t(labels:branch.plural) with address and phone."
+      },
+      "offerings": {
+        "title": "$t(labels:offering.plural), $t(labels:cohort.plural) and $t(labels:slot_group.plural)",
+        "help": "What you offer and how it is grouped."
+      },
+      "fee_structure": {
+        "title": "$t(labels:fee.singular) structure",
+        "help": "$t(labels:fee.plural), $t(labels:installment.plural) and $t(labels:discount.plural)."
+      },
+      "pipeline_words": {
+        "title": "Pipeline and words",
+        "help": "Check the pipeline steps and the words used in the app (Settings → Terminology)."
+      },
+      "staff": {
+        "title": "Invite your team",
+        "help": "Add people and give them roles."
+      },
+      "messaging": {
+        "title": "SMS and email",
+        "help": "The platform connects your SMS and email accounts."
+      },
+      "payment_merchant": {
+        "title": "Online payment",
+        "help": "Open your own SSLCommerz merchant account (trade licence, bank account, verification); the platform then enters its details. Manual payment works meanwhile."
+      },
+      "message_templates": {
+        "title": "Message templates",
+        "help": "Write your own SMS and email texts."
+      },
+      "application_form": {
+        "title": "Public application form",
+        "help": "A form on your website or a link."
+      },
+      "own_domain": {
+        "title": "Your own web address",
+        "help": "Optional: the app on your own domain."
+      },
+      "ai_drive": {
+        "title": "AI key and Google Drive",
+        "help": "Optional: bring your own AI key and Google Drive."
+      },
+      "lead_import": {
+        "title": "Import old $t(labels:lead.plural)",
+        "help": "Bring your existing list in from Excel."
+      }
+    }
+  },
+  "branding": {
+    "title": "Branding",
+    "intro": "Your name, logo and colour, shown to your team after sign-in.",
+    "names": "Name",
+    "name": "Institution name",
+    "short": "Short name",
+    "shortHelp": "Up to 40 characters; shown where space is short.",
+    "logo": "Logo",
+    "noLogo": "No logo yet: your short name is shown.",
+    "chooseLogo": "Choose logo",
+    "removeLogo": "Remove logo",
+    "logoHelp": "PNG, JPG or WebP, up to 1 MB; square works best.",
+    "logoOnWeb": "Upload the logo from the web app; the phone app gets this with its next version.",
+    "logoTooBig": "The logo is larger than 1 MB.",
+    "color": "Colour",
+    "hex": "Colour code",
+    "hexInvalid": "Use a code like #3557D4.",
+    "contrastOk": "Readable in light and dark mode.",
+    "contrastAccent": "Not enough contrast for buttons: it is used as an accent colour only.",
+    "signInNeutral": "The sign-in page always shows the app's own name, not yours.",
+    "save": "Save",
+    "saved": "Branding saved.",
+    "readOnly": "You can see the branding but not change it."
   }
 }
