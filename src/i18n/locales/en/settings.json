@@ -231,6 +231,18 @@
     "trial_limit_per_person": {
       "label": "Trial institutions per person or phone",
       "help": "More open trials than this from one person or phone are flagged in the approval queue. Proposed: 2."
+    },
+    "self_signup_open": {
+      "label": "Self sign-up open",
+      "help": "Institutions may sign up by themselves and wait for approval. Proposed: on."
+    },
+    "signup_limit_per_ip_hour": {
+      "label": "Sign-ups per network address per hour",
+      "help": "More institution sign-ups than this from one address in an hour are refused. Proposed: 5."
+    },
+    "signup_limit_per_person_day": {
+      "label": "Sign-ups per login or phone per day",
+      "help": "More institution sign-ups than this by one login or phone in a day are refused. Proposed: 3."
     }
   },
   "groups": {

@@ -56,3 +56,6 @@ insert into lint.allow (rule, object, reason) values
   ('unique_includes_institution', 'support_sessions_id_key', 'A support session id is unique across the platform: the token carries only the id (0B.08).'),
   ('index_leading_institution', 'support_sessions_open_idx', 'The sign-in hook finds a platform user''s open session before any institution is known (0B.08).'),
   ('write_needs_can', 'public.support_session_end', 'Ends only the caller''s own support sessions (leaving is always allowed); audited on both sides.');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.institution_signups', 'Platform record of institution sign-ups for rate limits and review; written before the institution exists (0B.09).'),
+  ('index_leading_institution', 'institution_invites_email_idx', 'A confirmed login finds its open Super Admin invitations by email before any institution is known (0B.09).');

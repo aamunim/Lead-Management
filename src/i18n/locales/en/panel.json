@@ -316,5 +316,16 @@
   "auditTab": {
     "empty": "Nothing yet.",
     "support": "Support"
+  },
+  "create": {
+    "title": "Create institution",
+    "intro": "The same wizard as self sign-up. The trial starts at once and the Super Admin gets an invitation.",
+    "adminHelp": "The Super Admin is invited by email. Someone who already has a login joins at once; otherwise they join when they first sign in with this email.",
+    "submit": "Create and invite",
+    "attached": "Created. The Super Admin already had a login and has joined.",
+    "invited": "Created. {{email}} joins when they sign in with this email.",
+    "invites": "Super Admin invitations",
+    "inviteOpen": "Waiting for {{email}} to sign in",
+    "inviteAccepted": "{{email}} joined"
   }
 }

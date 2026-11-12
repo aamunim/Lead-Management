@@ -32,6 +32,7 @@ const MAX_RATIO = 0.005;
 // Every screen route: file under src/app, the URL, the element that says "loaded", what to mask, signed in or not.
 const ROUTES = [
   { name: 'sign-in', file: 'sign-in.tsx', path: '/sign-in', ready: 'sign-in-submit', signedOut: true },
+  { name: 'sign-up', file: 'sign-up.tsx', path: '/sign-up', ready: 'wizard-types', signedOut: true },
   { name: 'language', file: 'language.tsx', path: '/language', ready: 'language' },
   { name: 'appearance', file: 'appearance.tsx', path: '/appearance', ready: 'appearance' },
   { name: 'words', file: 'terminology.tsx', path: '/terminology', ready: 'terminology-samples' },
@@ -61,7 +62,7 @@ const ROUTES = [
 // The Master Admin panel needs a two-step sign-in; its screens are captured by scripts/ui/panel.web.test.mjs.
 const SKIPPED = new Set(['index.tsx', 'dev-sign-in.tsx', 'dev/form.tsx', 'dev/gallery.tsx',
   'panel/sign-in.tsx', 'panel/index.tsx', 'panel/users.tsx', 'panel/[section].tsx', 'panel/profiles.tsx', 'panel/profile/[kind]/[key].tsx',
-  'panel/institutions.tsx', 'panel/institution/[id].tsx', 'panel/product-labels.tsx', 'panel/plans.tsx']);
+  'panel/institutions.tsx', 'panel/institution/[id].tsx', 'panel/institution-new.tsx', 'panel/product-labels.tsx', 'panel/plans.tsx']);
 
 function routeFiles(dir = 'src/app') {
   const out = [];

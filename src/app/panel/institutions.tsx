@@ -38,6 +38,8 @@ export default function PanelInstitutions() {
   return (
     <PanelShell permission="platform.view" title={t('menu.institutions')} testID="panel-institutions">
       <AppText>{t('institutions.intro')}</AppText>
+      {can('platform.institutions_create') ? <Button icon="add-business" label={t('create.title')} onPress={() => router.push('/panel/institution-new')}
+        testID="institutions-create" /> : null}
       {can('platform.plans') ? <Button variant="tonal" icon="workspace-premium" label={t('plans.title')} onPress={() => router.push('/panel/plans')}
         testID="institutions-plans" /> : null}
       <TextField label={t('institutions.search')} kind="search" value={query} onChangeText={setQuery} testID="institutions-search" />

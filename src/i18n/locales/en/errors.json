@@ -57,6 +57,9 @@
   "support_session_ended": "The support session has ended.",
   "support_minutes_invalid": "Choose 5 to 240 minutes.",
   "self_approval": "Another Master Admin must approve this.",
+  "signup_invalid": "Some answers are not right. Check the name, EIIN, code and phone numbers.",
+  "signup_rate_limited": "Too many sign-ups were made from here. Please try again later or contact us.",
+  "signup_closed": "Self sign-up is closed for now. Please contact us to set up your institution.",
   "actions": {
     "sign_in": "Sign in",
     "choose_institution": "Choose institution",

@@ -151,6 +151,10 @@
     "institutions_close": {
       "label": "Close institutions",
       "help": "Close an institution after a full export; its data is deleted after the notice period."
+    },
+    "institutions_create": {
+      "label": "Create institutions",
+      "help": "Create an institution with the setup wizard and invite its Super Admin."
     }
   },
   "billing": {

@@ -9,6 +9,7 @@ import { useLanguageState } from '@/lib/language';
 import { NEXT, createExport, fetchOverview, getExport, saveJson, setStatus, type InstitutionStatus, type Overview } from '@/lib/lifecycle';
 import { useFormat } from '@/lib/locale';
 import { pick } from '@/lib/packs';
+import { fetchInstitutionInvites } from '@/lib/signup';
 import { startSupport } from '@/lib/support';
 import { Badge, Chips, Row, Section, tDynamic } from '@/ui/admin/parts';
 import { BottomSheet, Button, ErrorState, Skeleton, TextField, useSnackbar } from '@/ui/components';
@@ -32,12 +33,15 @@ export function OverviewTab({ institutionId, onChanged }: { institutionId: strin
   const [busy, setBusy] = useState(false);
   const [entering, setEntering] = useState(false);
   const [entry, setEntry] = useState({ reason: '', minutes: '30' });
+  const [invites, setInvites] = useState<{ id: string; email: string; invited_at: string; accepted_at: string | null }[]>([]);
 
   const load = useCallback(async () => {
     setError(null);
     const r = await fetchOverview(institutionId);
     if (r.error) setError(r.error);
     else setData(r.data);
+    const inv = await fetchInstitutionInvites(institutionId);
+    setInvites(inv.data ?? []);
   }, [institutionId]);
   useEffect(() => {
     void load();
@@ -100,6 +104,15 @@ export function OverviewTab({ institutionId, onChanged }: { institutionId: strin
           <Button variant="tonal" icon="login" label={t('overview.enter')} onPress={() => setEntering(true)} testID="overview-enter" />
         ) : null}
       </Section>
+
+      {invites.length ? (
+        <Section title={t('create.invites')} testID="overview-invites">
+          {invites.map((v) => (
+            <Row key={v.id} icon={v.accepted_at ? 'how-to-reg' : 'schedule'} title={t(v.accepted_at ? 'create.inviteAccepted' : 'create.inviteOpen', { email: v.email })}
+              subtitle={format.dateTime(v.accepted_at ?? v.invited_at)} testID={`overview-invite-${v.email}`} />
+          ))}
+        </Section>
+      ) : null}
 
       {data.duplicates.length || data.trial.flagged ? (
         <Section title={t('overview.warnings')} testID="overview-warnings">

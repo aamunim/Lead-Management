@@ -180,3 +180,20 @@ begin
     insert into leak.markers values ('LEAKA-0B08', 'support session reason of A') on conflict do nothing;
   end if;
 end $$;
+
+-- 0B.09: a Super Admin invitation (the email is the marker).
+create function leak_fixtures.public__institution_invites(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_email text := case when p_institution = leak.id('inst_a') then 'leaka-0b09@example.test' else 'other-0b09@example.test' end;
+begin
+  insert into public.institution_invites (institution_id, email, role_id)
+  select p_institution, v_email, r.id from public.roles r where r.institution_id = p_institution and r.is_super_admin;
+  if not found then
+    insert into public.roles (institution_id, name_key, is_system, is_super_admin) values (p_institution, 'role.super_admin', true, true);
+    insert into public.institution_invites (institution_id, email, role_id)
+    select p_institution, v_email, r.id from public.roles r where r.institution_id = p_institution and r.is_super_admin;
+  end if;
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('leaka-0b09', 'Super Admin invitation email of A') on conflict do nothing;
+  end if;
+end $$;

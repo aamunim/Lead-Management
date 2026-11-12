@@ -280,6 +280,11 @@
       "key": "platform.institutions_close",
       "sensitive": true,
       "introduced_in_release": "0B.07"
+    },
+    {
+      "key": "platform.institutions_create",
+      "sensitive": true,
+      "introduced_in_release": "0B.09"
     }
   ],
   "fields": [

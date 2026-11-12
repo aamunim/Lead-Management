@@ -43,6 +43,7 @@ export default function SignInScreen() {
           error={failed ? t('signIn.failed') : null} last onDone={() => void submit()} testID="sign-in-password" />
         <Button label={t('signIn.submit')} onPress={() => void submit()} loading={submitting} disabled={!email || !password}
           fullWidth testID="sign-in-submit" />
+        <Button variant="tonal" icon="add-business" label={t('signIn.setUp')} onPress={() => router.push('/sign-up')} fullWidth testID="sign-in-setup" />
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.lg }}>
           <Link href="/language" testID="sign-in-language"><AppText style={{ color: colors.primary, textDecorationLine: 'underline' }}>{t('signIn.languageLink')}</AppText></Link>
           <Link href="/panel/sign-in" testID="sign-in-panel"><AppText style={{ color: colors.onSurfaceVariant }}>{t('signIn.panelLink')}</AppText></Link>
