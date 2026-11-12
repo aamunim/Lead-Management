@@ -26,7 +26,7 @@ Plan: Ch 9 (9.1–9.5, 9.8, 9.9), Ch 7.8, Ch 5.7. Decisions D7, D22, D30, D31, D
 ## Plans
 
 - `public.plans` (key, version): name, modules, limits (metric → number, null = unlimited), prices (currency, monthly,
-  yearly, per type, D32), trial days, "for new institutions". **All numbers are Proposed placeholders** (Ch 53.2 rows
+  yearly, per type, D32), trial days, "for new institutions". **The numbers are placeholders accepted by the owner (D45)**, prices still blank (Ch 53.2 rows
   2–4); the Master Admin edits them in the panel (Institutions → Plans) without a release (D30, D31).
 - Saving a plan makes a **new version**. An institution keeps its version until it changes plan (price protection,
   Ch 9.9 row 8, Proposed).
