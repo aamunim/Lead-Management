@@ -81,6 +81,13 @@ select pg_temp.act_as(pg_temp.claims_for(:owner));
 select pg_temp.check(pg_temp.error_of('select public.setting_set(''fees'', ''{"enabled": true}'')') = '', 'active again: writes work; nothing was deleted');
 reset role;
 
+-- The sign-in hook runs as the auth service's role (supabase_auth_admin), not as the owner: every table it reads needs a
+-- grant and a policy for that role (lesson 16).
+select pg_temp.check(not exists (select 1 from unnest(array['public.profiles', 'public.institution_members', 'public.institutions']) t
+  where not has_table_privilege('supabase_auth_admin', t, 'select')
+     or not exists (select 1 from pg_policies p where p.schemaname || '.' || p.tablename = t and 'supabase_auth_admin' = any (p.roles))),
+  'the auth service''s role can read every table the sign-in hook uses');
+
 -- 3. Suspended: no sign-in to that institution; other memberships of the same person work (D25).
 select pg_temp.act_as(pg_temp.claims_for(:master, 'aal2'));
 select public.platform_institution_set_status(:inst_a, 'suspended', 'abuse report');

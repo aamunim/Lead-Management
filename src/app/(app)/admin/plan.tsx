@@ -3,12 +3,14 @@ import { View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { useTranslation } from '@/i18n';
+import { useErrorText } from '@/i18n/errors';
 import { useLanguageState } from '@/lib/language';
 import { useFormat } from '@/lib/locale';
+import { createExport, getExport, listExports, saveJson, type ExportRow } from '@/lib/lifecycle';
 import { fetchLimits, fetchModules, type LimitsStatus, type ModuleState } from '@/lib/modules';
 import { pick } from '@/lib/packs';
-import { Badge, Section, tDynamic } from '@/ui/admin/parts';
-import { ErrorState, Screen, Skeleton } from '@/ui/components';
+import { Badge, Row, Section, tDynamic } from '@/ui/admin/parts';
+import { Button, ErrorState, Screen, Skeleton, useSnackbar } from '@/ui/components';
 import { moduleName } from '@/ui/limits/names';
 import { AppHeader } from '@/ui/shell/AppHeader';
 import { useTheme } from '@/ui/theme';
@@ -24,14 +26,31 @@ export default function PlanScreen() {
   const [status, setStatus] = useState<LimitsStatus | null>(null);
   const [mods, setMods] = useState<ModuleState[]>([]);
   const [error, setError] = useState<unknown>(null);
+  const [exports, setExports] = useState<ExportRow[] | null>(null);
+  const [busy, setBusy] = useState(false);
+  const snackbar = useSnackbar();
+  const errorText = useErrorText();
 
   const load = useCallback(async () => {
     setError(null);
-    const [r, m] = await Promise.all([fetchLimits(), fetchModules()]);
+    const [r, m, e] = await Promise.all([fetchLimits(), fetchModules(), listExports()]);
     if (r.error) return setError(r.error);
     setStatus(r.data);
     setMods(m.data ?? []);
+    setExports(e.error ? null : (e.data ?? []));
   }, []);
+  const makeExport = async () => {
+    setBusy(true);
+    const r = await createExport();
+    setBusy(false);
+    snackbar.show({ text: r.error ? errorText(r.error).message : t('exports.made') });
+    void load();
+  };
+  const download = async (row: ExportRow) => {
+    const r = await getExport(row.id);
+    if (r.error) return snackbar.show({ text: errorText(r.error).message });
+    if (!saveJson(`export-${row.created_at.slice(0, 10)}.json`, r.data)) snackbar.show({ text: t('exports.webOnly') });
+  };
   useEffect(() => {
     void load();
   }, [load]);
@@ -71,6 +90,16 @@ export default function PlanScreen() {
                 );
               })}
             </Section>
+            {exports ? (
+              <Section title={t('exports.title')} testID="plan-exports">
+                <AppText variant="caption">{t('exports.help')}</AppText>
+                <Button variant="tonal" icon="download" label={t('exports.make')} loading={busy} onPress={() => void makeExport()} testID="export-make" />
+                {exports.map((x) => (
+                  <Row key={x.id} icon="inventory" title={format.dateTime(x.created_at)} subtitle={t('exports.size', { kb: format.number(Math.ceil(x.size_bytes / 1024)) })}
+                    onPress={() => void download(x)} testID={`export-${x.id}`} />
+                ))}
+              </Section>
+            ) : null}
             <Section title={t('plan.modules')} testID="plan-modules">
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>
                 {mods.filter((m) => m.allowed && m.in_industry).map((m) => <Badge key={m.key} label={moduleName(m)} tone={m.enabled ? 'primary' : 'neutral'} />)}

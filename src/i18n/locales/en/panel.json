@@ -50,7 +50,12 @@
     "signedInAs": "Signed in as {{email}} · {{role}}",
     "alerts": "Alerts",
     "noAlerts": "No alerts.",
-    "newDeviceAlert": "New device: {{email}} from {{ip}}"
+    "newDeviceAlert": "New device: {{email}} from {{ip}}",
+    "approvals": "Waiting for approval",
+    "noApprovals": "No institution is waiting.",
+    "signedUp": "Signed up {{date}}",
+    "possibleDuplicate": "Possible duplicate",
+    "manyTrials": "Many trials"
   },
   "users": {
     "title": "Platform users",
@@ -157,7 +162,10 @@
       "read_only": "Read only",
       "suspended": "Suspended",
       "closed": "Closed"
-    }
+    },
+    "users_one": "{{count}} user",
+    "users_other": "{{count}} users",
+    "lastLogin": "last sign-in {{date}}"
   },
   "labelsTab": {
     "title": "Words of this institution",
@@ -237,5 +245,63 @@
     "limitsHelp": "metric → number; null = unlimited.",
     "prices": "Prices (JSON)",
     "pricesHelp": "{\"currency\":\"BDT\",\"monthly\":…,\"yearly\":…,\"by_type\":{\"school\":{\"monthly\":…}}}"
-  }
+  },
+  "overview": {
+    "info": "Information",
+    "eiin": "EIIN {{value}}",
+    "code": "Code {{value}}",
+    "created": "Signed up {{date}}",
+    "lastLogin": "Last sign-in {{date}}",
+    "neverLoggedIn": "No sign-in yet",
+    "types": "Types: {{names}}",
+    "superAdmins": "Super Admins: {{emails}}",
+    "enter": "Enter institution (comes with 0B.08)",
+    "warnings": "Check before approving",
+    "trialFlag": "Many open trials: {{person}} by this person, {{phone}} with this phone (limit {{limit}}).",
+    "match": {
+      "eiin": "Same EIIN",
+      "institution_code": "Same institution code",
+      "name_phone": "Same name and phone",
+      "name_address": "Same name and address"
+    },
+    "status": "Status",
+    "changeTo": "Change to",
+    "noChange": "No further change is possible.",
+    "purgeOn": "Data is deleted on {{date}}.",
+    "to": {
+      "pending": "Pending",
+      "trial": "Approve / trial",
+      "active": "Active",
+      "read_only": "Read only",
+      "suspended": "Suspend",
+      "closed": "Close"
+    },
+    "exports": "Full exports",
+    "exportsHelp": "Every row of the institution, its people and a list of its files. Closing needs an export from the last 7 days.",
+    "makeExport": "Make a full export",
+    "exportMade": "Export made",
+    "size": "{{kb}} KB",
+    "webOnly": "Open the panel on the web to download the file.",
+    "confirmTitle": "Change to: {{status}}",
+    "confirm": "Confirm",
+    "reason": "Reason (kept in the history and both audit logs)",
+    "statusChanged": "Status changed",
+    "needsExport": "Make a full export first (Full exports below).",
+    "explain": {
+      "pending": "Back to waiting for approval.",
+      "trial": "The institution is approved; its trial starts now.",
+      "active": "Full use again.",
+      "read_only": "People can see and export everything but change nothing. Nothing is deleted.",
+      "suspended": "Nobody can open this institution until it is reactivated; people's other institutions are not affected.",
+      "closed": "The institution is closed now and its data is deleted after the notice period. This cannot be undone."
+    },
+    "problems": {
+      "waiting_approval": "Waiting for approval",
+      "read_only": "Read only",
+      "suspended": "Suspended",
+      "ends_soon": "Plan ends soon",
+      "limit_reached": "A limit is reached"
+    }
+  },
+  "later": "a later milestone"
 }

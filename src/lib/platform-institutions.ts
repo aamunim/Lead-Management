@@ -6,7 +6,10 @@ import { supabase } from './supabase';
 // Master Admin (0B.04-T9, T10): institutions with their industry and types, one institution's words with platform
 // locks, and the product-default words. platform.view to read, platform.labels_lock to lock, platform.profiles to edit
 // product defaults; the server checks every call and needs the second step.
-export type PanelInstitution = { id: string; name: string; slug: string; status: string; industry: string; profiles: { key: string; version: number; name: Text }[] };
+export type PanelInstitution = {
+  id: string; name: string; slug: string; status: string; industry: string; profiles: { key: string; version: number; name: Text }[];
+  plan: { key: string; name: Text; expires_at: string | null } | null; users: number; last_login: string | null; problems: string[];
+};
 export type InstitutionLabel = { key: string; group: string; lockable: boolean; label: LabelValue & { source: string; locked?: boolean } };
 export type ProductLabel = { key: string; group: string; max_length: number; en_singular: string | null; en_plural: string | null; bn_forms: BnForms | null };
 type Result<T> = { data: T | null; error: ErrorInfo | null };

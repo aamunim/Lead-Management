@@ -191,6 +191,11 @@ begin
   return jsonb_set(event, '{claims}', v_claims);
 end $$;
 
+-- The auth service runs the hook: it now also reads each institution's status.
+grant select on public.institutions to supabase_auth_admin;
+create policy institutions_auth_hook_read on public.institutions as permissive
+  for select to supabase_auth_admin using (true);
+
 create or replace function app.require_active_session() returns uuid
 language plpgsql stable set search_path = '' as $$
 declare

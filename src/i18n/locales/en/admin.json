@@ -618,5 +618,19 @@
       "show_on_public_form": "Asked on the institution's public form.",
       "sensitive": "Only people with the permission see it; never sent to AI."
     }
+  },
+  "exports": {
+    "title": "Full export",
+    "help": "All your institution's data in one file (also while read only). Keep it safe: it holds personal data.",
+    "make": "Make a full export",
+    "made": "Export made",
+    "size": "{{kb}} KB",
+    "webOnly": "Open the web app to download the file."
+  },
+  "lifecycle": {
+    "pending": "Your institution is waiting for approval. You can keep setting it up.",
+    "readOnly": "Read only: you can see and export everything but not change it. Tell your Admin.",
+    "trialEnds_one": "Your trial ends in {{count}} day.",
+    "trialEnds_other": "Your trial ends in {{count}} days."
   }
 }

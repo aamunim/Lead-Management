@@ -5,17 +5,19 @@ import { View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { useTranslation } from '@/i18n';
 import { useLanguageState } from '@/lib/language';
+import { useFormat } from '@/lib/locale';
 import { pick } from '@/lib/packs';
 import { fetchPanelInstitutions, type PanelInstitution } from '@/lib/platform-institutions';
-import { Row, tDynamic } from '@/ui/admin/parts';
+import { Badge, Row, tDynamic } from '@/ui/admin/parts';
 import { Button, ErrorState, Skeleton, TextField } from '@/ui/components';
 import { usePanel } from '@/ui/panel/PanelContext';
 import { PanelShell } from '@/ui/panel/PanelShell';
 
-// Institutions (0B.04: list and the Labels tab; the other tabs, approval and status come with 0B.07).
+// Institutions (0B.04 list and Labels tab; 0B.07 status, plan, users, last sign-in and problems — problems first).
 export default function PanelInstitutions() {
   const { t } = useTranslation('panel');
   const { language } = useLanguageState();
+  const format = useFormat();
   const { state, can } = usePanel();
   const [rows, setRows] = useState<PanelInstitution[] | null>(null);
   const [error, setError] = useState<unknown>(null);
@@ -43,8 +45,11 @@ export default function PanelInstitutions() {
         <View style={{ gap: 8 }}>
           {shown.map((i) => (
             <Row key={i.id} icon="apartment" title={i.name} testID={`institution-${i.slug}`}
-              subtitle={[tDynamic(`panel:institutions.status.${i.status}`),
-                i.profiles.length ? i.profiles.map((p) => pick(p.name, language)).join(' + ') : t('institutions.noTypes')].join(' · ')}
+              subtitle={[tDynamic(`panel:institutions.status.${i.status}`), i.plan ? pick(i.plan.name, language) : null,
+                i.profiles.length ? i.profiles.map((p) => pick(p.name, language)).join(' + ') : t('institutions.noTypes'),
+                t('institutions.users', { count: i.users }), i.last_login ? t('institutions.lastLogin', { date: format.dateTime(i.last_login) }) : null]
+                .filter(Boolean).join(' · ')}
+              badge={i.problems.length ? <Badge label={tDynamic(`panel:overview.problems.${i.problems[0]}`)} tone="error" /> : undefined}
               onPress={() => router.push(`/panel/institution/${i.id}`)} />
           ))}
         </View>

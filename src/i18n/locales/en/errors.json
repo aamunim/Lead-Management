@@ -46,6 +46,13 @@
   "module_always_on": "This module is always on.",
   "module_needs_other": "Turn on the modules this one needs first.",
   "plan_invalid": "This plan is not valid. Check the modules, limits and prices.",
+  "custom_field_invalid": "This value does not fit the field. Check it and try again.",
+  "institution_read_only": "Your institution is read only for now: you can see and export everything, but not change it. Tell your Admin.",
+  "institution_suspended": "This institution is suspended. Choose another institution or contact the platform.",
+  "institution_closed": "This institution is closed.",
+  "status_transition_invalid": "The institution cannot move to that status from its current one.",
+  "reason_required": "Write a reason.",
+  "export_required": "Make a full export first; an institution cannot be closed without one.",
   "actions": {
     "sign_in": "Sign in",
     "choose_institution": "Choose institution",
