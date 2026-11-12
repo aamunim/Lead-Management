@@ -75,6 +75,10 @@
     "modules": {
       "label": "Modules",
       "help": "Turn the modules your plan allows on or off; see what else is affected first."
+    },
+    "custom_fields": {
+      "label": "Custom fields",
+      "help": "Add, change, order, group and retire the institution's own fields for leads, clients and the network."
     }
   },
   "integration": {
@@ -149,6 +153,12 @@
     "view": {
       "label": "Plan and usage",
       "help": "See the plan, its end date, limits and usage of the institution."
+    }
+  },
+  "custom_field": {
+    "view_sensitive": {
+      "label": "See sensitive custom fields",
+      "help": "See and change custom fields marked sensitive (for example a national ID or a birth registration number)."
     }
   }
 }

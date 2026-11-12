@@ -43,6 +43,15 @@
       "introduced_in_release": "0B.05"
     },
     {
+      "key": "settings.custom_fields",
+      "scopable": false,
+      "sensitive": false,
+      "defaults": {
+        "admin": true
+      },
+      "introduced_in_release": "0B.06"
+    },
+    {
       "key": "settings.organisation",
       "scopable": false,
       "sensitive": false,
@@ -203,6 +212,13 @@
       "sensitive": true,
       "defaults": {},
       "introduced_in_release": "0B.05"
+    },
+    {
+      "key": "custom_field.view_sensitive",
+      "scopable": false,
+      "sensitive": true,
+      "defaults": {},
+      "introduced_in_release": "0B.06"
     }
   ],
   "platform_permissions": [
@@ -291,6 +307,12 @@
       "field": "amount",
       "sensitive": true,
       "permission": "sensitive_field.view"
+    },
+    {
+      "entity": "custom_field",
+      "field": "sensitive_value",
+      "sensitive": true,
+      "permission": "custom_field.view_sensitive"
     }
   ]
 }
