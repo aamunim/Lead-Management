@@ -8,13 +8,20 @@ import { INSTITUTION, adminSql } from '../e2e/helpers.mjs';
 import { SCREENSHOTS, startWeb } from './helpers.mjs';
 
 let web;
+let rolesBefore = '';
 const cleanUp = () => adminSql(`delete from public.custom_field_definitions where institution_id = '${INSTITUTION.A}';
+  delete from public.role_permissions rp using public.roles r where rp.role_id = r.id and r.institution_id = '${INSTITUTION.A}'
+    and r.id::text <> all (string_to_array('${rolesBefore}', ',')) and not exists (select 1 from public.role_assignments ra where ra.role_id = r.id);
+  delete from public.roles r where r.institution_id = '${INSTITUTION.A}' and r.id::text <> all (string_to_array('${rolesBefore}', ','))
+    and not exists (select 1 from public.role_assignments ra where ra.role_id = r.id);
   delete from public.seeded_items where institution_id = '${INSTITUTION.A}';
   delete from public.institution_profiles where institution_id = '${INSTITUTION.A}';
   select app.usage_reconcile('${INSTITUTION.A}');
   update public.profiles set preferred_language = null where email = 'owner.admin@example.test';`);
 before(async () => {
   web = await startWeb();
+  rolesBefore = adminSql(`select string_agg(id::text, ',') from public.roles where institution_id = '${INSTITUTION.A}'`)
+    .match(/[0-9a-f]{8}-[0-9a-f-]{27}(,[0-9a-f]{8}-[0-9a-f-]{27})*/)[0];
   cleanUp();
 });
 after(async () => {

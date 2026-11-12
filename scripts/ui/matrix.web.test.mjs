@@ -46,7 +46,7 @@ const ROUTES = [
   { name: 'roles', file: '(app)/admin/roles.tsx', path: '/admin/roles', ready: 'roles-compare' },
   { name: 'role', file: '(app)/admin/role/[id].tsx', path: '/admin/role/{role}', ready: 'role-permissions' },
   { name: 'role-compare', file: '(app)/admin/role-compare.tsx', path: '/admin/role-compare', ready: 'compare-a' },
-  { name: 'new-permissions', file: '(app)/admin/new-permissions.tsx', path: '/admin/new-permissions', ready: 'new-settings.modules' },
+  { name: 'new-permissions', file: '(app)/admin/new-permissions.tsx', path: '/admin/new-permissions', ready: 'new-permissions' },
   { name: 'explain', file: '(app)/admin/explain.tsx', path: '/admin/explain', ready: 'explain-check' },
   { name: 'audit', file: '(app)/admin/audit.tsx', path: '/admin/audit', ready: 'audit-area-all', mask: ['[data-testid="audit-list"]', '[data-testid="audit-empty"]'] },
   { name: 'branches', file: '(app)/admin/branches.tsx', path: '/admin/branches', ready: 'branches-add' },

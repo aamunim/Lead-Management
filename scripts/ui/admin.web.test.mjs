@@ -182,9 +182,11 @@ describe('Settings → Users and Roles', () => {
     await page.getByTestId('compare-rows').waitFor();
     assert.ok(await page.getByTestId('compare-audit.view').isVisible(), 'a difference is listed');
     await page.goto(`${web.base}/admin/new-permissions`);
-    // This release's new permissions (0B.05): sensitive, so not given to any role by themselves (Super Admin has all).
-    await page.getByTestId('new-settings.modules').waitFor({ timeout: 15000 });
-    assert.match(await page.getByTestId('new-settings.modules').textContent(), /Not given to any role yet/);
+    // The newest release's permissions are listed; a sensitive one is given to no role by itself (Super Admin has all).
+    const newest = adminSql(`select key from public.permissions where kind = 'institution' and sensitive and introduced_in_release =
+      (select max(introduced_in_release) from public.permissions where kind = 'institution') order by key limit 1`).match(/[a-z_]+\.[a-z_]+/)[0];
+    await page.getByTestId(`new-${newest}`).waitFor({ timeout: 15000 });
+    assert.match(await page.getByTestId(`new-${newest}`).textContent(), /Not given to any role yet/);
     await page.close();
   });
 

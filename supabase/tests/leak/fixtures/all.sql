@@ -151,3 +151,20 @@ begin
   end if;
 end $$;
 create function leak_fixtures.public__app_settings_history(p uuid) returns void language sql as $$ select leak_fixtures.public__app_settings(p) $$;
+
+-- 0B.06 custom fields: a field and a value per institution (A's are markers).
+create function leak_fixtures.public__custom_field_definitions(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_mark text := case when p_institution = leak.id('inst_a') then 'LEAKA-0B06' else 'OTHER-0B06' end;
+begin
+  insert into public.custom_field_definitions (institution_id, id, entity, key, label, type)
+  values (p_institution, md5('leak-cf-' || p_institution)::uuid, 'lead', 'leak_field', jsonb_build_object('en', v_mark, 'bn', v_mark), 'text')
+  on conflict do nothing;
+  insert into public.custom_field_values (institution_id, field_id, entity, record_id, value_text)
+  values (p_institution, md5('leak-cf-' || p_institution)::uuid, 'lead', gen_random_uuid(), v_mark || '-VALUE')
+  on conflict do nothing;
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values (v_mark, 'custom field of A'), (v_mark || '-VALUE', 'custom field value of A') on conflict do nothing;
+  end if;
+end $$;
+create function leak_fixtures.public__custom_field_values(p uuid) returns void language sql as $$ select leak_fixtures.public__custom_field_definitions(p) $$;

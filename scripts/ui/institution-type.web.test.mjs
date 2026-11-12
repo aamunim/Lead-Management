@@ -10,6 +10,8 @@ import { SCREENSHOTS, startWeb } from './helpers.mjs';
 let web;
 let rolesBefore = '';
 const cleanUp = () => adminSql(`delete from public.seeded_items where institution_id = '${INSTITUTION.A}';
+  delete from public.custom_field_definitions where institution_id = '${INSTITUTION.A}';
+  select app.usage_reconcile('${INSTITUTION.A}');
   delete from public.institution_profiles where institution_id = '${INSTITUTION.A}';
   delete from public.institution_labels where institution_id = '${INSTITUTION.A}';
   delete from public.role_permissions rp using public.roles r where rp.role_id = r.id and r.institution_id = '${INSTITUTION.A}'
