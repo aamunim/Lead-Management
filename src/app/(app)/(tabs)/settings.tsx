@@ -31,6 +31,8 @@ export default function SettingsTab() {
       show: can('settings.terminology') },
     { href: '/admin/institution-type', title: t('menu.types'), help: t('menu.typesHelp'), icon: 'category', testID: 'settings-types',
       show: can('settings.institution_type') },
+    { href: '/admin/custom-fields', title: t('menu.fields'), help: t('menu.fieldsHelp'), icon: 'dynamic-form', testID: 'settings-fields',
+      show: can('settings.custom_fields') },
     { href: '/admin/modules', title: t('menu.modules'), help: t('menu.modulesHelp'), icon: 'extension', testID: 'settings-modules',
       show: can('settings.modules') },
     { href: '/admin/plan', title: t('menu.plan'), help: t('menu.planHelp'), icon: 'workspace-premium', testID: 'settings-plan',

@@ -328,7 +328,8 @@ begin
                 (select count(*) from public.custom_field_values v where v.institution_id = d.institution_id and v.field_id = d.id))
                 order by d.status, d.sort, d.key)
               from public.custom_field_definitions d where d.institution_id = v_institution and d.entity = p_entity), '[]'::jsonb),
-    'limit', app.check_limit(v_institution, 'custom_fields', 0, null, false));
+    'limit', jsonb_build_object('used', app.usage_of(v_institution, 'custom_fields'), 'limit', app.limit_of(v_institution, 'custom_fields'),
+                                'level', app.limit_level(app.usage_of(v_institution, 'custom_fields'), app.limit_of(v_institution, 'custom_fields'))));
 end $$;
 
 -- Create (p_id null) or change a field. The key and type are fixed once values exist.

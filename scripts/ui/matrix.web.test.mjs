@@ -54,6 +54,7 @@ const ROUTES = [
   { name: 'institution-type', file: '(app)/admin/institution-type.tsx', path: '/admin/institution-type', ready: 'types-choose' },
   { name: 'modules', file: '(app)/admin/modules.tsx', path: '/admin/modules', ready: 'module-leads' },
   { name: 'plan', file: '(app)/admin/plan.tsx', path: '/admin/plan', ready: 'usage-users' },
+  { name: 'custom-fields', file: '(app)/admin/custom-fields.tsx', path: '/admin/custom-fields', ready: 'fields-add' },
 ];
 // Not in the matrix on purpose: redirects and developer-only screens.
 // The Master Admin panel needs a two-step sign-in; its screens are captured by scripts/ui/panel.web.test.mjs.

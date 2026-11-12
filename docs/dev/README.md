@@ -30,6 +30,7 @@ Read in this order before working on any milestone:
 26. `PLATFORM.md` — Master Admin panel, platform roles and rights, two-step sign-in, devices and alerts, platform audit.
 27. `PROFILES.md` — industry packs and type profiles as versioned data, publishing, the `institution_type` lint.
 28. `MODULES_PLANS.md` — modules, plans (versions, prices, trial), limits and usage counters.
-29. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-30. `../PLAN_BN.md` — background. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**: when the two differ, the roadmap wins. When a detail is in neither the roadmap nor this developer guide, take it from the plan chapter the milestone points to. Owner decisions are recorded in the roadmap (section 12), not in the plan.
-31. `PROGRESS.md` — which milestones are done.
+29. `CUSTOM_FIELDS.md` — custom field definitions, typed values, presets, sensitive fields, filter indexes.
+30. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+31. `../PLAN_BN.md` — background. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**: when the two differ, the roadmap wins. When a detail is in neither the roadmap nor this developer guide, take it from the plan chapter the milestone points to. Owner decisions are recorded in the roadmap (section 12), not in the plan.
+32. `PROGRESS.md` — which milestones are done.
