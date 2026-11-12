@@ -147,6 +147,10 @@
     "plans": {
       "label": "Plans",
       "help": "Edit the plans catalog: modules, limits, prices and trial length (as new versions)."
+    },
+    "institutions_close": {
+      "label": "Close institutions",
+      "help": "Close an institution after a full export; its data is deleted after the notice period."
     }
   },
   "billing": {

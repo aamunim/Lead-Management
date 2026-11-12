@@ -49,3 +49,5 @@ insert into lint.allow (rule, object, reason) values
   ('platform_table', 'public.limit_metrics', 'Product-wide catalog of limit metrics (0B.05, Ch 9.5).'),
   ('platform_table', 'public.plans', 'Product-wide versioned plans catalog edited by the Master Admin (0B.05, Ch 9.3).'),
   ('platform_table', 'public.addons', 'Product-wide add-on catalog (0B.05, Ch 9.4).');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'app.status_guard_exempt', 'Developer list of tables a read-only institution may still write, with reasons (0B.07).');

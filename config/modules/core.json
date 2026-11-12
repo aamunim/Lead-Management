@@ -275,6 +275,11 @@
       "key": "platform.plans",
       "sensitive": true,
       "introduced_in_release": "0B.05"
+    },
+    {
+      "key": "platform.institutions_close",
+      "sensitive": true,
+      "introduced_in_release": "0B.07"
     }
   ],
   "fields": [

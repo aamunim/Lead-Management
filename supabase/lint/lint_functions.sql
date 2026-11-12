@@ -61,6 +61,23 @@ begin
     end if;
   end loop;
 
+  -- R15 tenant tables carry the lifecycle guard (0B.07): read-only / suspended / closed institutions refuse writes ---
+  for r in
+    select c.oid, n.nspname || '.' || c.relname as obj
+    from pg_class c join pg_namespace n on n.oid = c.relnamespace
+    where c.relkind = 'r' and n.nspname = any (lint.our_schemas()) and n.nspname <> 'app'
+      and exists (select 1 from pg_attribute a where a.attrelid = c.oid and a.attname = 'institution_id' and not a.attisdropped)
+      and c.relname <> 'institutions'
+  loop
+    if lint.is_allowed('platform_table', r.obj) or lint.is_allowed('status_guard', r.obj)
+       or exists (select 1 from app.status_guard_exempt e where e.table_name = r.obj) then continue; end if;
+    if not exists (select 1 from pg_trigger t where t.tgrelid = r.oid and t.tgname = 'zz_status_guard') then
+      rule := 'status_guard'; object := r.obj;
+      message := 'Tenant table without the lifecycle guard: select app.attach_status_guard(''<table>'') in its migration (or exempt it with a reason).';
+      return next;
+    end if;
+  end loop;
+
   -- R2 RLS enabled with at least one policy (public = exposed through the API) ------------------------------------
   for r in
     select c.oid, c.relrowsecurity, n.nspname || '.' || c.relname as obj

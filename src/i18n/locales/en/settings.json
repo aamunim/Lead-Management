@@ -223,6 +223,14 @@
     "developer_email": {
       "label": "Feedback inbox",
       "help": "Who receives feedback and error reports."
+    },
+    "purge_notice_days": {
+      "label": "Days before a closed institution's data is deleted",
+      "help": "After an institution is closed, its data is kept this long (it can still be exported), then deleted. Proposed: 90."
+    },
+    "trial_limit_per_person": {
+      "label": "Trial institutions per person or phone",
+      "help": "More open trials than this from one person or phone are flagged in the approval queue. Proposed: 2."
     }
   },
   "groups": {
