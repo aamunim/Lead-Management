@@ -25,6 +25,7 @@ describe('secret-scan rules', () => {
     assert.match(`smtpPassword = "${fake('p', 14)}"`, rules['smtp-password']);
   });
   it('does not flag normal code', () => {
+    assert.doesNotMatch("for (const id of ['sms-gateway-api-key', 'smtp-password'])", rules['sms-gateway-api-key']);
     assert.doesNotMatch("secret_fields: '{store_password}'", rules['sslcommerz-store-password']);
     assert.doesNotMatch("t('integrations.secretValue')", rules['sms-gateway-api-key']);
     assert.doesNotMatch('kind: sms, sender_id: ACME', rules['sms-gateway-api-key']);

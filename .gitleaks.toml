@@ -15,7 +15,7 @@ keywords = ["store_passwd", "store_password", "storepassword", "storepasswd"]
 [[rules]]
 id = "sms-gateway-api-key"
 description = "SMS gateway API key in code or config"
-regex = '''(?i)(?:sms|bulksms|gateway)[_-]?(?:api)?[_-]?(?:key|token|secret)["']?\s*[:=,]\s*["']([A-Za-z0-9_\-]{16,128})["']'''
+regex = '''(?i)(?:sms|bulksms|gateway)[_-]?(?:api)?[_-]?(?:key|token|secret)["']?\s*[:=]\s*["']([A-Za-z0-9_\-]{16,128})["']'''
 keywords = ["sms", "gateway"]
 
 [[rules]]
