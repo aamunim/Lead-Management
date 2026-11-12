@@ -115,7 +115,8 @@ export default function BrandingScreen() {
                 <View style={{ flexDirection: 'row', gap: space.md, alignItems: 'center' }}>
                   <View style={{ width: 40, height: 40, borderRadius: radius.sm, backgroundColor: color }} />
                   <AppText variant="caption" style={{ flex: 1 }} testID="branding-contrast">
-                    {light?.usableAsPrimary && dark?.usableAsPrimary ? t('branding.contrastOk') : t('branding.contrastAccent')}
+                    {[t('branding.contrastLight', { result: light?.usableAsPrimary ? t('branding.contrastOk') : t('branding.contrastAccent') }),
+                      t('branding.contrastDark', { result: dark?.usableAsPrimary ? t('branding.contrastOk') : t('branding.contrastAccent') })].join('\n')}
                   </AppText>
                 </View>
               ) : null}

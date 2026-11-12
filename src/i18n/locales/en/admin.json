@@ -749,11 +749,13 @@
     "color": "Colour",
     "hex": "Colour code",
     "hexInvalid": "Use a code like #3557D4.",
-    "contrastOk": "Readable in light and dark mode.",
-    "contrastAccent": "Not enough contrast for buttons: it is used as an accent colour only.",
+    "contrastOk": "buttons and text in this colour",
+    "contrastAccent": "not enough contrast, used as an accent only",
     "signInNeutral": "The sign-in page always shows the app's own name, not yours.",
     "save": "Save",
     "saved": "Branding saved.",
-    "readOnly": "You can see the branding but not change it."
+    "readOnly": "You can see the branding but not change it.",
+    "contrastLight": "Light mode: {{result}}.",
+    "contrastDark": "Dark mode: {{result}}."
   }
 }

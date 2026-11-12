@@ -42,7 +42,7 @@ export function ChecklistView({ list, canMark, onMark, busy }: {
           tDynamic(`admin:checklist.items.${item.key}.help`),
           later ? t('checklist.later', { phase: item.available_from ?? '' }) : null,
           item.auto ? t('checklist.auto') : null,
-          item.state === 'done' && item.completed_at ? t('checklist.doneBy', { date: format.date(item.completed_at), by: item.completed_by ?? '—' }) : null,
+          item.state === 'done' && item.completed_at ? t('checklist.doneBy', { date: format.dateTime(item.completed_at), by: item.completed_by ?? '—' }) : null,
         ].filter(Boolean).join(' · ');
         return (
           <View key={item.key} style={{ gap: space.xs }}>

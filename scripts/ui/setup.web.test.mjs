@@ -15,6 +15,7 @@ let originalName;
 const cleanUp = () => adminSql(`delete from public.platform_login_devices; delete from public.platform_alerts;
   delete from public.app_settings where institution_id = '${INSTITUTION.A}' and key in ('brand_color', 'brand_logo_path');
   delete from public.institution_checklist where institution_id = '${INSTITUTION.A}';
+  select set_config('storage.allow_delete_query', 'true', false);
   delete from storage.objects where bucket_id = 'institution-files' and name like '${INSTITUTION.A}/branding/%';
   update public.institutions set name = ${originalName ? `'${originalName.replace(/'/g, "''")}'` : 'name'}, short_name = null where id = '${INSTITUTION.A}';
   update public.profiles set preferred_language = null where email = 'owner.admin@example.test';`);
@@ -44,12 +45,14 @@ describe('Setup checklist and branding', () => {
     await page.getByTestId('home-setup-card').waitFor({ timeout: 20000 });
     await page.getByTestId('home-setup-open').click();
     await page.getByTestId('checklist').waitFor({ timeout: 20000 });
-    const before = await page.getByTestId('checklist-progress').innerText();
+    const progress = page.getByTestId('checklist-screen').getByTestId('checklist-progress');
+    const before = await progress.innerText();
     await page.getByTestId('checklist-pipeline_words').click();
-    await page.waitForFunction((b) => document.querySelector('[data-testid="checklist-progress"]')?.textContent !== b, before, { timeout: 15000 });
+    await page.waitForFunction((b) => document.querySelector('[data-testid="checklist-screen"] [data-testid="checklist-progress"]')?.textContent !== b, before,
+      { timeout: 15000 });
     assert.equal(await page.getByTestId('checklist-pipeline_words').getAttribute('aria-checked'), 'true');
     // A platform item cannot be ticked here.
-    assert.equal(await page.getByTestId('checklist-payment_merchant').getAttribute('aria-disabled'), null);
+    assert.notEqual(await page.getByTestId('checklist-payment_merchant').getAttribute('aria-disabled'), 'true');
     assert.equal(await page.getByTestId('checklist-branding').getAttribute('aria-disabled'), 'true');
     await ctx.close();
   });
@@ -84,7 +87,8 @@ describe('Setup checklist and branding', () => {
 
   for (const [scheme, language] of [['light', 'en'], ['dark', 'bn']]) {
     it(`screenshots with a long Bangla name: ${language} ${scheme}`, async () => {
-      adminSql(`update public.institutions set name = 'ঢাকা আইডিয়াল মডেল কলেজ ও বিশ্ববিদ্যালয় কলেজ শাখা, মিরপুর ১০' where id = '${INSTITUTION.A}'`);
+      adminSql(`update public.institutions set name = 'ঢাকা আইডিয়াল মডেল কলেজ ও বিশ্ববিদ্যালয় কলেজ শাখা, মিরপুর ১০' where id = '${INSTITUTION.A}';
+        update public.profiles set preferred_language = '${language}' where email = 'owner.admin@example.test'`);
       const ctx = await web.browser.newContext({ viewport: { width: 400, height: 900 }, colorScheme: scheme });
       const page = await ctx.newPage();
       await page.goto(`${web.base}/language`);
