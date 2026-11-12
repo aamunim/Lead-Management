@@ -45,3 +45,12 @@ Plan: Ch 14.2, 14.6, 14.12 rows 5 / 9 / 10, Ch 43 (values table), Ch 7.5 (preset
 
 Use of fields in message templates (Ch 24), filters (Ch 15), eligibility (Ch 29) and reports (Ch 38) is built in
 those milestones; `custom_fields_export` is used by copy-from-institution (0B.10).
+
+## Demo for the 0B.06 checkpoint (staging)
+
+1. As the Super Admin of a demo institution: Settings → Custom fields → Leads → "Add a field".
+2. Name it in English and Bangla, choose a type (for example "One choice" with a few choices, one per line
+   `key | English | বাংলা`), tick "Show on the card" and watch the preview (form and card); save.
+3. Move it up or down, put it in a group, retire it and bring it back.
+4. After Settings → Institution type (for example School), the type's preset fields appear marked "From your type";
+   guardian's NID and birth registration no. are marked sensitive.
