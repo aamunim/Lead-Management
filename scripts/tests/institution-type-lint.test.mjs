@@ -19,6 +19,7 @@ test('a planted institution_type branch fails; the applier may read it', () => {
     writeFileSync(join(root, 'src/lib/fees.ts'), "export const monthly = (i: { institution_type: string }) => i.institution_type === 'school';\n");
     writeFileSync(join(root, 'supabase/migrations/1_x.sql'), "select 1 where institution_type = 'college';\n");
     writeFileSync(join(root, 'supabase/migrations/2_profile_applier.sql'), "select institution_type from x;\n");
+    writeFileSync(join(root, 'src/lib/perm.ts'), "export const key = 'settings.institution_type'; // a permission key, not a read\n");
     const found = findings(root);
     assert.equal(found.length, 2);
     assert.ok(found.some((f) => f.includes('fees.ts')) && found.some((f) => f.includes('1_x.sql')));

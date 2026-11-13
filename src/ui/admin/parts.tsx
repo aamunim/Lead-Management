@@ -148,7 +148,7 @@ export function CheckRow({ label, help, checked, onToggle, badge, disabled, test
 }) {
   const { colors, space, touch } = useTheme();
   return (
-    <Pressable accessibilityRole="checkbox" accessibilityState={{ checked, disabled }} accessibilityLabel={label} accessibilityHint={help}
+    <Pressable accessibilityRole="checkbox" accessibilityState={{ checked, disabled }} aria-checked={checked} accessibilityLabel={label} accessibilityHint={help}
       onPress={onToggle} disabled={disabled} testID={testID}
       style={({ pressed }) => ({ minHeight: touch, flexDirection: 'row', alignItems: 'flex-start', gap: space.md, paddingVertical: space.sm,
         opacity: disabled ? 0.6 : pressed ? 0.85 : 1 })}>

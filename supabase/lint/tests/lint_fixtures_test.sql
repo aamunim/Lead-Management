@@ -31,6 +31,7 @@ alter table public.fixture_good enable row level security;
 create policy fixture_good_tenant on public.fixture_good to authenticated
   using (institution_id = (select app.auth_institution_id()))
   with check (institution_id = (select app.auth_institution_id()));
+select app.attach_status_guard('public.fixture_good');
 create function public.fixture_good_rpc() returns uuid language plpgsql set search_path = '' as $$
 begin
   return app.require_active_session();
@@ -172,6 +173,12 @@ insert into app.definer_registry (function_name, reason, added_in, reviewer, ten
 select pg_temp.check(pg_temp.found('write_needs_can', 'public.fixture_write_rpc'), 'a write RPC without can() is caught');
 
 -- The report fails the run when there is any finding.
+-- R15: a tenant table without the lifecycle guard.
+create table public.fixture_no_guard (institution_id uuid not null, id uuid not null default gen_random_uuid(), primary key (institution_id, id));
+alter table public.fixture_no_guard enable row level security;
+create policy fixture_no_guard_tenant on public.fixture_no_guard to authenticated using (institution_id = (select app.auth_institution_id()));
+select pg_temp.check(pg_temp.found('status_guard', 'public.fixture_no_guard'), 'a tenant table without the lifecycle guard is caught');
+
 select pg_temp.check((select count(*) from lint.findings()) > 0, 'there are findings now');
 do $$
 begin

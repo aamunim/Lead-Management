@@ -69,6 +69,8 @@ Module names follow their base word (`module.clients` → plural of `client`) un
 - Every key has a `max_length` (Ch 8.8): longer words are refused (`label_too_long`).
 - `lockable` keys (printed titles) can be locked by the platform (`label_lock`); the institution then cannot change
   or reset them (`label_locked`).
+- Resolution since 0B.04: the institution's own word → the word seeded by its types (`seeded_items`, the applied
+  profile / pack versions) → the pack of its industry → product. See `PROFILES.md`.
 
 ## Server
 
@@ -79,7 +81,7 @@ Module names follow their base word (`module.clients` → plural of `client`) un
 | `public.label_reset(key, institution?)` | back to the default; audited with old and new (default) values, event `label.changed` (0A.19) |
 | `public.label_reset_all(institution?)` | every renamed word back to its default; locked words stay; one audit row per word (0A.19) |
 | `public.label_bn_forms(key, base, overrides)` | the Bangla forms the server would store, for the live preview (0A.19) |
-| `public.label_lock(institution, key, locked)` | platform only |
+| `public.label_lock(institution, key, locked, reason?)` | platform only (`platform.labels_lock` + second step); the reason goes to both audit logs (0B.04). Locks live on the institution's word row (`institution_labels.locked_by_platform`), not in a separate table |
 | `app.label(institution, key, language, form)` | one word for notifications, prints and AI prompts (later milestones) |
 
 ## App

@@ -19,7 +19,16 @@ const cleanUp = () => adminSql(`delete from public.platform_members where user_i
   update public.industries set signup_open = (key = 'education');
   set session_replication_role = replica;
   delete from public.type_profiles where key = 'training' and version > 1;
-  set session_replication_role = default;`);
+  set session_replication_role = default;
+  delete from public.institution_labels where institution_id = 'a0000000-0000-4000-8000-00000000000a' and key = 'doc.receipt_title';
+  update public.label_defaults set en_singular = 'Lead', en_plural = 'Leads', bn_forms = app.bn_forms('লিড', true)
+   where scope = 'product' and key = 'lead';
+  update public.institution_plan set plan_key = 'standard', plan_version = 1, expires_at = null, limit_overrides = '{}', price_override = null,
+    discount_percent = 0, billing_cycle = 'monthly' where institution_id = 'a0000000-0000-4000-8000-00000000000a';
+  update public.institution_plan set plan_key = 'starter', plan_version = 1 where plan_key = 'starter';
+  delete from public.plans where key = 'starter' and version > 1;
+  delete from public.institutions where slug = 'life-ui-test';
+  delete from public.support_sessions;`);
 before(async () => {
   web = await startWeb();
   cleanUp();
@@ -203,6 +212,169 @@ describe('Master Admin panel', () => {
     await ctx.close();
   });
 
+  it('institutions: the Labels tab shows where words come from; lock a word with a reason (audited)', async () => {
+    const ctx = await newContext();
+    const page = await ctx.newPage();
+    await panelSignIn(page, 'platform.admin@example.test');
+    await page.getByTestId('panel-dashboard').waitFor({ timeout: 20000 });
+    await page.getByTestId('panel-menu-institutions').click();
+    await page.getByTestId('institution-profile-mixed').waitFor({ timeout: 20000 });
+    assert.match(await page.getByTestId('institution-profile-mixed').textContent(), /School \+ College/);
+    await page.getByTestId('institution-test-college-a').click();
+    await page.getByTestId('institution-tab-labels').click();
+    await page.getByTestId('label-doc.receipt_title').waitFor({ timeout: 20000 });
+    await page.getByTestId('label-doc.receipt_title').click();
+    await page.getByTestId('lock-reason-input').fill('legal title on receipts');
+    await page.getByTestId('lock-save').click();
+    await page.getByTestId('lock-sheet').waitFor({ state: 'hidden', timeout: 15000 });
+    await page.waitForFunction(() => /Locked/.test(document.querySelector('[data-testid="label-doc.receipt_title"]')?.textContent ?? ''), null, { timeout: 15000 });
+    await page.screenshot({ path: `${SCREENSHOTS}/panel-institution-labels.png`, fullPage: true });
+    assert.match(adminSql(`select count(*) from public.platform_audit_log where action = 'label.locked' and target_id = 'doc.receipt_title'
+      and reason = 'legal title on receipts'`), /\b1\b/);
+    assert.match(adminSql(`select locked_by_platform from public.institution_labels
+      where institution_id = 'a0000000-0000-4000-8000-00000000000a' and key = 'doc.receipt_title'`), /\bt\b/);
+    await ctx.close();
+  });
+
+  it('product words: edit a product-default word (institutions keep their own)', async () => {
+    const ctx = await newContext();
+    const page = await ctx.newPage();
+    await panelSignIn(page, 'platform.admin@example.test');
+    await page.getByTestId('panel-dashboard').waitFor({ timeout: 20000 });
+    await page.goto(`${web.base}/panel/profiles`);
+    await page.getByTestId('profiles-product-words').click();
+    await page.getByTestId('product-label-lead').waitFor({ timeout: 20000 });
+    await page.getByTestId('product-label-lead').click();
+    await page.getByTestId('product-label-en-input').fill('Prospect');
+    await page.getByTestId('product-label-en-plural-input').fill('Prospects');
+    await page.getByTestId('product-label-save').click();
+    await page.getByTestId('product-label-sheet').waitFor({ state: 'hidden', timeout: 15000 });
+    assert.match(adminSql(`select en_singular from public.label_defaults where scope = 'product' and key = 'lead'`), /Prospect/);
+    assert.match(adminSql(`select app.label('a0000000-0000-4000-8000-00000000000a', 'lead')`), /Lead/);
+    await ctx.close();
+  });
+
+  it('plan and billing: Billing changes an institution\'s plan with a reason; the Master Admin saves a plan version', async () => {
+    const ctx = await newContext();
+    const page = await ctx.newPage();
+    await panelSignIn(page, 'platform.billing@example.test');
+    await page.getByTestId('panel-dashboard').waitFor({ timeout: 20000 });
+    await page.goto(`${web.base}/panel/institution/a0000000-0000-4000-8000-00000000000a`);
+    await page.getByTestId('institution-tab-plan').click();
+    await page.getByTestId('plan-current').waitFor({ timeout: 20000 });
+    await page.getByTestId('plan-choice-starter').click();
+    await page.getByTestId('plan-fit').waitFor({ timeout: 15000 });
+    await page.getByTestId('plan-choice-pro').click();
+    await page.getByTestId('plan-overrides-input').fill('{"sms_month": 20000}');
+    await page.getByTestId('plan-reason-input').fill('signed for a year');
+    await page.getByTestId('plan-save').click();
+    await page.waitForFunction(() => /Pro/.test(document.querySelector('[data-testid="plan-current"]')?.textContent ?? ''), null, { timeout: 15000 });
+    await page.screenshot({ path: `${SCREENSHOTS}/panel-plan-tab.png`, fullPage: true });
+    assert.match(adminSql(`select plan_key || ' ' || (limit_overrides ->> 'sms_month') from public.institution_plan
+      where institution_id = 'a0000000-0000-4000-8000-00000000000a'`), /pro 20000/);
+    assert.match(adminSql(`select count(*) from public.platform_audit_log where action = 'institution.plan_changed' and reason = 'signed for a year'`), /\b1\b/);
+    await ctx.close();
+
+    const admin = await newContext();
+    const p2 = await admin.newPage();
+    await panelSignIn(p2, 'platform.admin@example.test');
+    await p2.getByTestId('panel-dashboard').waitFor({ timeout: 20000 });
+    await p2.goto(`${web.base}/panel/institutions`);
+    await p2.getByTestId('institutions-plans').click();
+    await p2.getByTestId('plan-starter').waitFor({ timeout: 20000 });
+    await p2.getByTestId('plan-starter').click();
+    await p2.getByTestId('plan-limits-input').fill('{"users": 6}');
+    await p2.getByTestId('plan-sheet-save').click();
+    await p2.getByTestId('plan-sheet').waitFor({ state: 'hidden', timeout: 15000 });
+    assert.match(adminSql(`select max(version) from public.plans where key = 'starter'`), /\b2\b/);
+    await admin.close();
+  });
+
+  it('lifecycle: approve from the queue, read only, suspend, reactivate, close after a full export', async () => {
+    adminSql(`insert into public.institutions (slug, name, eiin, status) values ('life-ui-test', 'Lifecycle UI School', '765432', 'pending')`);
+    const ctx = await newContext({ acceptDownloads: true });
+    const page = await ctx.newPage();
+    await panelSignIn(page, 'platform.admin@example.test');
+    await page.getByTestId('approval-life-ui-test').waitFor({ timeout: 20000 });
+    await page.screenshot({ path: `${SCREENSHOTS}/panel-approvals.png`, fullPage: true });
+    await page.getByTestId('approval-life-ui-test').click();
+    await page.getByTestId('overview-info').waitFor({ timeout: 20000 });
+    const to = async (status, reason) => {
+      await page.getByTestId(`overview-to-${status}`).click();
+      await page.getByTestId('status-reason-input').fill(reason);
+      await page.getByTestId('status-confirm').click();
+      await page.getByTestId('status-sheet').waitFor({ state: 'hidden', timeout: 15000 });
+      for (let n = 0; n < 40 && !new RegExp(`\\b${status}\\b`).test(adminSql(`select status from public.institutions where slug = 'life-ui-test'`)); n += 1) {
+        await page.waitForTimeout(300);
+      }
+      assert.match(adminSql(`select status from public.institutions where slug = 'life-ui-test'`), new RegExp(`\\b${status}\\b`));
+    };
+    await to('trial', 'EIIN checked');
+    await to('read_only', 'payment overdue');
+    await to('suspended', 'abuse report');
+    await to('active', 'resolved');
+    // Closing needs a full export first.
+    await page.getByTestId('overview-to-closed').click();
+    await page.getByTestId('status-needs-export').waitFor();
+    await page.getByTestId('status-reason-input').fill('left the platform');
+    await page.getByTestId('status-confirm').click();
+    await page.waitForTimeout(1500);
+    assert.match(adminSql(`select status from public.institutions where slug = 'life-ui-test'`), /\bactive\b/, 'not closed without an export');
+    await page.goto(page.url());
+    await page.getByTestId('overview-export-make').click();
+    await page.locator('[data-testid^="overview-export-"]:not([data-testid="overview-export-make"])').first().waitFor({ timeout: 20000 });
+    const download = page.waitForEvent('download');
+    await page.locator('[data-testid^="overview-export-"]:not([data-testid="overview-export-make"])').first().click();
+    assert.match((await download).suggestedFilename(), /^life-ui-test-.*\.json$/);
+    await to('closed', 'left the platform');
+    await page.getByTestId('overview-purge').waitFor({ timeout: 15000 });
+    await page.screenshot({ path: `${SCREENSHOTS}/panel-overview-closed.png`, fullPage: true });
+    assert.match(adminSql(`select count(*) from public.institution_status_history h join public.institutions i on i.id = h.institution_id
+      where i.slug = 'life-ui-test'`), /\b5\b/);
+    await ctx.close();
+  });
+
+  it('support entry: reason and time limit, read-only banner, writes refused, exit; the Super Admin sees the log', async () => {
+    const ctx = await newContext();
+    const page = await ctx.newPage();
+    await panelSignIn(page, 'platform.admin@example.test');
+    await page.getByTestId('panel-dashboard').waitFor({ timeout: 20000 });
+    await page.goto(`${web.base}/panel/institution/a0000000-0000-4000-8000-00000000000a`);
+    await page.getByTestId('overview-enter').click();
+    await page.getByTestId('enter-reason-input').fill('help with the fee settings');
+    await page.getByTestId('enter-minutes-15').click();
+    await page.getByTestId('enter-confirm').click();
+    await page.getByTestId('support-banner').waitFor({ timeout: 20000 });
+    assert.match(await page.getByTestId('support-banner-text').textContent(), /read only.*1[45]:\d\d/);
+    await page.screenshot({ path: `${SCREENSHOTS}/support-banner.png`, fullPage: true });
+    // A write is refused on the server.
+    await page.goto(`${web.base}/admin/custom-fields`);
+    await page.getByTestId('fields-add').click();
+    await page.getByTestId('field-en-input').fill('Support test');
+    await page.getByTestId('field-bn-input').fill('সাপোর্ট টেস্ট');
+    await page.getByTestId('field-save').click();
+    await page.getByText(/read only/i).nth(1).waitFor({ timeout: 15000 });
+    assert.match(adminSql(`select count(*) from public.custom_field_definitions where key = 'support_test'`), /\b0\b/);
+    await page.goto(`${web.base}/home`);
+    await page.getByTestId('support-exit').click();
+    await page.waitForURL(/\/panel/, { timeout: 20000 });
+    assert.match(adminSql(`select count(*) from public.support_sessions where ended_at is null`), /\b0\b/);
+    await ctx.close();
+
+    const owner = await newContext();
+    const p2 = await owner.newPage();
+    await p2.goto(`${web.base}/sign-in`);
+    await p2.getByTestId('sign-in-email-input').fill('owner.admin@example.test');
+    await p2.getByTestId('sign-in-password-input').fill('password123');
+    await p2.getByTestId('sign-in-submit').click();
+    await p2.getByTestId('home').waitFor({ timeout: 20000 });
+    await p2.goto(`${web.base}/admin/support-log`);
+    await p2.locator('[data-testid^="support-entry-"]').first().waitFor({ timeout: 20000 });
+    assert.match(await p2.locator('[data-testid^="support-entry-"]').first().textContent(), /help with the fee settings/);
+    await p2.screenshot({ path: `${SCREENSHOTS}/support-log.png`, fullPage: true });
+    await owner.close();
+  });
+
   it('profiles and packs need platform.profiles (Support is refused)', async () => {
     const ctx = await newContext();
     const page = await ctx.newPage();
@@ -224,8 +396,8 @@ describe('Master Admin panel', () => {
       await panelSignIn(page, 'platform.admin@example.test');
       await page.getByTestId('panel-dashboard').waitFor({ timeout: 20000 });
       await page.screenshot({ path: `${SCREENSHOTS}/panel-dashboard-${language}-${scheme}.png`, fullPage: true });
-      await page.goto(`${web.base}/panel/institutions`);
-      await page.getByTestId('panel-institution-tabs').waitFor({ timeout: 20000 });
+      await page.goto(`${web.base}/panel/institution/a0000000-0000-4000-8000-00000000000a`);
+      await page.getByTestId('overview-info').waitFor({ timeout: 20000 });
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), 'no sideways scroll');
       await page.screenshot({ path: `${SCREENSHOTS}/panel-institutions-${language}-${scheme}.png`, fullPage: true });
       await page.goto(`${web.base}/panel/profile/profile/school`);

@@ -24,7 +24,7 @@ export function findings(root = '.') {
       if (statSync(join(root, path)).isDirectory()) walk(path);
       else if (CODE.test(entry) && !ALLOWED.some((re) => re.test(path))) {
         readFileSync(join(root, path), 'utf8').split('\n').forEach((line, i) => {
-          if (/\binstitution_type\b/.test(line)) out.push(`${relative('.', path)}:${i + 1}: ${line.trim()}`);
+          if (/(?<!settings\.)\binstitution_type\b/.test(line)) out.push(`${relative('.', path)}:${i + 1}: ${line.trim()}`);
         });
       }
     }

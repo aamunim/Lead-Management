@@ -68,19 +68,17 @@ select pg_temp.check(app.label(:inst_a, 'client') = 'Student' and app.label(:ins
 select pg_temp.check(app.label(:inst_a, 'client', 'en', 'plural') = 'Students' and app.label(:inst_a, 'client', 'bn', 'plural_oblique') = 'শিক্ষার্থীদের',
   'forms are served by the server resolver (notifications, prints)');
 select pg_temp.check(app.label(:inst_a, 'lead') = 'Lead', 'words that are the same in every business (Lead) come through the pack unchanged');
-create or replace function app.institution_label_scopes(p_institution uuid)
-returns table (pack text, profile text) language sql stable set search_path = '' as $$
-  select 'education'::text, case when p_institution = 'a0000000-0000-4000-8000-00000000000a' then 'university' end
-$$;
+-- A type profile (0B.04 applier, Ch 8.5 university) overrides the pack for that institution only.
+select app.apply_profiles(:inst_a, array['university']);
 select pg_temp.check(app.label(:inst_a, 'offering') = 'Program' and app.label(:inst_b, 'offering') = 'Course',
   'a type profile (Ch 8.5 university) overrides the pack for that institution only');
-create or replace function app.institution_label_scopes(p_institution uuid)
-returns table (pack text, profile text) language sql stable set search_path = '' as $$
-  select null::text, null::text
-$$;
+delete from public.seeded_items where institution_id = :inst_a;
+delete from public.institution_profiles where institution_id = :inst_a;
+-- Without a pack (an industry whose pack is not published) the neutral product default applies.
+insert into public.industries (key, name, sort) values ('no_pack', '{"en":"x","bn":"x"}', 999);
+update public.institutions set industry = 'no_pack' where id = :inst_a;
 select pg_temp.check(app.label(:inst_a, 'client') = 'Client', 'without a pack the neutral product default applies');
-create or replace function app.institution_label_scopes(p_institution uuid)
-returns table (pack text, profile text) language sql stable set search_path = '' as $$ select 'education'::text, null::text $$;
+update public.institutions set industry = 'education' where id = :inst_a;
 
 -- 4. Writes: staff refused until permissions exist; the Master Admin renames client → Trainee for A only.
 select pg_temp.act_as(pg_temp.claims_for(:user_a));

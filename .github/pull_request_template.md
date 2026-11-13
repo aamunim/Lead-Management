@@ -36,6 +36,7 @@
 - [ ] **Theme:** built from `@/ui` components and `useTheme()` tokens only; checked in light and dark; brand colour readable (no raw colours / font sizes — lint).
 - [ ] **Keyboard:** focused field and Save stay above the keyboard (FormScreen / BottomSheet); Next / Done; right keyboard per field; tap outside or scroll closes it.
 - [ ] **Bangla text:** every word from translations / labels; no clipped vowel signs; long words and the weird-labels institution checked (gallery harness).
+- [ ] **Words in output:** exports, reports, PDFs and messages show the institution's labels; neutral keys only in the API / webhooks (Ch 49.8 row 10).
 - [ ] **Forms:** errors under the field; Back asks before discarding; draft survives a call / app kill; Save cannot run twice (idempotency key sent to the RPC).
 - [ ] **States:** skeleton while loading; empty state with an action; error with Retry (never silent); pull-to-refresh on lists; Undo after delete; progress + Cancel for long tasks.
 - [ ] **Navigation:** Android Back closes sheets and dialogs first; the list keeps its place when coming back.

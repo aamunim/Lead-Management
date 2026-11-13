@@ -67,12 +67,32 @@
     "forms": {
       "label": "Forms and $t(labels:network.singular) settings",
       "help": "Public forms, the $t(labels:network.singular) and referrals."
+    },
+    "institution_type": {
+      "label": "Institution type",
+      "help": "Choose the institution's types (school, college …), see a preview and apply them; reset areas to the type defaults."
+    },
+    "modules": {
+      "label": "Modules",
+      "help": "Turn the modules your plan allows on or off; see what else is affected first."
+    },
+    "custom_fields": {
+      "label": "Custom fields",
+      "help": "Add, change, order, group and retire the institution's own fields for leads, clients and the network."
+    },
+    "branding": {
+      "label": "Branding",
+      "help": "Change the institution's name, short name, logo and colour."
     }
   },
   "integration": {
     "manage": {
       "label": "Manage integrations and keys",
       "help": "Connect SMS, email and payment providers and store their keys. Sensitive."
+    },
+    "view_status": {
+      "label": "See connection status",
+      "help": "See whether SMS, email and other connections work, and whose side a problem is on (never keys or settings)."
     }
   },
   "audit": {
@@ -131,6 +151,30 @@
     "developer": {
       "label": "Developer inbox",
       "help": "Feedback and error reports."
+    },
+    "plans": {
+      "label": "Plans",
+      "help": "Edit the plans catalog: modules, limits, prices and trial length (as new versions)."
+    },
+    "institutions_close": {
+      "label": "Close institutions",
+      "help": "Close an institution after a full export; its data is deleted after the notice period."
+    },
+    "institutions_create": {
+      "label": "Create institutions",
+      "help": "Create an institution with the setup wizard and invite its Super Admin."
+    }
+  },
+  "billing": {
+    "view": {
+      "label": "Plan and usage",
+      "help": "See the plan, its end date, limits and usage of the institution."
+    }
+  },
+  "custom_field": {
+    "view_sensitive": {
+      "label": "See sensitive custom fields",
+      "help": "See and change custom fields marked sensitive (for example a national ID or a birth registration number)."
     }
   }
 }

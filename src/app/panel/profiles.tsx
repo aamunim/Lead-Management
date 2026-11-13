@@ -8,7 +8,7 @@ import { useErrorText } from '@/i18n/errors';
 import { useLanguageState } from '@/lib/language';
 import { fetchPacks, pick, setIndustryOpen, type IndustryRow } from '@/lib/packs';
 import { Badge, CheckRow, Row, Section } from '@/ui/admin/parts';
-import { ErrorState, Skeleton, useSnackbar } from '@/ui/components';
+import { Button, ErrorState, Skeleton, useSnackbar } from '@/ui/components';
 import { usePanel } from '@/ui/panel/PanelContext';
 import { PanelShell } from '@/ui/panel/PanelShell';
 
@@ -45,6 +45,8 @@ export default function PanelProfiles() {
   return (
     <PanelShell permission="platform.profiles" title={t('menu.profiles')} testID="panel-profiles">
       <AppText>{t('profiles.intro')}</AppText>
+      <Button variant="tonal" icon="translate" label={t('profiles.productWords')} onPress={() => router.push('/panel/product-labels')}
+        testID="profiles-product-words" />
       {error ? <ErrorState error={error} onRetry={() => void load()} /> : !rows ? <Skeleton lines={6} /> : (
         <>
           {rows.filter((r) => r.pack).map((row) => (

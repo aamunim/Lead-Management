@@ -151,3 +151,69 @@ begin
   end if;
 end $$;
 create function leak_fixtures.public__app_settings_history(p uuid) returns void language sql as $$ select leak_fixtures.public__app_settings(p) $$;
+
+-- 0B.06 custom fields: a field and a value per institution (A's are markers).
+create function leak_fixtures.public__custom_field_definitions(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_mark text := case when p_institution = leak.id('inst_a') then 'LEAKA-0B06' else 'OTHER-0B06' end;
+begin
+  insert into public.custom_field_definitions (institution_id, id, entity, key, label, type)
+  values (p_institution, md5('leak-cf-' || p_institution)::uuid, 'lead', 'leak_field', jsonb_build_object('en', v_mark, 'bn', v_mark), 'text')
+  on conflict do nothing;
+  insert into public.custom_field_values (institution_id, field_id, entity, record_id, value_text)
+  values (p_institution, md5('leak-cf-' || p_institution)::uuid, 'lead', gen_random_uuid(), v_mark || '-VALUE')
+  on conflict do nothing;
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values (v_mark, 'custom field of A'), (v_mark || '-VALUE', 'custom field value of A') on conflict do nothing;
+  end if;
+end $$;
+create function leak_fixtures.public__custom_field_values(p uuid) returns void language sql as $$ select leak_fixtures.public__custom_field_definitions(p) $$;
+
+-- 0B.08 support sessions: one per institution, entered by the platform Master Admin (the reason of A's is a marker).
+create function leak_fixtures.public__support_sessions(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_reason text := case when p_institution = leak.id('inst_a') then 'LEAKA-0B08 support reason' else 'OTHER-0B08 support reason' end;
+begin
+  insert into public.support_sessions (institution_id, platform_user_id, reason, started_at, expires_at, ended_at)
+  values (p_institution, '55555555-5555-4555-8555-555555555555', v_reason, now() - interval '2 hours', now() - interval '1 hour', now() - interval '1 hour');
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('LEAKA-0B08', 'support session reason of A') on conflict do nothing;
+  end if;
+end $$;
+
+-- 0B.09: a Super Admin invitation (the email is the marker).
+create function leak_fixtures.public__institution_invites(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_email text := case when p_institution = leak.id('inst_a') then 'leaka-0b09@example.test' else 'other-0b09@example.test' end;
+begin
+  insert into public.institution_invites (institution_id, email, role_id)
+  select p_institution, v_email, r.id from public.roles r where r.institution_id = p_institution and r.is_super_admin;
+  if not found then
+    insert into public.roles (institution_id, name_key, is_system, is_super_admin) values (p_institution, 'role.super_admin', true, true);
+    insert into public.institution_invites (institution_id, email, role_id)
+    select p_institution, v_email, r.id from public.roles r where r.institution_id = p_institution and r.is_super_admin;
+  end if;
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('leaka-0b09', 'Super Admin invitation email of A') on conflict do nothing;
+  end if;
+end $$;
+
+-- 0B.10: a checklist item ticked by hand (the note is the marker).
+create function leak_fixtures.public__institution_checklist(p_institution uuid) returns void language plpgsql as $$
+begin
+  insert into public.institution_checklist (institution_id, item_key, status, note, completed_at)
+  values (p_institution, 'pipeline_words', 'done',
+          case when p_institution = leak.id('inst_a') then 'LEAKA-0B10 checklist note' else 'OTHER-0B10 checklist note' end, now())
+  on conflict (institution_id, item_key) do update set note = excluded.note;
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('LEAKA-0B10', 'checklist note of A') on conflict do nothing;
+  end if;
+end $$;
+
+-- 0B.11: who pays for SMS (no free text: the institution's row itself is the probe), and a connection whose label is
+-- the marker (integration_connections has a generic-insert-safe shape, this keeps the marker explicit).
+create function leak_fixtures.public__institution_service_payers(p_institution uuid) returns void language plpgsql as $$
+begin
+  insert into public.institution_service_payers (institution_id, kind, payer) values (p_institution, 'sms', 'direct')
+  on conflict (institution_id, kind) do nothing;
+end $$;

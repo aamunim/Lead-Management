@@ -223,6 +223,42 @@
     "developer_email": {
       "label": "Feedback inbox",
       "help": "Who receives feedback and error reports."
+    },
+    "purge_notice_days": {
+      "label": "Days before a closed institution's data is deleted",
+      "help": "After an institution is closed, its data is kept this long (it can still be exported), then deleted. Proposed: 90."
+    },
+    "trial_limit_per_person": {
+      "label": "Trial institutions per person or phone",
+      "help": "More open trials than this from one person or phone are flagged in the approval queue. Proposed: 2."
+    },
+    "self_signup_open": {
+      "label": "Self sign-up open",
+      "help": "Institutions may sign up by themselves and wait for approval. Proposed: on."
+    },
+    "signup_limit_per_ip_hour": {
+      "label": "Sign-ups per network address per hour",
+      "help": "More institution sign-ups than this from one address in an hour are refused. Proposed: 5."
+    },
+    "signup_limit_per_person_day": {
+      "label": "Sign-ups per login or phone per day",
+      "help": "More institution sign-ups than this by one login or phone in a day are refused. Proposed: 3."
+    },
+    "brand_color": {
+      "label": "Brand colour",
+      "help": "The institution's colour, shown after sign-in. A colour without enough contrast is used for accents only."
+    },
+    "brand_logo_path": {
+      "label": "Logo",
+      "help": "The institution's logo file, shown after sign-in."
+    },
+    "setup_alert_days_before_trial_end": {
+      "label": "Setup alert before trial end (days)",
+      "help": "Support is told this many days before a trial ends if setup is incomplete. Proposed: 3."
+    },
+    "key_rotation_reminder_days": {
+      "label": "Key rotation reminder (days)",
+      "help": "Remind the Master Admin to rotate a provider key after this many days. Proposed: 365."
     }
   },
   "groups": {

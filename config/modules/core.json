@@ -29,6 +29,47 @@
       }
     },
     {
+      "key": "settings.institution_type",
+      "scopable": false,
+      "sensitive": true,
+      "defaults": {},
+      "introduced_in_release": "0B.04"
+    },
+    {
+      "key": "settings.modules",
+      "scopable": false,
+      "sensitive": true,
+      "defaults": {},
+      "introduced_in_release": "0B.05"
+    },
+    {
+      "key": "settings.custom_fields",
+      "scopable": false,
+      "sensitive": false,
+      "defaults": {
+        "admin": true
+      },
+      "introduced_in_release": "0B.06"
+    },
+    {
+      "key": "settings.branding",
+      "scopable": false,
+      "sensitive": false,
+      "defaults": {
+        "admin": true
+      },
+      "introduced_in_release": "0B.10"
+    },
+    {
+      "key": "integration.view_status",
+      "scopable": false,
+      "sensitive": false,
+      "defaults": {
+        "admin": true
+      },
+      "introduced_in_release": "0B.11"
+    },
+    {
       "key": "settings.organisation",
       "scopable": false,
       "sensitive": false,
@@ -182,6 +223,20 @@
       "defaults": {
         "accountant": "all"
       }
+    },
+    {
+      "key": "billing.view",
+      "scopable": false,
+      "sensitive": true,
+      "defaults": {},
+      "introduced_in_release": "0B.05"
+    },
+    {
+      "key": "custom_field.view_sensitive",
+      "scopable": false,
+      "sensitive": true,
+      "defaults": {},
+      "introduced_in_release": "0B.06"
     }
   ],
   "platform_permissions": [
@@ -233,6 +288,21 @@
       "key": "platform.developer",
       "sensitive": true,
       "introduced_in_release": "0B.02"
+    },
+    {
+      "key": "platform.plans",
+      "sensitive": true,
+      "introduced_in_release": "0B.05"
+    },
+    {
+      "key": "platform.institutions_close",
+      "sensitive": true,
+      "introduced_in_release": "0B.07"
+    },
+    {
+      "key": "platform.institutions_create",
+      "sensitive": true,
+      "introduced_in_release": "0B.09"
     }
   ],
   "fields": [
@@ -265,6 +335,12 @@
       "field": "amount",
       "sensitive": true,
       "permission": "sensitive_field.view"
+    },
+    {
+      "entity": "custom_field",
+      "field": "sensitive_value",
+      "sensitive": true,
+      "permission": "custom_field.view_sensitive"
     }
   ]
 }

@@ -32,6 +32,7 @@ const MAX_RATIO = 0.005;
 // Every screen route: file under src/app, the URL, the element that says "loaded", what to mask, signed in or not.
 const ROUTES = [
   { name: 'sign-in', file: 'sign-in.tsx', path: '/sign-in', ready: 'sign-in-submit', signedOut: true },
+  { name: 'sign-up', file: 'sign-up.tsx', path: '/sign-up', ready: 'wizard-types', signedOut: true },
   { name: 'language', file: 'language.tsx', path: '/language', ready: 'language' },
   { name: 'appearance', file: 'appearance.tsx', path: '/appearance', ready: 'appearance' },
   { name: 'words', file: 'terminology.tsx', path: '/terminology', ready: 'terminology-samples' },
@@ -46,16 +47,25 @@ const ROUTES = [
   { name: 'roles', file: '(app)/admin/roles.tsx', path: '/admin/roles', ready: 'roles-compare' },
   { name: 'role', file: '(app)/admin/role/[id].tsx', path: '/admin/role/{role}', ready: 'role-permissions' },
   { name: 'role-compare', file: '(app)/admin/role-compare.tsx', path: '/admin/role-compare', ready: 'compare-a' },
-  { name: 'new-permissions', file: '(app)/admin/new-permissions.tsx', path: '/admin/new-permissions', ready: 'new-settings.team' },
+  { name: 'new-permissions', file: '(app)/admin/new-permissions.tsx', path: '/admin/new-permissions', ready: 'new-permissions' },
   { name: 'explain', file: '(app)/admin/explain.tsx', path: '/admin/explain', ready: 'explain-check' },
   { name: 'audit', file: '(app)/admin/audit.tsx', path: '/admin/audit', ready: 'audit-area-all', mask: ['[data-testid="audit-list"]', '[data-testid="audit-empty"]'] },
   { name: 'branches', file: '(app)/admin/branches.tsx', path: '/admin/branches', ready: 'branches-add' },
   { name: 'terminology', file: '(app)/admin/terminology.tsx', path: '/admin/terminology', ready: 'term-client' },
+  { name: 'institution-type', file: '(app)/admin/institution-type.tsx', path: '/admin/institution-type', ready: 'types-choose' },
+  { name: 'modules', file: '(app)/admin/modules.tsx', path: '/admin/modules', ready: 'module-leads' },
+  { name: 'plan', file: '(app)/admin/plan.tsx', path: '/admin/plan', ready: 'usage-users' },
+  { name: 'custom-fields', file: '(app)/admin/custom-fields.tsx', path: '/admin/custom-fields', ready: 'fields-add' },
+  { name: 'support-log', file: '(app)/admin/support-log.tsx', path: '/admin/support-log', ready: 'support-log-empty' },
+  { name: 'checklist', file: '(app)/admin/checklist.tsx', path: '/admin/checklist', ready: 'checklist' },
+  { name: 'branding', file: '(app)/admin/branding.tsx', path: '/admin/branding', ready: 'branding-color' },
+  { name: 'connections', file: '(app)/admin/connections.tsx', path: '/admin/connections', ready: 'connections-none' },
 ];
 // Not in the matrix on purpose: redirects and developer-only screens.
 // The Master Admin panel needs a two-step sign-in; its screens are captured by scripts/ui/panel.web.test.mjs.
 const SKIPPED = new Set(['index.tsx', 'dev-sign-in.tsx', 'dev/form.tsx', 'dev/gallery.tsx',
-  'panel/sign-in.tsx', 'panel/index.tsx', 'panel/users.tsx', 'panel/[section].tsx', 'panel/profiles.tsx', 'panel/profile/[kind]/[key].tsx']);
+  'panel/sign-in.tsx', 'panel/index.tsx', 'panel/users.tsx', 'panel/[section].tsx', 'panel/profiles.tsx', 'panel/profile/[kind]/[key].tsx',
+  'panel/institutions.tsx', 'panel/institution/[id].tsx', 'panel/institution-new.tsx', 'panel/providers.tsx', 'panel/product-labels.tsx', 'panel/plans.tsx']);
 
 function routeFiles(dir = 'src/app') {
   const out = [];

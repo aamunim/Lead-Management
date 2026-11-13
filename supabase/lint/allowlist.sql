@@ -42,3 +42,32 @@ insert into lint.allow (rule, object, reason) values
   ('platform_table', 'public.industries', 'Product-wide industry list for the sign-up wizard (0B.03, Ch 6.3).'),
   ('platform_table', 'public.industry_packs', 'Product-wide versioned industry packs edited by the Master Admin (0B.03, Ch 49).'),
   ('platform_table', 'public.type_profiles', 'Product-wide versioned type profiles edited by the Master Admin (0B.03, Ch 7).');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.profile_areas', 'Product-wide registry of profile areas and where each is used (0B.04).');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.modules', 'Product-wide module list (0B.05, Ch 9.2).'),
+  ('platform_table', 'public.limit_metrics', 'Product-wide catalog of limit metrics (0B.05, Ch 9.5).'),
+  ('platform_table', 'public.plans', 'Product-wide versioned plans catalog edited by the Master Admin (0B.05, Ch 9.3).'),
+  ('platform_table', 'public.addons', 'Product-wide add-on catalog (0B.05, Ch 9.4).');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'app.status_guard_exempt', 'Developer list of tables a read-only institution may still write, with reasons (0B.07).');
+insert into lint.allow (rule, object, reason) values
+  ('index_leading_institution', 'support_sessions_id_key', 'Token checks look a support session up by its id before any institution is known (0B.08).'),
+  ('unique_includes_institution', 'support_sessions_id_key', 'A support session id is unique across the platform: the token carries only the id (0B.08).'),
+  ('index_leading_institution', 'support_sessions_open_idx', 'The sign-in hook finds a platform user''s open session before any institution is known (0B.08).'),
+  ('write_needs_can', 'public.support_session_end', 'Ends only the caller''s own support sessions (leaving is always allowed); audited on both sides.');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.institution_signups', 'Platform record of institution sign-ups for rate limits and review; written before the institution exists (0B.09).'),
+  ('index_leading_institution', 'institution_invites_email_idx', 'A confirmed login finds its open Super Admin invitations by email before any institution is known (0B.09).');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.setup_checklist_items', 'Product-wide setup checklist items (Proposed list), not per institution (0B.10).'),
+  ('platform_table', 'public.copy_areas', 'Developer registry of configuration areas that can be copied between institutions (0B.10).');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.integration_providers', 'Product-wide provider catalog (0B.11, Ch 42.2).'),
+  ('platform_table', 'public.integration_error_kinds', 'Product-wide list of integration error codes and whose side each is on (0B.11, I10).'),
+  ('platform_table', 'public.platform_connections', 'The platform''s own gateways (default SMS / mail), not owned by an institution (0B.11, D15).'),
+  ('platform_table', 'public.platform_secrets', 'Vault references of the platform gateways'' keys; no institution (0B.11, D4).'),
+  ('platform_table', 'public.integration_audit', 'Audit of connection and key changes for institutions and the platform; read only through panel RPCs (0B.11).');
+insert into lint.allow (rule, object, reason) values
+  ('index_leading_institution', 'integration_audit_pkey', 'Platform audit table with an optional institution; rows are found by id (0B.11).'),
+  ('unique_includes_institution', 'integration_audit_pkey', 'Platform audit table: the id is unique across the platform (0B.11).');

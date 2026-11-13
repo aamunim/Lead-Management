@@ -110,6 +110,30 @@ insert into results select 'can_per_call_us', pg_temp.time_query('select count(*
 reset role;
 insert into results select 'rebuild_one_large_user_ms', pg_temp.time_query('select app.rebuild_user_access(''${large}'', ''${largeUser}'')', 10);
 
+-- Custom fields (0B.06): 20 fields on every small-institution record, two of them filterable (with their partial
+-- indexes); the list filtered on both must stay within CUSTOM_FIELD_LIST_MS. Set up as the database owner (no user).
+select set_config('request.jwt.claims', '', true);
+insert into public.custom_field_definitions (institution_id, id, entity, key, label, type, options, filterable)
+select '${small}', md5('bench-cf-' || g)::uuid, 'lead', 'bench_f' || g, '{"en":"F","bn":"F"}',
+       case g when 1 then 'gpa' when 2 then 'select' else 'text' end,
+       case g when 2 then '{"choices":[{"key":"morning","label":{"en":"M","bn":"M"}},{"key":"day","label":{"en":"D","bn":"D"}}]}'::jsonb else '{}' end,
+       g <= 2
+  from generate_series(1, 20) g;
+insert into public.custom_field_values (institution_id, field_id, entity, record_id, value_text, value_num)
+select '${small}', md5('bench-cf-' || g)::uuid, 'lead', r.id,
+       case when g = 2 then (array['morning', 'day'])[1 + (abs(hashtext(r.id::text)) % 2)] when g > 2 then 'value ' || g end,
+       case when g = 1 then round((abs(hashtext(r.id::text)) % 501) / 100.0, 2) end
+  from public.bench_records r cross join generate_series(1, 20) g where r.institution_id = '${small}';
+select app.custom_field_index_sync('${small}', md5('bench-cf-1')::uuid), app.custom_field_index_sync('${small}', md5('bench-cf-2')::uuid);
+analyze public.custom_field_values;
+select set_config('request.jwt.claims', pg_temp.claims('${smallManager}'), true);
+set local role authenticated;
+insert into results select 'small_custom_field_filter_list_ms', pg_temp.time_query('select r.id, r.title from public.bench_records r
+  where r.id in (select v.record_id from public.custom_field_values v where v.institution_id = ''${small}'' and v.field_id = ''' || md5('bench-cf-1')::uuid || ''' and v.value_num >= 4)
+    and r.id in (select v.record_id from public.custom_field_values v where v.institution_id = ''${small}'' and v.field_id = ''' || md5('bench-cf-2')::uuid || ''' and v.value_text = ''day'')
+  order by r.created_at desc, r.id limit 50', ${RUNS});
+reset role;
+
 -- Without the large institution's rows: the same small-institution queries.
 delete from public.bench_records where institution_id = '${large}';
 analyze public.bench_records;
@@ -150,6 +174,12 @@ if (baselineArg > 0 && existsSync(process.argv[baselineArg + 1])) {
   }
 } else if (baselineArg > 0) {
   console.log('No baseline yet (first run on main makes it): slow-down check skipped.');
+}
+
+// Custom fields (0B.06, Ch 14.12 row 5): a list filtered on two custom fields stays quick (Proposed target).
+export const CUSTOM_FIELD_LIST_MS = 50;
+if (result.small_custom_field_filter_list_ms > CUSTOM_FIELD_LIST_MS) {
+  failures.push(`small_custom_field_filter_list: ${result.small_custom_field_filter_list_ms} ms (target ${CUSTOM_FIELD_LIST_MS} ms)`);
 }
 
 // Noisy neighbour: the small institution must not get noticeably slower because a large one shares the database.

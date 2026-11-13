@@ -8,7 +8,7 @@ export type PanelMenuItem = { key: string; href: Href; icon: IconName; permissio
 
 export const PANEL_MENU: PanelMenuItem[] = [
   { key: 'dashboard', href: '/panel', icon: 'dashboard', permission: 'platform.view', builtIn: null },
-  { key: 'institutions', href: '/panel/institutions', icon: 'apartment', permission: 'platform.view', builtIn: '0B.07' },
+  { key: 'institutions', href: '/panel/institutions', icon: 'apartment', permission: 'platform.view', builtIn: null },
   { key: 'groups', href: '/panel/groups', icon: 'account-tree', permission: 'platform.view', builtIn: '1.19' },
   { key: 'profiles', href: '/panel/profiles', icon: 'category', permission: 'platform.profiles', builtIn: null },
   { key: 'providers', href: '/panel/providers', icon: 'hub', permission: 'platform.integrations', builtIn: '0B.11' },

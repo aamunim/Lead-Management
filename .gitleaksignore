@@ -3,3 +3,5 @@
 273a2c1f03a9093420b3e9764ce04befc9843af1:scripts/e2e/settings.e2e.mjs:generic-api-key:9
 # A made-up JWT ("signature") used to test log redaction:
 038fe253b337ce2b931f3341825eb9c637ab14d0:scripts/tests/edge-shared.test.mjs:jwt:11
+# The secret-scan rule test lists rule ids; the SMS-key rule matched the id 'google-oauth-refresh-token' (0B.11):
+380ef2783854aaaea7a82ec2e389a3241cdff73a:scripts/tests/gitleaks-rules.test.mjs:sms-gateway-api-key:19
