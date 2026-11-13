@@ -71,3 +71,5 @@ insert into lint.allow (rule, object, reason) values
 insert into lint.allow (rule, object, reason) values
   ('index_leading_institution', 'integration_audit_pkey', 'Platform audit table with an optional institution; rows are found by id (0B.11).'),
   ('unique_includes_institution', 'integration_audit_pkey', 'Platform audit table: the id is unique across the platform (0B.11).');
+insert into lint.allow (rule, object, reason) values
+  ('definer_tenant_check', 'app.can_check', 'Applies the app.auth_institution_id() rule inline (token institution + active membership with the token''s access version, or an open support session): calling the SQL helper plans it on every call, 4x slower (benchmark gate, lesson 13).');
