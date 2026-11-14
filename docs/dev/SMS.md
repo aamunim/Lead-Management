@@ -47,7 +47,7 @@ Errors are mapped to whose side they are on (I10): auth, balance, sender, recipi
 
 - OTP, urgent and transactional messages use connections whose route is `transactional` or `all`; bulk uses `promotional` or `all`. The OTP lane of 0B.12 still goes first.
 - The platform gateway is used when the platform pays, when the institution has no connection, and — unless switched off for the institution (Integrations tab) — as the last backup. Proposed default: on. It is billed to the institution as platform-paid usage.
-- **Switch gateway (D33, D34):** add the new connection, check it with Send test, then "Make primary".
+- **Switch gateway (D33, D34, D46 — Master Admin only):** add the new connection, check it with Send test, then "Make primary".
   - The old primary becomes the backup.
   - Queued messages use the new one at once, because routing happens at send time.
   - The log and the ledger keep the gateway that actually sent each message.
