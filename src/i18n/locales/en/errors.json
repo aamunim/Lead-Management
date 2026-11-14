@@ -68,6 +68,10 @@
   "secret_valid_from_in_past": "The start date cannot be in the past.",
   "outbox_invalid": "The message is missing a recipient or text.",
   "not_approved": "Messages can be sent after the institution is approved.",
+  "domain_taken": "This domain is already used by another institution.",
+  "sender_paused": "Email is paused for this institution because of bounces or complaints.",
+  "domain_not_verified": "The sending domain is not verified yet.",
+  "template_unknown": "This mail template does not exist.",
   "actions": {
     "sign_in": "Sign in",
     "choose_institution": "Choose institution",

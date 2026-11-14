@@ -10,6 +10,7 @@ import { CheckRow, Chips, Row, Section, tDynamic } from '@/ui/admin/parts';
 import { Button, ErrorState, Skeleton, useSnackbar } from '@/ui/components';
 
 import { ConnectionList, ConnectionSheet } from './Connections';
+import { EmailSection } from './EmailSection';
 import { usePanel } from './PanelContext';
 
 // Institution → Integrations (0B.11-T5, T6, T8; Ch 5.3, Ch 42.2): every connection of the institution with mode,
@@ -63,6 +64,7 @@ export function IntegrationsTab({ institutionId }: { institutionId: string }) {
               testID: `payer-${k}-${p}` }))} />
         ))}
       </Section>
+      <EmailSection institutionId={institutionId} />
       <Section title={t('integrations.fallbackTitle')} testID="integrations-fallback">
         <AppText variant="caption">{t('integrations.fallbackHelp')}</AppText>
         {PAYER_KINDS.map((k) => (

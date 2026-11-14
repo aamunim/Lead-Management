@@ -63,7 +63,8 @@
     "keyAlert": "Rotate key {{hint}}{{name}} (set {{date}})",
     "circuitAlert": "Connection {{label}}{{name}} stopped after repeated failures ({{code}}); the backup is used for 5 minutes",
     "balanceAlert": "Low balance on {{label}}{{name}}: {{balance}}",
-    "contractAlert": "Daily check of the {{provider}} adapter failed"
+    "contractAlert": "Daily check of the {{provider}} adapter failed",
+    "emailPausedAlert": "Email paused for {{name}}: {{bounced}} bounces, {{complained}} complaints of {{sent}} in 7 days"
   },
   "users": {
     "title": "Platform users",
@@ -427,7 +428,12 @@
       "connection.made_primary": "Made primary",
       "connection.test_sent": "Test sent",
       "connection.circuit_opened": "Paused after repeated failures",
-      "fallback.changed": "Platform backup changed"
+      "fallback.changed": "Platform backup changed",
+      "email.domain_added": "Email domain added",
+      "email.domain_checked": "Email domain checked",
+      "email.paused": "Email paused (bounces)",
+      "email.resumed": "Email resumed",
+      "email.not_queued": "A platform mail could not be queued"
     },
     "testTo": "Send a test to",
     "testHelp": "A phone number or email address; the message goes through this connection only.",
@@ -508,5 +514,34 @@
       "undelivered": "Not delivered",
       "unknown": "Unknown"
     }
+  },
+  "email": {
+    "title": "Email",
+    "help": "Sending domains and the sender identity. Every institution sends from its own verified domain or its own address on the platform mail; one institution's bounces never affect another.",
+    "paused": "Email is paused since {{date}}: {{reason}}. Sign-in codes still go.",
+    "resumeReason": "Why it can resume (e.g. list cleaned)",
+    "resume": "Resume email",
+    "reputation": "Last 7 days: {{sent}} sent, {{delivered}} delivered, {{bounced}} bounced, {{complained}} spam complaints",
+    "platformSender": "Platform mail sends as {{from}}",
+    "noPlatformSender": "No platform mail address yet (verify a domain or set the platform mail domain).",
+    "providers": {
+      "resend": "Resend",
+      "smtp": "SMTP"
+    },
+    "checked": "checked {{date}}",
+    "notChecked": "not checked yet",
+    "status": {
+      "pending": "Waiting for DNS",
+      "verified": "Verified",
+      "failed": "Not verified"
+    },
+    "recordOk": "found",
+    "recordMissing": "not found",
+    "verify": "Verify",
+    "verifyFailed": "Could not check now; try again in a minute.",
+    "domain": "Sending domain",
+    "domainHelp": "e.g. ideal.edu.bd — add the records below at the domain's DNS, then Verify.",
+    "provider": "Sent through",
+    "addDomain": "Add domain"
   }
 }

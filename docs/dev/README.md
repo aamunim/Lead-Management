@@ -38,6 +38,7 @@ Read in this order before working on any milestone:
 34. `INTEGRATIONS.md` — integration hub core: providers, connections, write-only keys and rotation, resolver, who pays, close hook.
 35. `HUB_RUNTIME.md` — outbox, lanes and gates, worker, routing with backup and circuit breaker, delivery log, ledger, callbacks, deploying the worker.
 36. `SMS.md` — Custom HTTP gateway and its safety, routes, masking, platform backup, switching the primary, parts and cost, balance, delivery reports.
-37. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
-38. `../PLAN_BN.md` — background. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**: when the two differ, the roadmap wins. When a detail is in neither the roadmap nor this developer guide, take it from the plan chapter the milestone points to. Owner decisions are recorded in the roadmap (section 12), not in the plan.
-39. `PROGRESS.md` — which milestones are done.
+37. `EMAIL.md` — SMTP and Resend, sender identity, domain check, reputation and pausing, platform mail templates.
+38. `../DEVELOPMENT_ROADMAP.md` — the milestone you are working on (Depends on, Tasks, Done when, Watch-outs).
+39. `../PLAN_BN.md` — background. **`../DEVELOPMENT_ROADMAP.md` is the final guideline**: when the two differ, the roadmap wins. When a detail is in neither the roadmap nor this developer guide, take it from the plan chapter the milestone points to. Owner decisions are recorded in the roadmap (section 12), not in the plan.
+40. `PROGRESS.md` — which milestones are done.

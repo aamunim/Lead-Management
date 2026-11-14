@@ -1,4 +1,4 @@
-import { callWithSessionRetry, type ErrorInfo } from './errors';
+import { callWithSessionRetry, describeError, type ErrorInfo } from './errors';
 import type { Text } from './packs';
 import { supabase } from './supabase';
 
@@ -81,3 +81,26 @@ export const makePrimary = (institutionId: string | null, connectionId: string) 
 export const setPlatformFallback = (institutionId: string, kind: string, on: boolean) =>
   rpc<{ kind: string; platform_fallback: boolean }>('integrations.fallback', 'institution_platform_fallback_set',
     { p_institution: institutionId, p_kind: kind, p_on: on });
+
+// Email (0B.14): sending domains with their DNS records, the check result, a paused sender, the reputation.
+export type DnsRecord = { type: string; name: string; value: string; check: 'spf' | 'dkim' | 'dmarc'; note: string };
+export type DomainCheck = { ok: boolean; found: string[]; problem: string | null };
+export type EmailDomain = {
+  domain: string; provider: string | null; status: 'pending' | 'verified' | 'failed'; dkim_selector: string; checked_at: string | null;
+  verified_at: string | null; expected: DnsRecord[]; last_check: { spf?: DomainCheck; dkim?: DomainCheck; dmarc?: DomainCheck } | null;
+};
+export type EmailState = {
+  domains: EmailDomain[]; paused: { at: string; reason: string } | null;
+  reputation: { sent: number; delivered: number; bounced: number; complained: number };
+  platform_sender: { from_name: string | null; from_email: string | null; reply_to: string | null } | null;
+};
+export const fetchEmail = (institutionId: string) => rpc<EmailState>('integrations.email', 'platform_email', { p_institution: institutionId });
+export const addEmailDomain = (institutionId: string, domain: string, provider: 'resend' | 'smtp', selector: string | null) =>
+  rpc<EmailState>('integrations.emailDomain', 'platform_email_domain_add', { p_institution: institutionId, p_domain: domain, p_provider: provider, p_selector: selector });
+export const resumeEmail = (institutionId: string, reason: string) =>
+  rpc<EmailState>('integrations.emailResume', 'platform_email_resume', { p_institution: institutionId, p_reason: reason });
+/** The Verify button: the email-domain-check function reads DNS on the server and stores the result. */
+export async function verifyEmailDomain(institutionId: string, domain: string): Promise<{ data: { status: string } | null; error: ErrorInfo | null }> {
+  const { data, error } = await supabase.functions.invoke('email-domain-check', { body: { institution_id: institutionId, domain } });
+  return error ? { data: null, error: describeError(error, 'integrations.emailVerify') } : { data: data as { status: string }, error: null };
+}
