@@ -768,6 +768,7 @@
     "platformPays": "through the platform",
     "lastSuccess": "last worked {{date}}",
     "problem": "problem: {{side}}",
-    "noTraffic": "not used yet"
+    "noTraffic": "not used yet",
+    "balanceExhausted": "balance exhausted — recharge with the provider"
   }
 }

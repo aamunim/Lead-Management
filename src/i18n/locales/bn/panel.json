@@ -61,7 +61,9 @@
     "approveEdit": "অনুমোদন",
     "setupAlert": "{{name}}: ট্রায়াল শিগগির শেষ, সেটআপ {{done}}/{{total}}",
     "keyAlert": "কী {{hint}}{{name}} বদলান ({{date}} থেকে)",
-    "circuitAlert": "বারবার ব্যর্থ হওয়ায় কানেকশন {{label}}{{name}} বন্ধ ({{code}}); ৫ মিনিট ব্যাকআপ চলবে"
+    "circuitAlert": "বারবার ব্যর্থ হওয়ায় কানেকশন {{label}}{{name}} বন্ধ ({{code}}); ৫ মিনিট ব্যাকআপ চলবে",
+    "balanceAlert": "{{label}}{{name}}-এ ব্যালান্স কম: {{balance}}",
+    "contractAlert": "{{provider}} অ্যাডাপ্টারের দৈনিক যাচাই ব্যর্থ"
   },
   "users": {
     "title": "প্ল্যাটফর্ম ইউজার",
@@ -421,12 +423,41 @@
       "connection.enabled": "কানেকশন চালু",
       "connection.disabled": "কানেকশন বন্ধ",
       "payer.changed": "খরচ কে দেবে বদল",
-      "institution.closed_cleanup": "বন্ধ: কানেকশন বন্ধ, কী মুছে ফেলা হয়েছে"
+      "institution.closed_cleanup": "বন্ধ: কানেকশন বন্ধ, কী মুছে ফেলা হয়েছে",
+      "connection.made_primary": "মূল করা হয়েছে",
+      "connection.test_sent": "টেস্ট পাঠানো",
+      "connection.circuit_opened": "বারবার ব্যর্থ হওয়ায় থামানো",
+      "fallback.changed": "প্ল্যাটফর্ম ব্যাকআপ বদল"
     },
     "testTo": "টেস্ট পাঠান",
     "testHelp": "একটি ফোন নম্বর বা ইমেইল; মেসেজ শুধু এই কানেকশন দিয়ে যাবে।",
     "test": "টেস্ট পাঠান",
-    "testQueued": "টেস্ট সারিতে আছে; ডেলিভারি লগ দেখুন।"
+    "testQueued": "টেস্ট সারিতে আছে; ডেলিভারি লগ দেখুন।",
+    "routes": {
+      "transactional": "দ্রুত রুট (সাইন-ইন কোড, নোটিশ)",
+      "promotional": "প্রমোশনাল রুট"
+    },
+    "masking": "মাস্কড সেন্ডার: {{status}}",
+    "maskingStatus": {
+      "applied": "আবেদন করা",
+      "approved": "অনুমোদিত",
+      "rejected": "বাতিল"
+    },
+    "balance": "ব্যালান্স {{balance}}",
+    "paused": "থামানো",
+    "noBalance": "ব্যালান্স নেই",
+    "jsonHelp": "JSON, যেমন {\"to\":\"{to}\",\"msg\":\"{message}\",\"key\":\"{api_key}\"}",
+    "jsonBad": "এটি সঠিক JSON নয়।",
+    "testBody": "টেস্টের লেখা",
+    "partsPreview_one": "{{count}} অংশ ({{length}} অক্ষর, {{kind}}) · খরচ {{cost}}",
+    "partsPreview_other": "{{count}} অংশ ({{length}} অক্ষর, {{kind}}) · খরচ {{cost}}",
+    "unicode": "বাংলা / ইউনিকোড",
+    "plain": "সাধারণ লেখা",
+    "makePrimary": "মূল করুন",
+    "primaryDone": "এটি এখন মূল কানেকশন; সারিতে থাকা মেসেজ সাথে সাথে এটি দিয়ে যাবে।",
+    "fallbackTitle": "শেষ ব্যাকআপ হিসেবে প্ল্যাটফর্ম গেটওয়ে",
+    "fallbackHelp": "প্রতিষ্ঠানের নিজের সব কানেকশন ব্যর্থ হলে প্ল্যাটফর্ম গেটওয়ে পাঠাবে (বিল প্রতিষ্ঠানকে)।",
+    "fallbackLabel": "{{kind}}: শেষ ব্যাকআপ হিসেবে প্ল্যাটফর্ম গেটওয়ে"
   },
   "providers": {
     "intro": "প্রোভাইডারের তালিকা এবং প্ল্যাটফর্মের নিজের গেটওয়ে, যা প্ল্যাটফর্ম খরচ দিলে বা প্রতিষ্ঠানের নিজের না থাকলে ব্যবহার হয়।",

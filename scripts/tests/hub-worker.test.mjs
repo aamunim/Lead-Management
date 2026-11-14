@@ -5,9 +5,10 @@ import assert from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
 
 import { hmacHex } from '../../supabase/functions/_shared/hub/adapters.ts';
-import { mockSent, mockSms } from '../../supabase/functions/_shared/hub/mock.ts';
+import { mockContract, mockSent, mockSms } from '../../supabase/functions/_shared/hub/mock.ts';
 import { adapterRegistry } from '../../supabase/functions/_shared/hub/registry.ts';
-import { runRound } from '../../supabase/functions/_shared/hub/worker-core.ts';
+import { runContracts, runHealth, runPoll, runRound } from '../../supabase/functions/_shared/hub/worker-core.ts';
+import { customHttpAdapter } from '../../supabase/functions/_shared/hub/custom-http.ts';
 
 const A = 'inst-a';
 const B = 'inst-b';
@@ -125,5 +126,41 @@ describe('webhook signatures', () => {
     assert.equal(await mockSms.verifyWebhook(ctx('secret-of-a'), new Headers(), body), false, 'unsigned');
     assert.equal(await mockSms.verifyWebhook(ctx('secret-of-a'), good, body.replace('delivered', 'undelivered')), false, 'tampered');
     assert.deepEqual(mockSms.parseStatus(body), { providerMessageId: 'm1', status: 'delivered', eventKey: 'm1:delivered' });
+  });
+});
+
+describe('health, polling and contract tests (0B.13)', () => {
+  it('the health round passes the balance on', async () => {
+    const recorded = [];
+    const store = { healthDue: async () => [{ ...conn('c-ok', 'institution', 'custom_http_sms'), institution_id: A,
+      settings: { send_url: 'https://sms.example.test/s', balance_url: 'https://sms.example.test/b', balance_path: 'b' } }],
+      secret: async () => 'k', healthRecord: async (...args) => recorded.push(args) };
+    const adapters = { custom_http_sms: customHttpAdapter(async () => ['203.0.113.10']) };
+    await runHealth(store, adapters, async () => new Response('{"b":42}'));
+    assert.deepEqual(recorded[0].slice(3), [true, null, null, 42]);
+  });
+  it('polling reports a delivery once per status', async () => {
+    const reports = [];
+    const store = {
+      pollDue: async () => [{ institution_id: A, id: 'm1', connection_id: 'c1', owner: 'institution', provider_message_id: 'G-1' }],
+      connection: async () => ({ owner: 'institution', institution_id: A, provider: 'custom_http_sms', secret_fields: ['api_key'],
+        settings: { send_url: 'https://sms.example.test/s', status_url: 'https://sms.example.test/status/{message_id}', status_path: 'state' } }),
+      secret: async () => 'k',
+      report: async (...args) => { reports.push(args); return 'delivered'; },
+    };
+    const seen = [];
+    const n = await runPoll(store, { custom_http_sms: customHttpAdapter(async () => ['203.0.113.10']) },
+      async (url) => { seen.push(String(url)); return new Response('{"state":"DELIVERED"}'); });
+    assert.equal(n, 1);
+    assert.match(seen[0], /status\/G-1/);
+    assert.deepEqual(reports[0].slice(2), ['G-1', 'delivered']);
+  });
+  it('contract tests run for adapters that declare one; a failure is recorded', async () => {
+    const results = [];
+    mockContract.fail = true;
+    const n = await runContracts(async (...a) => results.push(a), adapterRegistry(true));
+    mockContract.fail = false;
+    assert.equal(n, 1);
+    assert.deepEqual(results[0], ['mock_sms', false, 'mock sandbox down']);
   });
 });

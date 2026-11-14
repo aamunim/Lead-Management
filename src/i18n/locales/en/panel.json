@@ -61,7 +61,9 @@
     "approveEdit": "Approve",
     "setupAlert": "{{name}}: trial ends soon, setup {{done}}/{{total}}",
     "keyAlert": "Rotate key {{hint}}{{name}} (set {{date}})",
-    "circuitAlert": "Connection {{label}}{{name}} stopped after repeated failures ({{code}}); the backup is used for 5 minutes"
+    "circuitAlert": "Connection {{label}}{{name}} stopped after repeated failures ({{code}}); the backup is used for 5 minutes",
+    "balanceAlert": "Low balance on {{label}}{{name}}: {{balance}}",
+    "contractAlert": "Daily check of the {{provider}} adapter failed"
   },
   "users": {
     "title": "Platform users",
@@ -421,12 +423,41 @@
       "connection.enabled": "Connection enabled",
       "connection.disabled": "Connection disabled",
       "payer.changed": "Payer changed",
-      "institution.closed_cleanup": "Closed: connections disabled, keys destroyed"
+      "institution.closed_cleanup": "Closed: connections disabled, keys destroyed",
+      "connection.made_primary": "Made primary",
+      "connection.test_sent": "Test sent",
+      "connection.circuit_opened": "Paused after repeated failures",
+      "fallback.changed": "Platform backup changed"
     },
     "testTo": "Send a test to",
     "testHelp": "A phone number or email address; the message goes through this connection only.",
     "test": "Send test",
-    "testQueued": "Test queued; see the delivery log."
+    "testQueued": "Test queued; see the delivery log.",
+    "routes": {
+      "transactional": "fast route (sign-in codes, notices)",
+      "promotional": "promotional route"
+    },
+    "masking": "masked sender: {{status}}",
+    "maskingStatus": {
+      "applied": "applied for",
+      "approved": "approved",
+      "rejected": "rejected"
+    },
+    "balance": "balance {{balance}}",
+    "paused": "Paused",
+    "noBalance": "No balance",
+    "jsonHelp": "JSON, e.g. {\"to\":\"{to}\",\"msg\":\"{message}\",\"key\":\"{api_key}\"}",
+    "jsonBad": "This is not valid JSON.",
+    "testBody": "Test text",
+    "partsPreview_one": "{{count}} part ({{length}} characters, {{kind}}) · cost {{cost}}",
+    "partsPreview_other": "{{count}} parts ({{length}} characters, {{kind}}) · cost {{cost}}",
+    "unicode": "Bangla / Unicode",
+    "plain": "plain text",
+    "makePrimary": "Make primary",
+    "primaryDone": "This is now the primary connection; queued messages use it at once.",
+    "fallbackTitle": "Platform gateway as last backup",
+    "fallbackHelp": "When all of the institution's own connections fail, the platform gateway sends instead (billed to the institution).",
+    "fallbackLabel": "{{kind}}: use the platform gateway as the last backup"
   },
   "providers": {
     "intro": "The provider catalog and the platform's own gateways, used when the platform pays or an institution has none.",

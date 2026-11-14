@@ -95,3 +95,12 @@ describe('SMS parts', () => {
     assert.equal(smsParts('ক'.repeat(135)).parts, 3);
   });
 });
+
+describe('SMS parts: the app and the hub agree', async () => {
+  const app = await import('../../src/lib/sms-parts.ts');
+  it('same answer for the same text', () => {
+    for (const t of ['Hello', 'a'.repeat(161), 'ক'.repeat(71), 'Fee ৳500 received', 'আপনার ভর্তি নিশ্চিত হয়েছে। ধন্যবাদ।'.repeat(3)]) {
+      assert.deepEqual(app.smsParts(t), smsParts(t), t);
+    }
+  });
+});

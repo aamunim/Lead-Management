@@ -6,11 +6,12 @@ import { useTranslation } from '@/i18n';
 import { useErrorText } from '@/i18n/errors';
 import type { ErrorInfo } from '@/lib/errors';
 import {
-  markLiveTest, saveConnection, sendConnectionTest, setConnectionActive, setConnectionSecret, settingsFields, type Connection, type Provider,
+  makePrimary, markLiveTest, saveConnection, sendConnectionTest, setConnectionActive, setConnectionSecret, settingsFields, type Connection, type Provider,
 } from '@/lib/integrations';
 import { useLanguageState } from '@/lib/language';
 import { useFormat } from '@/lib/locale';
 import { pick } from '@/lib/packs';
+import { smsParts } from '@/lib/sms-parts';
 import { Badge, CheckRow, Chips, Row, SelectField, tDynamic } from '@/ui/admin/parts';
 import { BottomSheet, Button, TextField, useSnackbar } from '@/ui/components';
 import { useTheme } from '@/ui/theme';
@@ -35,10 +36,15 @@ export function ConnectionList({ connections, onOpen, testID }: { connections: C
             c.last_success_at ? t('integrations.lastSuccess', { date: format.dateTime(c.last_success_at) }) : null,
             c.last_error ? t('integrations.lastError', { code: c.last_error.code, side: tDynamic(`panel:integrations.side.${c.last_error.responsibility}`) }) : null,
             c.adapter_ready ? null : t('integrations.adapterLater'),
+            c.kind === 'sms' && c.route && c.route !== 'all' ? tDynamic(`panel:integrations.routes.${c.route}`) : null,
+            c.masking?.type === 'masked' ? t('integrations.masking', { status: tDynamic(`panel:integrations.maskingStatus.${c.masking.status ?? 'applied'}`) }) : null,
+            typeof c.last_balance === 'number' ? t('integrations.balance', { balance: format.number(c.last_balance) }) : null,
           ].filter(Boolean).join(' · ')}
           badge={<View style={{ flexDirection: 'row', gap: 4 }}>
             <Badge label={tDynamic(`panel:integrations.mode.${c.mode}`)} tone={c.mode === 'live' ? 'success' : 'warning'} />
             {c.status === 'disabled' ? <Badge label={t('integrations.disabled')} tone="error" /> : null}
+            {c.circuit_open ? <Badge label={t('integrations.paused')} tone="error" /> : null}
+            {c.balance_exhausted ? <Badge label={t('integrations.noBalance')} tone="error" /> : null}
           </View>} />
       ))}
     </View>
@@ -50,6 +56,7 @@ export function ConnectionSheet({ institutionId, providers, connection, onClose,
 }) {
   const { t } = useTranslation('panel');
   const { language } = useLanguageState();
+  const format = useFormat();
   const { space } = useTheme();
   const snackbar = useSnackbar();
   const errorText = useErrorText();
@@ -58,6 +65,10 @@ export function ConnectionSheet({ institutionId, providers, connection, onClose,
   const [settings, setSettings] = useState<Record<string, unknown>>(connection?.settings ?? {});
   const [secret, setSecret] = useState<{ field: string; value: string; from: string }>({ field: '', value: '', from: '' });
   const [testTo, setTestTo] = useState('');
+  const [testBody, setTestBody] = useState('');
+  const [jsonText, setJsonText] = useState<Record<string, string>>(() => Object.fromEntries(Object.entries(connection?.settings ?? {})
+    .filter(([, v]) => v !== null && typeof v === 'object').map(([k, v]) => [k, JSON.stringify(v)])));
+  const [jsonBad, setJsonBad] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const p = providers.find((x) => x.key === provider) ?? null;
   const fields = p ? settingsFields(p.settings_schema) : [];
@@ -70,9 +81,26 @@ export function ConnectionSheet({ institutionId, providers, connection, onClose,
     snackbar.show({ text: done });
     onSaved();
   };
-  const save = () => run(() => saveConnection(institutionId, connection?.id ?? null, {
-    provider: provider ?? '', label: form.label.trim(), mode: form.mode, priority: Number(form.priority) || 1, settings,
-  }), t('integrations.saved'));
+  const save = () => {
+    const merged: Record<string, unknown> = { ...settings };
+    for (const f of fields.filter((x) => x.kind === 'json')) {
+      const raw = (jsonText[f.key] ?? '').trim();
+      if (!raw) {
+        delete merged[f.key];
+        continue;
+      }
+      try {
+        merged[f.key] = JSON.parse(raw);
+      } catch {
+        setJsonBad(f.key);
+        return;
+      }
+    }
+    setJsonBad(null);
+    return run(() => saveConnection(institutionId, connection?.id ?? null, {
+      provider: provider ?? '', label: form.label.trim(), mode: form.mode, priority: Number(form.priority) || 1, settings: merged,
+    }), t('integrations.saved'));
+  };
 
   return (
     <BottomSheet visible onClose={onClose} title={connection ? t('integrations.edit', { label: connection.label }) : t('integrations.add')} testID="connection-sheet"
@@ -89,7 +117,11 @@ export function ConnectionSheet({ institutionId, providers, connection, onClose,
         choices={(['sandbox', 'live'] as const).map((m) => ({ value: m, label: tDynamic(`panel:integrations.mode.${m}`), testID: `connection-mode-${m}` }))} />
       <Chips label={t('integrations.priorityLabel')} selected={form.priority} onSelect={(v) => setForm((f) => ({ ...f, priority: v }))}
         choices={['1', '2', '3'].map((n) => ({ value: n, label: t('integrations.priority', { n: Number(n) }), testID: `connection-priority-${n}` }))} />
-      {fields.map((f) => f.kind === 'boolean' ? (
+      {fields.map((f) => f.kind === 'json' ? (
+        <TextField key={f.key} label={f.key} kind="multiline" value={jsonText[f.key] ?? ''} help={t('integrations.jsonHelp')}
+          error={jsonBad === f.key ? t('integrations.jsonBad') : null}
+          onChangeText={(v) => setJsonText((j) => ({ ...j, [f.key]: v }))} testID={`connection-setting-${f.key}`} />
+      ) : f.kind === 'boolean' ? (
         <CheckRow key={f.key} label={f.key} checked={settings[f.key] === true} onToggle={() => setSettings((s) => ({ ...s, [f.key]: !(s[f.key] === true) }))}
           testID={`connection-setting-${f.key}`} />
       ) : f.kind === 'choice' ? (
@@ -130,10 +162,23 @@ export function ConnectionSheet({ institutionId, providers, connection, onClose,
             <View style={{ gap: space.xs }} testID="connection-test">
               <TextField label={t('integrations.testTo')} kind={connection.kind === 'email' ? 'email' : 'text'} value={testTo} onChangeText={setTestTo}
                 help={t('integrations.testHelp')} testID="connection-test-to" />
+              <TextField label={t('integrations.testBody')} kind="multiline" value={testBody} onChangeText={setTestBody} maxLength={1000}
+                testID="connection-test-body" />
+              {connection.kind === 'sms' && testBody ? (() => {
+                const pr = smsParts(testBody);
+                const price = Number(connection.settings?.price_per_part ?? 0);
+                return <AppText variant="caption" testID="connection-test-parts">{t('integrations.partsPreview', { count: pr.parts, length: pr.length,
+                  kind: pr.unicode ? t('integrations.unicode') : t('integrations.plain'), cost: format.number(pr.parts * price) })}</AppText>;
+              })() : null}
               <Button variant="tonal" icon="send" label={t('integrations.test')} loading={busy} disabled={testTo.trim().length < 3}
-                onPress={() => void run(() => sendConnectionTest(institutionId, connection.id, testTo.trim()), t('integrations.testQueued'))}
+                onPress={() => void run(() => sendConnectionTest(institutionId, connection.id, testTo.trim(), testBody.trim() || null),
+                  t('integrations.testQueued'))}
                 testID="connection-test-send" />
             </View>
+          ) : null}
+          {connection.priority !== 1 ? (
+            <Button variant="tonal" icon="vertical-align-top" label={t('integrations.makePrimary')} loading={busy}
+              onPress={() => void run(() => makePrimary(institutionId, connection.id), t('integrations.primaryDone'))} testID="connection-make-primary" />
           ) : null}
           <Button variant={connection.status === 'active' ? 'danger' : 'tonal'} icon={connection.status === 'active' ? 'link-off' : 'link'}
             label={connection.status === 'active' ? t('integrations.disable') : t('integrations.enable')} loading={busy}

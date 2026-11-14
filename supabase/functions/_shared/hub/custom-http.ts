@@ -179,6 +179,23 @@ export function customHttpAdapter(resolve?: (host: string) => Promise<string[]>)
         return { ok: false, errorCode: 'provider_down', detail: scrub(String((e as Error)?.message ?? e), conn) };
       }
     },
+    async pollStatus(conn: ConnectionContext, providerMessageId: string, fetchFn: typeof fetch): Promise<StatusReport | null> {
+      const s = conn.settings as unknown as CustomHttpSettings & { status_url?: string; status_path?: string };
+      if (!s.status_url || !conn.secrets.api_key) return null;
+      const url = s.status_url.replace('{message_id}', encodeURIComponent(providerMessageId));
+      const r = await call({ ...s, method: 'GET', params: {} }, url, { to: '', message: '', sender_id: '', api_key: conn.secrets.api_key, unicode: '0' },
+        fetchFn, resolve);
+      if ('blocked' in r || r.status < 200 || r.status >= 300) return null;
+      let raw: unknown = r.body.trim();
+      try {
+        raw = s.status_path ? pick(JSON.parse(r.body), s.status_path) : raw;
+      } catch {
+        return null;
+      }
+      const st = String(raw ?? '').toLowerCase();
+      const status = /^(delivered|deliv|success)/.test(st) ? 'delivered' : /^(undeliv|failed|rejected|expired)/.test(st) ? 'undelivered' : 'other';
+      return { providerMessageId, status, eventKey: `${providerMessageId}:${st}` };
+    },
     async verifyWebhook(conn: ConnectionContext, headers: Headers, rawBody: string): Promise<boolean> {
       const secret = conn.secrets.webhook_secret;
       const given = headers.get('x-signature') ?? headers.get('x-hub-signature');

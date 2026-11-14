@@ -6,7 +6,7 @@ import { createLogger } from '../_shared/logger.ts';
 import { adapterRegistry } from '../_shared/hub/registry.ts';
 import { resolveHost } from '../_shared/hub/resolve-deno.ts';
 import { supabaseStore } from '../_shared/hub/store.ts';
-import { runHealth, runRound } from '../_shared/hub/worker-core.ts';
+import { runContracts, runHealth, runPoll, runRound } from '../_shared/hub/worker-core.ts';
 import { safeEqual } from '../_shared/hub/adapters.ts';
 
 const BUDGET_MS = 45_000;
@@ -21,8 +21,14 @@ Deno.serve(async (req) => {
   const adapters = adapterRegistry(Deno.env.get('HUB_ALLOW_MOCK') === '1', resolveHost);
   const started = Date.now();
   const body = await req.json().catch(() => ({})) as { lane?: string };
+  if (body.lane === 'contract') {
+    const tested = await runContracts(store.contract, adapters);
+    log.info('hub.contracts', { tested });
+    return new Response(JSON.stringify({ tested }), { headers: { 'content-type': 'application/json' } });
+  }
   const report = await runRound(store, adapters, { worker: `edge-${started}`, deadline: started + BUDGET_MS });
   const checked = body.lane === 'otp' ? 0 : await runHealth(store, adapters);
-  log.info('hub.round', { ...report, health_checked: checked, ms: Date.now() - started });
-  return new Response(JSON.stringify({ ...report, health_checked: checked }), { headers: { 'content-type': 'application/json' } });
+  const polled = body.lane === 'otp' ? 0 : await runPoll(store, adapters);
+  log.info('hub.round', { ...report, health_checked: checked, polled, ms: Date.now() - started });
+  return new Response(JSON.stringify({ ...report, health_checked: checked, polled }), { headers: { 'content-type': 'application/json' } });
 });

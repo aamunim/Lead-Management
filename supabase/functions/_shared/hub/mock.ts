@@ -34,8 +34,12 @@ function parse(rawBody: string) {
   }
 }
 
+/** Tests set this to make the mock contract test fail. */
+export const mockContract = { fail: false };
+
 export const mockSms: SmsAdapter = {
   kind: 'sms', version: 'mock-1',
+  contractTest: async () => (mockContract.fail ? { ok: false, detail: 'mock sandbox down' } : { ok: true }),
   send: async (conn, msg) => sendLike(conn, msg.recipient, msg.body),
   health: async (conn) => (conn.secrets.api_key ? { ok: true, balance: 1000 } : { ok: false, errorCode: 'auth_failed' }),
   verifyWebhook: verify,

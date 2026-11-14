@@ -97,11 +97,14 @@ export async function runRound(store: HubStore, adapters: Record<string, Adapter
   return report;
 }
 
-/** Health round (0B.12-T9): each due connection's adapter health; results stored as last success / last error. */
-export async function runHealth(store: HubStore & {
+export type HealthStore = HubStore & {
   healthDue(): Promise<(RouteConnection & { institution_id: string | null })[]>;
-  healthRecord(owner: string, institutionId: string | null, connectionId: string, ok: boolean, code: string | null, detail: string | null): Promise<void>;
-}, adapters: Record<string, Adapter>, fetchFn: typeof fetch = fetch): Promise<number> {
+  healthRecord(owner: string, institutionId: string | null, connectionId: string, ok: boolean, code: string | null, detail: string | null,
+    balance: number | null): Promise<void>;
+};
+
+/** Health round (0B.12-T9, 0B.13-T9): each due connection's health and balance; stored as last success / error / balance. */
+export async function runHealth(store: HealthStore, adapters: Record<string, Adapter>, fetchFn: typeof fetch = fetch): Promise<number> {
   const due = await store.healthDue();
   for (const c of due) {
     const adapter = adapters[c.provider];
@@ -114,7 +117,48 @@ export async function runHealth(store: HubStore & {
     } catch (e) {
       res = { ok: false as const, errorCode: 'adapter_error', detail: String((e as Error)?.message ?? e).slice(0, 200) };
     }
-    await store.healthRecord(c.owner, c.institution_id, c.id, res.ok, res.ok ? null : res.errorCode, res.ok ? null : res.detail ?? null);
+    await store.healthRecord(c.owner, c.institution_id, c.id, res.ok, res.ok ? null : res.errorCode, res.ok ? null : res.detail ?? null,
+      res.ok && typeof res.balance === 'number' ? res.balance : null);
   }
   return due.length;
+}
+
+export type PollStore = {
+  pollDue(): Promise<{ institution_id: string; id: string; connection_id: string; owner: 'institution' | 'platform'; provider_message_id: string }[]>;
+  connection(connectionId: string): Promise<{ owner: 'institution' | 'platform'; institution_id: string | null; provider: string;
+    settings: Record<string, unknown>; secret_fields: string[] } | null>;
+  secret(institutionId: string | null, connectionId: string, field: string): Promise<string | null>;
+  report(connectionId: string, eventKey: string, providerMessageId: string, status: string): Promise<string>;
+};
+
+/** Delivery reports by polling (0B.13-T8) for gateways without push; stored like a verified callback (deduplicated). */
+export async function runPoll(store: PollStore, adapters: Record<string, Adapter>, fetchFn: typeof fetch = fetch): Promise<number> {
+  let applied = 0;
+  for (const m of await store.pollDue()) {
+    const c = await store.connection(m.connection_id);
+    const adapter = c ? adapters[c.provider] : undefined;
+    if (!c || !adapter || !('pollStatus' in adapter) || !adapter.pollStatus) continue;
+    const secrets: Record<string, string | null> = {};
+    for (const f of c.secret_fields) secrets[f] = await store.secret(c.institution_id, m.connection_id, f);
+    const report = await adapter.pollStatus({ id: m.connection_id, owner: c.owner, provider: c.provider, sandbox: false, settings: c.settings, secrets },
+      m.provider_message_id, fetchFn).catch(() => null);
+    if (report && report.status !== 'other') {
+      await store.report(m.connection_id, `poll:${report.eventKey}`, report.providerMessageId, report.status);
+      applied += 1;
+    }
+  }
+  return applied;
+}
+
+/** Daily contract tests (I5): every adapter that declares one; each result is stored and a failure alerts the platform. */
+export async function runContracts(record: (provider: string, ok: boolean, detail: string | null) => Promise<void>,
+  adapters: Record<string, Adapter>, fetchFn: typeof fetch = fetch): Promise<number> {
+  let n = 0;
+  for (const [provider, adapter] of Object.entries(adapters)) {
+    if (!('contractTest' in adapter) || !adapter.contractTest) continue;
+    const r = await adapter.contractTest(fetchFn).catch((e) => ({ ok: false, detail: String((e as Error)?.message ?? e) }));
+    await record(provider, r.ok, r.detail ?? null);
+    n += 1;
+  }
+  return n;
 }

@@ -17,6 +17,8 @@ export type Connection = {
   id: string; kind: string; provider: string; provider_name: Text; label: string; mode: 'sandbox' | 'live'; status: 'active' | 'disabled';
   priority: number; live_test_passed_at: string | null; last_success_at: string | null; last_error: ConnectionError | null; adapter_ready: boolean;
   settings?: Record<string, unknown>; secrets?: SecretInfo[]; secret_fields?: string[];
+  route?: 'transactional' | 'promotional' | 'all'; masking?: { type?: string; status?: string } | null; circuit_open?: boolean;
+  balance_exhausted?: boolean; last_balance?: number | null; balance_checked_at?: string | null;
 };
 export type AuditRow = { action: string; at: string; by: string | null; detail: Record<string, unknown> };
 type Result<T> = { data: T | null; error: ErrorInfo | null };
@@ -30,7 +32,7 @@ const rpc = <T>(where: string, fn: string, args?: Record<string, unknown>): Prom
 export const fetchProviders = () =>
   rpc<{ providers: Provider[]; platform_connections: Connection[]; error_kinds: Record<string, string> }>('integrations.providers', 'platform_providers');
 export const fetchIntegrations = (institutionId: string) =>
-  rpc<{ connections: Connection[]; payers: Record<string, 'direct' | 'platform'>; audit: AuditRow[] }>('integrations.institution', 'platform_integrations',
+  rpc<{ connections: Connection[]; payers: Record<string, 'direct' | 'platform'>; fallback?: Record<string, boolean>; audit: AuditRow[] }>('integrations.institution', 'platform_integrations',
     { p_institution: institutionId });
 export const saveConnection = (institutionId: string | null, id: string | null, data: { provider: string; label: string; mode: string; priority: number;
   settings: Record<string, unknown> }) =>
@@ -48,11 +50,11 @@ export const fetchOwnIntegrations = () =>
   rpc<{ connections: Connection[]; payers: Record<string, 'direct' | 'platform'> }>('integrations.own', 'integrations_status');
 
 /** Fields of a provider's settings form, from its JSON schema (strings, numbers, yes / no, choices). */
-export type SettingsField = { key: string; kind: 'text' | 'number' | 'boolean' | 'choice'; required: boolean; choices?: string[]; schema: JsonSchema };
+export type SettingsField = { key: string; kind: 'text' | 'number' | 'boolean' | 'choice' | 'json'; required: boolean; choices?: string[]; schema: JsonSchema };
 export function settingsFields(schema: JsonSchema): SettingsField[] {
   return Object.entries(schema.properties ?? {}).map(([key, s]) => ({
     key, schema: s, required: (schema.required ?? []).includes(key),
-    kind: s.enum ? 'choice' : s.type === 'integer' || s.type === 'number' ? 'number' : s.type === 'boolean' ? 'boolean' : 'text',
+    kind: s.enum ? 'choice' : s.type === 'integer' || s.type === 'number' ? 'number' : s.type === 'boolean' ? 'boolean' : s.type === 'object' ? 'json' : 'text',
     choices: s.enum,
   }));
 }
@@ -71,5 +73,11 @@ export const fetchDeliveryLog = (institutionId: string | null, channel: string |
   rpc<DeliveryRow[]>('integrations.deliveryLog', 'platform_delivery_log', { p_institution: institutionId, p_channel: channel, p_result: null, p_limit: 100 });
 export const fetchUsageLedger = (institutionId: string | null) =>
   rpc<LedgerRow[]>('integrations.ledger', 'platform_usage_ledger', { p_institution: institutionId, p_from: null, p_to: null });
-export const sendConnectionTest = (institutionId: string, connectionId: string, recipient: string) =>
-  rpc<{ id: string; status: string }>('integrations.test', 'platform_connection_test', { p_institution: institutionId, p_connection: connectionId, p_recipient: recipient });
+export const sendConnectionTest = (institutionId: string, connectionId: string, recipient: string, body: string | null) =>
+  rpc<{ id: string; status: string }>('integrations.test', 'platform_connection_test',
+    { p_institution: institutionId, p_connection: connectionId, p_recipient: recipient, p_body: body });
+export const makePrimary = (institutionId: string | null, connectionId: string) =>
+  rpc<{ primary: string; previous: string | null }>('integrations.primary', 'connection_make_primary', { p_institution: institutionId, p_connection: connectionId });
+export const setPlatformFallback = (institutionId: string, kind: string, on: boolean) =>
+  rpc<{ kind: string; platform_fallback: boolean }>('integrations.fallback', 'institution_platform_fallback_set',
+    { p_institution: institutionId, p_kind: kind, p_on: on });

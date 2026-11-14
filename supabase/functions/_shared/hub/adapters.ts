@@ -29,6 +29,10 @@ export interface SmsAdapter {
   /** Callback: true only if this request was signed with this connection's own secret. */
   verifyWebhook(conn: ConnectionContext, headers: Headers, rawBody: string): Promise<boolean>;
   parseStatus(rawBody: string): StatusReport | null;
+  /** Delivery report by polling, for gateways without push (0B.13-T8). */
+  pollStatus?(conn: ConnectionContext, providerMessageId: string, fetchFn: typeof fetch): Promise<StatusReport | null>;
+  /** Daily contract test against the provider's sandbox (I5); null when the provider has none. */
+  contractTest?(fetchFn: typeof fetch): Promise<{ ok: boolean; detail?: string }>;
 }
 
 export interface EmailAdapter {
