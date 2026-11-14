@@ -61,7 +61,12 @@ export default function PanelDashboard() {
       {!alerts ? <Skeleton lines={2} /> : alerts.length === 0 ? <AppText testID="panel-no-alerts">{t('dashboard.noAlerts')}</AppText> : (
         <View style={{ gap: 8 }} testID="panel-alerts">
           {alerts.map((a) => (
-            a.kind === 'key_rotation_due' ? (
+            a.kind === 'circuit_open' ? (
+              <Row key={a.id} icon="power-off" title={t('dashboard.circuitAlert', { label: a.payload.label ?? '', name: a.payload.name ? ` · ${a.payload.name}` : '',
+                code: a.payload.code ?? '' })}
+                subtitle={format.dateTime(a.created_at)} onPress={a.payload.institution_id ? () => router.push(`/panel/institution/${a.payload.institution_id}`)
+                  : () => router.push('/panel/providers')} testID={`panel-alert-${a.kind}`} />
+            ) :             a.kind === 'key_rotation_due' ? (
               <Row key={a.id} icon="key" title={t('dashboard.keyAlert', { hint: a.payload.hint ?? '', name: a.payload.name ? ` · ${a.payload.name}` : '',
                 date: a.payload.since ? format.dateTime(a.payload.since) : '' })}
                 subtitle={format.dateTime(a.created_at)} onPress={a.payload.institution_id ? () => router.push(`/panel/institution/${a.payload.institution_id}`)

@@ -6,7 +6,7 @@ import { useTranslation } from '@/i18n';
 import { useErrorText } from '@/i18n/errors';
 import type { ErrorInfo } from '@/lib/errors';
 import {
-  markLiveTest, saveConnection, setConnectionActive, setConnectionSecret, settingsFields, type Connection, type Provider,
+  markLiveTest, saveConnection, sendConnectionTest, setConnectionActive, setConnectionSecret, settingsFields, type Connection, type Provider,
 } from '@/lib/integrations';
 import { useLanguageState } from '@/lib/language';
 import { useFormat } from '@/lib/locale';
@@ -57,6 +57,7 @@ export function ConnectionSheet({ institutionId, providers, connection, onClose,
   const [form, setForm] = useState({ label: connection?.label ?? '', mode: connection?.mode ?? 'sandbox', priority: String(connection?.priority ?? 1) });
   const [settings, setSettings] = useState<Record<string, unknown>>(connection?.settings ?? {});
   const [secret, setSecret] = useState<{ field: string; value: string; from: string }>({ field: '', value: '', from: '' });
+  const [testTo, setTestTo] = useState('');
   const [busy, setBusy] = useState(false);
   const p = providers.find((x) => x.key === provider) ?? null;
   const fields = p ? settingsFields(p.settings_schema) : [];
@@ -124,6 +125,15 @@ export function ConnectionSheet({ institutionId, providers, connection, onClose,
             <Button variant="tonal" icon="verified" label={connection.live_test_passed_at ? t('integrations.liveClear') : t('integrations.liveMark')} loading={busy}
               onPress={() => void run(() => markLiveTest(institutionId, connection.id, !connection.live_test_passed_at, null), t('integrations.saved'))}
               testID="connection-live-test" />
+          ) : null}
+          {institutionId && (connection.kind === 'sms' || connection.kind === 'email') ? (
+            <View style={{ gap: space.xs }} testID="connection-test">
+              <TextField label={t('integrations.testTo')} kind={connection.kind === 'email' ? 'email' : 'text'} value={testTo} onChangeText={setTestTo}
+                help={t('integrations.testHelp')} testID="connection-test-to" />
+              <Button variant="tonal" icon="send" label={t('integrations.test')} loading={busy} disabled={testTo.trim().length < 3}
+                onPress={() => void run(() => sendConnectionTest(institutionId, connection.id, testTo.trim()), t('integrations.testQueued'))}
+                testID="connection-test-send" />
+            </View>
           ) : null}
           <Button variant={connection.status === 'active' ? 'danger' : 'tonal'} icon={connection.status === 'active' ? 'link-off' : 'link'}
             label={connection.status === 'active' ? t('integrations.disable') : t('integrations.enable')} loading={busy}

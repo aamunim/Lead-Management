@@ -83,6 +83,8 @@ export const ERRORS: Record<string, ErrorInfo> = {
   connection_invalid: { code: 'connection_invalid', messageKey: 'errors.connection_invalid', httpStatus: 422, action: 'fix_input' },
   secret_value_invalid: { code: 'secret_value_invalid', messageKey: 'errors.secret_value_invalid', httpStatus: 422, action: 'fix_input' },
   secret_valid_from_in_past: { code: 'secret_valid_from_in_past', messageKey: 'errors.secret_valid_from_in_past', httpStatus: 422, action: 'fix_input' },
+  outbox_invalid: { code: 'outbox_invalid', messageKey: 'errors.outbox_invalid', httpStatus: 422, action: 'fix_input' },
+  not_approved: { code: 'not_approved', messageKey: 'errors.not_approved', httpStatus: 403, action: 'none' },
   self_approval: { code: 'self_approval', messageKey: 'errors.self_approval', httpStatus: 409, action: 'none' },
   profile_shared: { code: 'profile_shared', messageKey: 'errors.profile_shared', httpStatus: 409, action: 'none' },
   email_invalid: { code: 'email_invalid', messageKey: 'errors.email_invalid', httpStatus: 422, action: 'fix_input' },

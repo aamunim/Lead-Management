@@ -30,7 +30,8 @@
     "announcements": "Announcements",
     "requests": "Requests",
     "inbox": "Developer inbox",
-    "users": "Platform users"
+    "users": "Platform users",
+    "delivery": "Delivery log"
   },
   "soon": "Coming in {{milestone}}",
   "institutionTabs": {
@@ -59,7 +60,8 @@
     "editRequests": "Edit mode requests",
     "approveEdit": "Approve",
     "setupAlert": "{{name}}: trial ends soon, setup {{done}}/{{total}}",
-    "keyAlert": "Rotate key {{hint}}{{name}} (set {{date}})"
+    "keyAlert": "Rotate key {{hint}}{{name}} (set {{date}})",
+    "circuitAlert": "Connection {{label}}{{name}} stopped after repeated failures ({{code}}); the backup is used for 5 minutes"
   },
   "users": {
     "title": "Platform users",
@@ -420,7 +422,11 @@
       "connection.disabled": "Connection disabled",
       "payer.changed": "Payer changed",
       "institution.closed_cleanup": "Closed: connections disabled, keys destroyed"
-    }
+    },
+    "testTo": "Send a test to",
+    "testHelp": "A phone number or email address; the message goes through this connection only.",
+    "test": "Send test",
+    "testQueued": "Test queued; see the delivery log."
   },
   "providers": {
     "intro": "The provider catalog and the platform's own gateways, used when the platform pays or an institution has none.",
@@ -434,6 +440,42 @@
       "beta": "Beta",
       "planned": "Planned",
       "retired": "Retired"
+    }
+  },
+  "delivery": {
+    "intro": "Every send result and the daily usage per institution. Only platform-paid usage is billable.",
+    "channel": "Channel",
+    "channels": {
+      "all": "All",
+      "sms": "SMS",
+      "email": "Email"
+    },
+    "ledger": "Usage ledger",
+    "noLedger": "No usage yet.",
+    "log": "Delivery log",
+    "noLog": "Nothing sent yet.",
+    "counts": "{{count}} sent, {{parts}} parts, {{failed}} failed parts",
+    "cost": "cost {{cost}}",
+    "billable": "Billable",
+    "direct": "Own account",
+    "fallback": "sent by the backup",
+    "sandbox": "sandbox",
+    "parts_one": "{{count}} part",
+    "parts_other": "{{count}} parts",
+    "categories": {
+      "otp": "Sign-in code",
+      "notification": "Notification",
+      "template": "Template",
+      "bulk": "Bulk",
+      "test": "Test"
+    },
+    "results": {
+      "sent": "Sent",
+      "failed": "Failed, will retry",
+      "given_up": "Given up",
+      "delivered": "Delivered",
+      "undelivered": "Not delivered",
+      "unknown": "Unknown"
     }
   }
 }

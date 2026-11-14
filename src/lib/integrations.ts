@@ -56,3 +56,20 @@ export function settingsFields(schema: JsonSchema): SettingsField[] {
     choices: s.enum,
   }));
 }
+
+// Hub runtime (0B.12): the panel's delivery log, usage ledger and the Test button.
+export type DeliveryRow = {
+  id: string; institution_id: string; institution: string; recipient: string; channel: string; category: string; template_key: string | null;
+  result: 'sent' | 'failed' | 'given_up' | 'delivered' | 'undelivered' | 'unknown'; at: string; connection: string | null; fallback: boolean;
+  sandbox: boolean; provider_message_id: string | null; parts: number | null; cost: number | null; error: { code: string; responsibility?: string } | null;
+};
+export type LedgerRow = {
+  institution_id: string; institution: string; day: string; provider: string; channel: string; category: string; payer: 'direct' | 'platform';
+  count: number; parts: number; failed_parts: number; cost: number; billable: boolean;
+};
+export const fetchDeliveryLog = (institutionId: string | null, channel: string | null) =>
+  rpc<DeliveryRow[]>('integrations.deliveryLog', 'platform_delivery_log', { p_institution: institutionId, p_channel: channel, p_result: null, p_limit: 100 });
+export const fetchUsageLedger = (institutionId: string | null) =>
+  rpc<LedgerRow[]>('integrations.ledger', 'platform_usage_ledger', { p_institution: institutionId, p_from: null, p_to: null });
+export const sendConnectionTest = (institutionId: string, connectionId: string, recipient: string) =>
+  rpc<{ id: string; status: string }>('integrations.test', 'platform_connection_test', { p_institution: institutionId, p_connection: connectionId, p_recipient: recipient });

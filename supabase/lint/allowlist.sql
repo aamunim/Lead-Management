@@ -73,3 +73,9 @@ insert into lint.allow (rule, object, reason) values
   ('unique_includes_institution', 'integration_audit_pkey', 'Platform audit table: the id is unique across the platform (0B.11).');
 insert into lint.allow (rule, object, reason) values
   ('definer_tenant_check', 'app.can_check', 'Applies the app.auth_institution_id() rule inline (token institution + active membership with the token''s access version, or an open support session): calling the SQL helper plans it on every call, 4x slower (benchmark gate, lesson 13).');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.webhook_events', 'Provider callbacks per connection; a platform gateway''s callback has no institution until matched (0B.12, I4). Read only by the service role.'),
+  ('index_leading_institution', 'webhook_events_pkey', 'Platform table of callbacks, found by id (0B.12).'),
+  ('unique_includes_institution', 'webhook_events_pkey', 'Platform table of callbacks: the id is unique across the platform (0B.12).'),
+  ('index_leading_institution', 'webhook_events_connection_id_event_key_key', 'A callback is unique per connection (duplicates ignored, I4); the connection is the scope (0B.12).'),
+  ('unique_includes_institution', 'webhook_events_connection_id_event_key_key', 'A callback is unique per connection; connections are never shared between institutions (0B.12).');

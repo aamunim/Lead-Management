@@ -535,7 +535,8 @@
       "custom_fields": "Custom fields",
       "custom_records": "Custom record types",
       "api_calls_month": "API calls this month",
-      "campaign_sms_day": "Campaign SMS today"
+      "campaign_sms_day": "Campaign SMS today",
+      "email_month": "Email this month"
     }
   },
   "fields": {
