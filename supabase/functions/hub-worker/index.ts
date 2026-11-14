@@ -5,6 +5,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import { createLogger } from '../_shared/logger.ts';
 import { adapterRegistry } from '../_shared/hub/registry.ts';
 import { resolveHost } from '../_shared/hub/resolve-deno.ts';
+import { openSmtp } from '../_shared/hub/smtp-deno.ts';
 import { supabaseStore } from '../_shared/hub/store.ts';
 import { runContracts, runHealth, runPoll, runRound } from '../_shared/hub/worker-core.ts';
 import { safeEqual } from '../_shared/hub/adapters.ts';
@@ -18,7 +19,7 @@ Deno.serve(async (req) => {
   const log = createLogger({ function: 'hub-worker', request_id: crypto.randomUUID() });
   const client = createClient(Deno.env.get('SUPABASE_URL') ?? '', serviceKey, { auth: { persistSession: false } });
   const store = supabaseStore(client);
-  const adapters = adapterRegistry(Deno.env.get('HUB_ALLOW_MOCK') === '1', resolveHost);
+  const adapters = adapterRegistry(Deno.env.get('HUB_ALLOW_MOCK') === '1', resolveHost, openSmtp);
   const started = Date.now();
   const body = await req.json().catch(() => ({})) as { lane?: string };
   if (body.lane === 'contract') {

@@ -261,3 +261,14 @@ begin
     insert into leak.markers values ('LEAKA-0B12-event', 'callback event of A') on conflict do nothing;
   end if;
 end $$;
+
+-- 0B.14: a sending domain (the domain is the marker).
+create function leak_fixtures.public__email_domains(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_domain text := case when p_institution = leak.id('inst_a') then 'leaka-0b14.example.test' else 'other-0b14.example.test' end;
+begin
+  insert into public.email_domains (institution_id, domain, provider) values (p_institution, v_domain, 'resend') on conflict do nothing;
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('leaka-0b14.example.test', 'sending domain of A') on conflict do nothing;
+  end if;
+end $$;

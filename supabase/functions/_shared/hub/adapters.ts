@@ -14,12 +14,15 @@ export type ConnectionContext = {
   secrets: Record<string, string | null>;
 };
 
-export type OutboundMessage = { id: string; channel: 'sms' | 'email'; recipient: string; body: string; subject?: string };
+export type Sender = { from_name?: string | null; from_email?: string | null; reply_to?: string | null };
+export type OutboundMessage = { id: string; channel: 'sms' | 'email'; recipient: string; body: string; subject?: string; sender?: Sender };
 
 /** errorCode is one of integration_error_kinds (whose side the failure is on, I10). */
 export type SendResult = { ok: true; providerMessageId: string | null } | { ok: false; errorCode: string; detail?: string };
 export type HealthResult = { ok: true; balance?: number } | { ok: false; errorCode: string; detail?: string };
-export type StatusReport = { providerMessageId: string; status: 'delivered' | 'undelivered' | 'other'; eventKey: string };
+export type StatusReport = {
+  providerMessageId: string; status: 'delivered' | 'undelivered' | 'bounced' | 'complained' | 'other'; eventKey: string;
+};
 
 export interface SmsAdapter {
   kind: 'sms';

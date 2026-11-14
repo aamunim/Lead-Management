@@ -161,6 +161,9 @@ select pg_temp.check((select status from public.outbox where id = 'd1000000-0000
 
 -- 9. Platform-paid email: billable in the ledger (D15).
 insert into public.institution_service_payers (institution_id, kind, payer) values (:inst_a, 'email', 'platform');
+-- (0B.14: the platform mail needs a sender address — the platform sub-domain.)
+insert into public.product_settings (key, value, schema_version) values ('platform_mail_domain', '"mail.leadora.test"', 1)
+on conflict (key) do update set value = excluded.value;
 set local role service_role;
 insert into out select 'e1', app.outbox_enqueue(:inst_a, 'email', 'transactional', 'parent@example.test', '{"body":"Receipt","subject":"Receipt"}', 'email-key-0001');
 create temp table round4 as select * from app.outbox_claim('test-worker', 50) where channel = 'email';

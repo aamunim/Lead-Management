@@ -434,3 +434,6 @@ verify_jwt = false
 
 [functions.hub-webhook]
 verify_jwt = false
+
+[functions.email-domain-check]
+verify_jwt = true

@@ -9,6 +9,7 @@ export type ClaimedMessage = {
 };
 export type RouteConnection = {
   owner: 'institution' | 'platform'; id: string; provider: string; settings: Record<string, unknown>; sandbox: boolean; secret_fields: string[];
+  sender?: { from_name?: string | null; from_email?: string | null; reply_to?: string | null };
 };
 export type Route = { gate: string | null; connections: RouteConnection[] };
 
@@ -54,7 +55,7 @@ export async function sendOne(store: HubStore, adapters: Record<string, Adapter>
     }
     let res;
     try {
-      res = await adapter.send(await contextFor(store, msg, c), out, fetchFn);
+      res = await adapter.send(await contextFor(store, msg, c), { ...out, sender: c.sender }, fetchFn);
     } catch (e) {
       res = { ok: false as const, errorCode: 'adapter_error', detail: String((e as Error)?.message ?? e).slice(0, 200) };
     }

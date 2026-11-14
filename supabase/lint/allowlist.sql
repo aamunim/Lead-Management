@@ -79,3 +79,5 @@ insert into lint.allow (rule, object, reason) values
   ('unique_includes_institution', 'webhook_events_pkey', 'Platform table of callbacks: the id is unique across the platform (0B.12).'),
   ('index_leading_institution', 'webhook_events_connection_id_event_key_key', 'A callback is unique per connection (duplicates ignored, I4); the connection is the scope (0B.12).'),
   ('unique_includes_institution', 'webhook_events_connection_id_event_key_key', 'A callback is unique per connection; connections are never shared between institutions (0B.12).');
+insert into lint.allow (rule, object, reason) values
+  ('platform_table', 'public.platform_email_templates', 'Product-wide platform mail templates in bn / en (0B.14); the institution''s words come from labels when rendered.');
