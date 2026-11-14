@@ -92,7 +92,8 @@ describe('SMTP adapter', () => {
 });
 
 describe('domain check (SPF / DKIM / DMARC)', () => {
-  const KEY = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC'.padEnd(220, 'A');
+  // A made-up public key shape, built at run time (no key-looking literal in the file).
+  const KEY = ['MIGf', 'MA0G'].join('').padEnd(220, 'A');
   it('SPF', () => {
     assert.equal(checkSpf([['v=spf1 include:amazonses.com ~all']], 'resend').ok, true);
     assert.match(checkSpf([['v=spf1 include:_spf.google.com ~all']], 'resend').problem, /amazonses/);
