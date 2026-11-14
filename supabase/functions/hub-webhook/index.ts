@@ -5,6 +5,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 
 import { createLogger } from '../_shared/logger.ts';
 import { adapterRegistry } from '../_shared/hub/registry.ts';
+import { resolveHost } from '../_shared/hub/resolve-deno.ts';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
@@ -16,7 +17,7 @@ Deno.serve(async (req) => {
   const client = createClient(Deno.env.get('SUPABASE_URL') ?? '', serviceKey, { auth: { persistSession: false } });
   const { data: conn } = await client.rpc('hub_webhook_connection', { p_connection: connectionId });
   const c = conn as { owner: 'institution' | 'platform'; institution_id: string | null; provider: string; status: string } | null;
-  const adapter = c ? adapterRegistry(Deno.env.get('HUB_ALLOW_MOCK') === '1')[c.provider] : undefined;
+  const adapter = c ? adapterRegistry(Deno.env.get('HUB_ALLOW_MOCK') === '1', resolveHost)[c.provider] : undefined;
   if (!c || !adapter) return new Response('not found', { status: 404 });
   const raw = await req.text();
   const secret = await client.rpc('connection_secret_for_service', { p_institution: c.institution_id, p_connection: connectionId, p_field: 'webhook_secret' });

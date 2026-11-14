@@ -4,6 +4,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 
 import { createLogger } from '../_shared/logger.ts';
 import { adapterRegistry } from '../_shared/hub/registry.ts';
+import { resolveHost } from '../_shared/hub/resolve-deno.ts';
 import { supabaseStore } from '../_shared/hub/store.ts';
 import { runHealth, runRound } from '../_shared/hub/worker-core.ts';
 import { safeEqual } from '../_shared/hub/adapters.ts';
@@ -17,7 +18,7 @@ Deno.serve(async (req) => {
   const log = createLogger({ function: 'hub-worker', request_id: crypto.randomUUID() });
   const client = createClient(Deno.env.get('SUPABASE_URL') ?? '', serviceKey, { auth: { persistSession: false } });
   const store = supabaseStore(client);
-  const adapters = adapterRegistry(Deno.env.get('HUB_ALLOW_MOCK') === '1');
+  const adapters = adapterRegistry(Deno.env.get('HUB_ALLOW_MOCK') === '1', resolveHost);
   const started = Date.now();
   const body = await req.json().catch(() => ({})) as { lane?: string };
   const report = await runRound(store, adapters, { worker: `edge-${started}`, deadline: started + BUDGET_MS });
