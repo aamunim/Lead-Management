@@ -10,7 +10,7 @@ let web;
 const cleanUp = () => adminSql(`delete from public.platform_login_devices; delete from public.platform_alerts;
   delete from public.email_domains where institution_id = '${INSTITUTION.A}';
   delete from public.integration_audit where institution_id = '${INSTITUTION.A}' and action like 'email.%';
-  update public.institution_service_payers set paused_at = null, paused_reason = null where institution_id = '${INSTITUTION.A}';`);
+  delete from public.institution_service_payers where institution_id = '${INSTITUTION.A}' and kind = 'email';`);
 before(async () => {
   web = await startWeb();
   cleanUp();

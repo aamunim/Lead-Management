@@ -160,7 +160,8 @@ select pg_temp.check((select status from public.outbox where id = 'd1000000-0000
   'a stuck item is marked unknown, not re-claimed (lesson 2)');
 
 -- 9. Platform-paid email: billable in the ledger (D15).
-insert into public.institution_service_payers (institution_id, kind, payer) values (:inst_a, 'email', 'platform');
+insert into public.institution_service_payers (institution_id, kind, payer) values (:inst_a, 'email', 'platform')
+  on conflict (institution_id, kind) do update set payer = 'platform', paused_at = null;
 -- (0B.14: the platform mail needs a sender address — the platform sub-domain.)
 insert into public.product_settings (key, value, schema_version) values ('platform_mail_domain', '"mail.leadora.test"', 1)
 on conflict (key) do update set value = excluded.value;
