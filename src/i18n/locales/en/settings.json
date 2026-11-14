@@ -259,6 +259,30 @@
     "key_rotation_reminder_days": {
       "label": "Key rotation reminder (days)",
       "help": "Remind the Master Admin to rotate a provider key after this many days. Proposed: 365."
+    },
+    "hub_claim_per_institution": {
+      "label": "Messages per institution per worker round",
+      "help": "One institution may have this many messages in one round, so others are not delayed. Proposed: 20."
+    },
+    "hub_circuit_failures": {
+      "label": "Failures before a connection is paused",
+      "help": "After this many failures in a row the backup is used and the Master Admin is alerted. Proposed: 3."
+    },
+    "platform_mail_domain": {
+      "label": "Platform mail domain",
+      "help": "The sub-domain institutions send from when they use the platform mail (each as its own address)."
+    },
+    "platform_mail_daily_limit": {
+      "label": "Platform mail per institution per day",
+      "help": "Emails one institution may send through the platform mail each day. Proposed: 50."
+    },
+    "email_bounce_pause_percent": {
+      "label": "Bounce rate that pauses email (%)",
+      "help": "Over 7 days, with at least 50 emails. Proposed: 5."
+    },
+    "email_complaint_pause_percent": {
+      "label": "Complaint rate that pauses email (%)",
+      "help": "Spam complaints over 7 days. Proposed: 0.3."
     }
   },
   "groups": {

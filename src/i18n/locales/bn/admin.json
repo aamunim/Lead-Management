@@ -535,7 +535,8 @@
       "custom_fields": "কাস্টম ফিল্ড",
       "custom_records": "কাস্টম রেকর্ডের ধরন",
       "api_calls_month": "এ মাসের API কল",
-      "campaign_sms_day": "আজকের ক্যাম্পেইন SMS"
+      "campaign_sms_day": "আজকের ক্যাম্পেইন SMS",
+      "email_month": "এ মাসের ইমেইল"
     }
   },
   "fields": {
@@ -767,6 +768,7 @@
     "platformPays": "প্ল্যাটফর্মের মাধ্যমে",
     "lastSuccess": "শেষ চলেছে {{date}}",
     "problem": "সমস্যা: {{side}}",
-    "noTraffic": "এখনো ব্যবহার হয়নি"
+    "noTraffic": "এখনো ব্যবহার হয়নি",
+    "balanceExhausted": "ব্যালান্স শেষ — প্রোভাইডারের কাছে রিচার্জ করুন"
   }
 }

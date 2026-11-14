@@ -46,7 +46,8 @@ export default function ConnectionsScreen() {
                 subtitle={[
                   data.payers[c.kind] === 'platform' ? t('connections.platformPays') : null,
                   c.last_success_at ? t('connections.lastSuccess', { date: format.dateTime(c.last_success_at) }) : null,
-                  c.last_error ? t('connections.problem', { side: tDynamic(`panel:integrations.side.${c.last_error.responsibility}`) }) : null,
+                  c.balance_exhausted && data.payers[c.kind] !== 'platform' ? t('connections.balanceExhausted') : null,
+                  c.last_error && !c.balance_exhausted ? t('connections.problem', { side: tDynamic(`panel:integrations.side.${c.last_error.responsibility}`) }) : null,
                 ].filter(Boolean).join(' · ') || t('connections.noTraffic')}
                 badge={<Badge label={tDynamic(`panel:integrations.mode.${c.mode}`)} tone={c.mode === 'live' ? 'success' : 'warning'} />} />
             ))}

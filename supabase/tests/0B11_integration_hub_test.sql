@@ -95,7 +95,9 @@ insert into out select 'res_send', app.resolve_connection(:inst_a, 'sms', 'send'
 insert into out select 'res_bulk', app.resolve_connection(:inst_a, 'sms', 'bulk');
 reset role;
 select pg_temp.check(pg_temp.v('res_send') -> 0 ->> 'id' = pg_temp.v('primary') ->> 'id' and pg_temp.v('res_send') -> 1 ->> 'id' = pg_temp.v('backup') ->> 'id'
-  and jsonb_array_length(pg_temp.v('res_send')) = 2, 'primary first, then the backup; never another institution''s');
+  and (select count(*) from jsonb_array_elements(pg_temp.v('res_send')) x where x ->> 'owner' = 'institution') = 2
+  and pg_temp.v('res_send') -> -1 ->> 'owner' = 'platform',
+  'primary first, then the backup, then the platform gateway as the last backup (0B.13); never another institution''s');
 select pg_temp.check(jsonb_array_length(pg_temp.v('res_bulk')) = 0, 'live bulk sending is blocked until a live test passes (I3)');
 select pg_temp.act_as(pg_temp.claims_for(:master, 'aal2'));
 select public.connection_live_test_mark(:inst_a, (pg_temp.v('primary') ->> 'id')::uuid, true, 'sent a test to the office phone');

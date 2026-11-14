@@ -4,12 +4,13 @@ import { View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { useTranslation } from '@/i18n';
 import { useErrorText } from '@/i18n/errors';
-import { fetchIntegrations, fetchProviders, setPayer, type AuditRow, type Connection, type Provider } from '@/lib/integrations';
+import { fetchIntegrations, fetchProviders, setPayer, setPlatformFallback, type AuditRow, type Connection, type Provider } from '@/lib/integrations';
 import { useFormat } from '@/lib/locale';
-import { Chips, Row, Section, tDynamic } from '@/ui/admin/parts';
+import { CheckRow, Chips, Row, Section, tDynamic } from '@/ui/admin/parts';
 import { Button, ErrorState, Skeleton, useSnackbar } from '@/ui/components';
 
 import { ConnectionList, ConnectionSheet } from './Connections';
+import { EmailSection } from './EmailSection';
 import { usePanel } from './PanelContext';
 
 // Institution → Integrations (0B.11-T5, T6, T8; Ch 5.3, Ch 42.2): every connection of the institution with mode,
@@ -22,7 +23,7 @@ export function IntegrationsTab({ institutionId }: { institutionId: string }) {
   const { can } = usePanel();
   const snackbar = useSnackbar();
   const errorText = useErrorText();
-  const [data, setData] = useState<{ connections: Connection[]; payers: Record<string, string>; audit: AuditRow[] } | null>(null);
+  const [data, setData] = useState<{ connections: Connection[]; payers: Record<string, string>; fallback?: Record<string, boolean>; audit: AuditRow[] } | null>(null);
   const [providers, setProviders] = useState<Provider[]>([]);
   const [error, setError] = useState<unknown>(null);
   const [editing, setEditing] = useState<Connection | 'new' | null>(null);
@@ -61,6 +62,19 @@ export function IntegrationsTab({ institutionId }: { institutionId: string }) {
             }}
             choices={(['direct', 'platform'] as const).map((p) => ({ value: p, label: `${tDynamic(`panel:integrations.kind.${k}`)}: ${tDynamic(`panel:integrations.payer.${p}`)}`,
               testID: `payer-${k}-${p}` }))} />
+        ))}
+      </Section>
+      <EmailSection institutionId={institutionId} />
+      <Section title={t('integrations.fallbackTitle')} testID="integrations-fallback">
+        <AppText variant="caption">{t('integrations.fallbackHelp')}</AppText>
+        {PAYER_KINDS.map((k) => (
+          <CheckRow key={k} label={t('integrations.fallbackLabel', { kind: tDynamic(`panel:integrations.kind.${k}`) })}
+            checked={data.fallback?.[k] ?? true} disabled={!manage && !can('platform.billing')} testID={`fallback-${k}`}
+            onToggle={async () => {
+              const r = await setPlatformFallback(institutionId, k, !(data.fallback?.[k] ?? true));
+              if (r.error) return snackbar.show({ text: errorText(r.error).message });
+              void load();
+            }} />
         ))}
       </Section>
       <Section title={t('integrations.audit')} testID="integrations-audit">

@@ -30,7 +30,8 @@
     "announcements": "Announcements",
     "requests": "Requests",
     "inbox": "Developer inbox",
-    "users": "Platform users"
+    "users": "Platform users",
+    "delivery": "Delivery log"
   },
   "soon": "Coming in {{milestone}}",
   "institutionTabs": {
@@ -59,7 +60,11 @@
     "editRequests": "Edit mode requests",
     "approveEdit": "Approve",
     "setupAlert": "{{name}}: trial ends soon, setup {{done}}/{{total}}",
-    "keyAlert": "Rotate key {{hint}}{{name}} (set {{date}})"
+    "keyAlert": "Rotate key {{hint}}{{name}} (set {{date}})",
+    "circuitAlert": "Connection {{label}}{{name}} stopped after repeated failures ({{code}}); the backup is used for 5 minutes",
+    "balanceAlert": "Low balance on {{label}}{{name}}: {{balance}}",
+    "contractAlert": "Daily check of the {{provider}} adapter failed",
+    "emailPausedAlert": "Email paused for {{name}}: {{bounced}} bounces, {{complained}} complaints of {{sent}} in 7 days"
   },
   "users": {
     "title": "Platform users",
@@ -419,8 +424,46 @@
       "connection.enabled": "Connection enabled",
       "connection.disabled": "Connection disabled",
       "payer.changed": "Payer changed",
-      "institution.closed_cleanup": "Closed: connections disabled, keys destroyed"
-    }
+      "institution.closed_cleanup": "Closed: connections disabled, keys destroyed",
+      "connection.made_primary": "Made primary",
+      "connection.test_sent": "Test sent",
+      "connection.circuit_opened": "Paused after repeated failures",
+      "fallback.changed": "Platform backup changed",
+      "email.domain_added": "Email domain added",
+      "email.domain_checked": "Email domain checked",
+      "email.paused": "Email paused (bounces)",
+      "email.resumed": "Email resumed",
+      "email.not_queued": "A platform mail could not be queued"
+    },
+    "testTo": "Send a test to",
+    "testHelp": "A phone number or email address; the message goes through this connection only.",
+    "test": "Send test",
+    "testQueued": "Test queued; see the delivery log.",
+    "routes": {
+      "transactional": "fast route (sign-in codes, notices)",
+      "promotional": "promotional route"
+    },
+    "masking": "masked sender: {{status}}",
+    "maskingStatus": {
+      "applied": "applied for",
+      "approved": "approved",
+      "rejected": "rejected"
+    },
+    "balance": "balance {{balance}}",
+    "paused": "Paused",
+    "noBalance": "No balance",
+    "jsonHelp": "JSON, e.g. {\"to\":\"{to}\",\"msg\":\"{message}\",\"key\":\"{api_key}\"}",
+    "jsonBad": "This is not valid JSON.",
+    "testBody": "Test text",
+    "partsPreview_one": "{{count}} part ({{length}} characters, {{kind}}) · cost {{cost}}",
+    "partsPreview_other": "{{count}} parts ({{length}} characters, {{kind}}) · cost {{cost}}",
+    "unicode": "Bangla / Unicode",
+    "plain": "plain text",
+    "makePrimary": "Make primary",
+    "primaryDone": "This is now the primary connection; queued messages use it at once.",
+    "fallbackTitle": "Platform gateway as last backup",
+    "fallbackHelp": "When all of the institution's own connections fail, the platform gateway sends instead (billed to the institution).",
+    "fallbackLabel": "{{kind}}: use the platform gateway as the last backup"
   },
   "providers": {
     "intro": "The provider catalog and the platform's own gateways, used when the platform pays or an institution has none.",
@@ -435,5 +478,70 @@
       "planned": "Planned",
       "retired": "Retired"
     }
+  },
+  "delivery": {
+    "intro": "Every send result and the daily usage per institution. Only platform-paid usage is billable.",
+    "channel": "Channel",
+    "channels": {
+      "all": "All",
+      "sms": "SMS",
+      "email": "Email"
+    },
+    "ledger": "Usage ledger",
+    "noLedger": "No usage yet.",
+    "log": "Delivery log",
+    "noLog": "Nothing sent yet.",
+    "counts": "{{count}} sent, {{parts}} parts, {{failed}} failed parts",
+    "cost": "cost {{cost}}",
+    "billable": "Billable",
+    "direct": "Own account",
+    "fallback": "sent by the backup",
+    "sandbox": "sandbox",
+    "parts_one": "{{count}} part",
+    "parts_other": "{{count}} parts",
+    "categories": {
+      "otp": "Sign-in code",
+      "notification": "Notification",
+      "template": "Template",
+      "bulk": "Bulk",
+      "test": "Test"
+    },
+    "results": {
+      "sent": "Sent",
+      "failed": "Failed, will retry",
+      "given_up": "Given up",
+      "delivered": "Delivered",
+      "undelivered": "Not delivered",
+      "unknown": "Unknown"
+    }
+  },
+  "email": {
+    "title": "Email",
+    "help": "Sending domains and the sender identity. Every institution sends from its own verified domain or its own address on the platform mail; one institution's bounces never affect another.",
+    "paused": "Email is paused since {{date}}: {{reason}}. Sign-in codes still go.",
+    "resumeReason": "Why it can resume (e.g. list cleaned)",
+    "resume": "Resume email",
+    "reputation": "Last 7 days: {{sent}} sent, {{delivered}} delivered, {{bounced}} bounced, {{complained}} spam complaints",
+    "platformSender": "Platform mail sends as {{from}}",
+    "noPlatformSender": "No platform mail address yet (verify a domain or set the platform mail domain).",
+    "providers": {
+      "resend": "Resend",
+      "smtp": "SMTP"
+    },
+    "checked": "checked {{date}}",
+    "notChecked": "not checked yet",
+    "status": {
+      "pending": "Waiting for DNS",
+      "verified": "Verified",
+      "failed": "Not verified"
+    },
+    "recordOk": "found",
+    "recordMissing": "not found",
+    "verify": "Verify",
+    "verifyFailed": "Could not check now; try again in a minute.",
+    "domain": "Sending domain",
+    "domainHelp": "e.g. ideal.edu.bd — add the records below at the domain's DNS, then Verify.",
+    "provider": "Sent through",
+    "addDomain": "Add domain"
   }
 }

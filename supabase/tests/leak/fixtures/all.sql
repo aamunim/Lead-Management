@@ -217,3 +217,58 @@ begin
   insert into public.institution_service_payers (institution_id, kind, payer) values (p_institution, 'sms', 'direct')
   on conflict (institution_id, kind) do nothing;
 end $$;
+
+-- 0B.12: a queued message, its delivery-log row and a ledger day (the recipient / provider are the markers).
+create function leak_fixtures.public__outbox(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_to text := case when p_institution = leak.id('inst_a') then 'LEAKA-0B12-recipient' else 'OTHER-0B12-recipient' end;
+begin
+  insert into public.outbox (institution_id, channel, priority, lane, recipient, payload, idempotency_key)
+  values (p_institution, 'sms', 'transactional', 3, v_to, '{"body":"leak fixture"}', 'leak-fixture-' || p_institution)
+  on conflict (institution_id, idempotency_key) do nothing;
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('LEAKA-0B12-recipient', 'outbox recipient of A') on conflict do nothing;
+  end if;
+end $$;
+create function leak_fixtures.public__delivery_log(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_to text := case when p_institution = leak.id('inst_a') then 'LEAKA-0B12-delivered' else 'OTHER-0B12-delivered' end;
+begin
+  insert into public.delivery_log (institution_id, outbox_id, recipient, channel, category, result)
+  values (p_institution, gen_random_uuid(), v_to, 'sms', 'notification', 'sent');
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('LEAKA-0B12-delivered', 'delivery log recipient of A') on conflict do nothing;
+  end if;
+end $$;
+create function leak_fixtures.public__usage_ledger(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_provider text := case when p_institution = leak.id('inst_a') then 'LEAKA-0B12-provider' else 'OTHER-0B12-provider' end;
+begin
+  insert into public.usage_ledger (institution_id, day, provider, channel, category, payer, count)
+  values (p_institution, current_date, v_provider, 'sms', 'notification', 'direct', 1)
+  on conflict do nothing;
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('LEAKA-0B12-provider', 'ledger provider of A') on conflict do nothing;
+  end if;
+end $$;
+create function leak_fixtures.public__webhook_events(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_key text := case when p_institution = leak.id('inst_a') then 'LEAKA-0B12-event' else 'OTHER-0B12-event' end;
+begin
+  insert into public.webhook_events (institution_id, connection_id, connection_owner, provider, event_key, signature_ok, payload)
+  values (p_institution, gen_random_uuid(), 'institution', 'mock_sms', v_key, true, '{}');
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('LEAKA-0B12-event', 'callback event of A') on conflict do nothing;
+  end if;
+end $$;
+
+-- 0B.14: a sending domain (the domain is the marker).
+create function leak_fixtures.public__email_domains(p_institution uuid) returns void language plpgsql as $$
+declare
+  v_domain text := case when p_institution = leak.id('inst_a') then 'leaka-0b14.example.test' else 'other-0b14.example.test' end;
+begin
+  insert into public.email_domains (institution_id, domain, provider) values (p_institution, v_domain, 'resend') on conflict do nothing;
+  if p_institution = leak.id('inst_a') then
+    insert into leak.markers values ('leaka-0b14.example.test', 'sending domain of A') on conflict do nothing;
+  end if;
+end $$;

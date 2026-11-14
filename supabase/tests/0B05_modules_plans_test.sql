@@ -40,8 +40,8 @@ update public.profiles set last_active_institution_id = null where user_id in (:
 -- 1. Catalogs and plans of institutions.
 select pg_temp.check((select count(*) from public.modules) = 24 and (select always_on from public.modules where key = 'leads'),
   'the Ch 9.2 module list is seeded; core leads and follow-ups are always on');
-select pg_temp.check((select count(distinct key) from public.plans) = 5 and (select count(*) from public.limit_metrics) = 11
-  and (select count(*) from public.addons) = 9, 'five Proposed plans, the limits catalog and add-ons are data');
+select pg_temp.check((select count(distinct key) from public.plans) = 5 and (select count(*) from public.limit_metrics) = 12
+  and (select count(*) from public.addons) = 9, 'five Proposed plans, the limits catalog (12 metrics with email_month, 0B.12) and add-ons are data');
 select pg_temp.check(not exists (select 1 from public.institutions i where not exists
   (select 1 from public.institution_plan ip where ip.institution_id = i.id)), 'every institution has a plan');
 insert into public.institutions (id, slug, name) values ('d0000000-0000-4000-8000-0000000000d9', 'plan-new-test', 'New institution');
@@ -122,7 +122,7 @@ select pg_temp.check(public.limits_status() -> 'plan' = 'null'::jsonb, 'without 
 reset role;
 select pg_temp.act_as(pg_temp.claims_for(:owner));
 select pg_temp.check(public.limits_status() -> 'plan' ->> 'key' = 'standard'
-  and jsonb_array_length(public.limits_status() -> 'metrics') = 11, 'with billing.view: the plan and every metric');
+  and jsonb_array_length(public.limits_status() -> 'metrics') = (select count(*) from public.limit_metrics), 'with billing.view: the plan and every metric');
 reset role;
 
 -- 4. Plans: versions protect existing customers; changing plan, fit check; all logged.

@@ -5,3 +5,5 @@
 038fe253b337ce2b931f3341825eb9c637ab14d0:scripts/tests/edge-shared.test.mjs:jwt:11
 # The secret-scan rule test lists rule ids; the SMS-key rule matched the id 'google-oauth-refresh-token' (0B.11):
 380ef2783854aaaea7a82ec2e389a3241cdff73a:scripts/tests/gitleaks-rules.test.mjs:sms-gateway-api-key:19
+# A made-up DKIM public-key fragment (a public key, not a secret) in the DNS-checker test (0B.14):
+d93ca019e98963bcea0c0cdb868eb7b3a612e189:scripts/tests/email-adapters.test.mjs:generic-api-key:95

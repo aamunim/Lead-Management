@@ -30,7 +30,8 @@
     "announcements": "ঘোষণা",
     "requests": "অনুরোধ",
     "inbox": "ডেভেলপার ইনবক্স",
-    "users": "প্ল্যাটফর্ম ইউজার"
+    "users": "প্ল্যাটফর্ম ইউজার",
+    "delivery": "ডেলিভারি লগ"
   },
   "soon": "{{milestone}}-এ আসছে",
   "institutionTabs": {
@@ -59,7 +60,11 @@
     "editRequests": "এডিট মোডের অনুরোধ",
     "approveEdit": "অনুমোদন",
     "setupAlert": "{{name}}: ট্রায়াল শিগগির শেষ, সেটআপ {{done}}/{{total}}",
-    "keyAlert": "কী {{hint}}{{name}} বদলান ({{date}} থেকে)"
+    "keyAlert": "কী {{hint}}{{name}} বদলান ({{date}} থেকে)",
+    "circuitAlert": "বারবার ব্যর্থ হওয়ায় কানেকশন {{label}}{{name}} বন্ধ ({{code}}); ৫ মিনিট ব্যাকআপ চলবে",
+    "balanceAlert": "{{label}}{{name}}-এ ব্যালান্স কম: {{balance}}",
+    "contractAlert": "{{provider}} অ্যাডাপ্টারের দৈনিক যাচাই ব্যর্থ",
+    "emailPausedAlert": "{{name}}-এর ইমেইল বন্ধ: ৭ দিনে {{sent}}টির মধ্যে {{bounced}} বাউন্স, {{complained}} অভিযোগ"
   },
   "users": {
     "title": "প্ল্যাটফর্ম ইউজার",
@@ -419,8 +424,46 @@
       "connection.enabled": "কানেকশন চালু",
       "connection.disabled": "কানেকশন বন্ধ",
       "payer.changed": "খরচ কে দেবে বদল",
-      "institution.closed_cleanup": "বন্ধ: কানেকশন বন্ধ, কী মুছে ফেলা হয়েছে"
-    }
+      "institution.closed_cleanup": "বন্ধ: কানেকশন বন্ধ, কী মুছে ফেলা হয়েছে",
+      "connection.made_primary": "মূল করা হয়েছে",
+      "connection.test_sent": "টেস্ট পাঠানো",
+      "connection.circuit_opened": "বারবার ব্যর্থ হওয়ায় থামানো",
+      "fallback.changed": "প্ল্যাটফর্ম ব্যাকআপ বদল",
+      "email.domain_added": "ইমেইল ডোমেইন যোগ",
+      "email.domain_checked": "ইমেইল ডোমেইন যাচাই",
+      "email.paused": "ইমেইল বন্ধ (বাউন্স)",
+      "email.resumed": "ইমেইল আবার চালু",
+      "email.not_queued": "একটি প্ল্যাটফর্ম মেইল সারিতে দেওয়া যায়নি"
+    },
+    "testTo": "টেস্ট পাঠান",
+    "testHelp": "একটি ফোন নম্বর বা ইমেইল; মেসেজ শুধু এই কানেকশন দিয়ে যাবে।",
+    "test": "টেস্ট পাঠান",
+    "testQueued": "টেস্ট সারিতে আছে; ডেলিভারি লগ দেখুন।",
+    "routes": {
+      "transactional": "দ্রুত রুট (সাইন-ইন কোড, নোটিশ)",
+      "promotional": "প্রমোশনাল রুট"
+    },
+    "masking": "মাস্কড সেন্ডার: {{status}}",
+    "maskingStatus": {
+      "applied": "আবেদন করা",
+      "approved": "অনুমোদিত",
+      "rejected": "বাতিল"
+    },
+    "balance": "ব্যালান্স {{balance}}",
+    "paused": "থামানো",
+    "noBalance": "ব্যালান্স নেই",
+    "jsonHelp": "JSON, যেমন {\"to\":\"{to}\",\"msg\":\"{message}\",\"key\":\"{api_key}\"}",
+    "jsonBad": "এটি সঠিক JSON নয়।",
+    "testBody": "টেস্টের লেখা",
+    "partsPreview_one": "{{count}} অংশ ({{length}} অক্ষর, {{kind}}) · খরচ {{cost}}",
+    "partsPreview_other": "{{count}} অংশ ({{length}} অক্ষর, {{kind}}) · খরচ {{cost}}",
+    "unicode": "বাংলা / ইউনিকোড",
+    "plain": "সাধারণ লেখা",
+    "makePrimary": "মূল করুন",
+    "primaryDone": "এটি এখন মূল কানেকশন; সারিতে থাকা মেসেজ সাথে সাথে এটি দিয়ে যাবে।",
+    "fallbackTitle": "শেষ ব্যাকআপ হিসেবে প্ল্যাটফর্ম গেটওয়ে",
+    "fallbackHelp": "প্রতিষ্ঠানের নিজের সব কানেকশন ব্যর্থ হলে প্ল্যাটফর্ম গেটওয়ে পাঠাবে (বিল প্রতিষ্ঠানকে)।",
+    "fallbackLabel": "{{kind}}: শেষ ব্যাকআপ হিসেবে প্ল্যাটফর্ম গেটওয়ে"
   },
   "providers": {
     "intro": "প্রোভাইডারের তালিকা এবং প্ল্যাটফর্মের নিজের গেটওয়ে, যা প্ল্যাটফর্ম খরচ দিলে বা প্রতিষ্ঠানের নিজের না থাকলে ব্যবহার হয়।",
@@ -435,5 +478,70 @@
       "planned": "পরিকল্পিত",
       "retired": "বাদ"
     }
+  },
+  "delivery": {
+    "intro": "প্রতিটি পাঠানোর ফলাফল আর প্রতিষ্ঠানভিত্তিক দৈনিক ব্যবহার। শুধু প্ল্যাটফর্মের খরচে পাঠানো অংশ বিলযোগ্য।",
+    "channel": "চ্যানেল",
+    "channels": {
+      "all": "সব",
+      "sms": "SMS",
+      "email": "ইমেইল"
+    },
+    "ledger": "ব্যবহারের হিসাব",
+    "noLedger": "এখনো কোনো ব্যবহার নেই।",
+    "log": "ডেলিভারি লগ",
+    "noLog": "এখনো কিছু পাঠানো হয়নি।",
+    "counts": "{{count}}টি পাঠানো, {{parts}} অংশ, {{failed}} অংশ ব্যর্থ",
+    "cost": "খরচ {{cost}}",
+    "billable": "বিলযোগ্য",
+    "direct": "নিজের অ্যাকাউন্ট",
+    "fallback": "ব্যাকআপ দিয়ে পাঠানো",
+    "sandbox": "স্যান্ডবক্স",
+    "parts_one": "{{count}} অংশ",
+    "parts_other": "{{count}} অংশ",
+    "categories": {
+      "otp": "সাইন-ইন কোড",
+      "notification": "নোটিফিকেশন",
+      "template": "টেমপ্লেট",
+      "bulk": "বাল্ক",
+      "test": "টেস্ট"
+    },
+    "results": {
+      "sent": "পাঠানো",
+      "failed": "ব্যর্থ, আবার চেষ্টা হবে",
+      "given_up": "হাল ছাড়া",
+      "delivered": "পৌঁছেছে",
+      "undelivered": "পৌঁছায়নি",
+      "unknown": "অজানা"
+    }
+  },
+  "email": {
+    "title": "ইমেইল",
+    "help": "পাঠানোর ডোমেইন ও প্রেরকের পরিচয়। প্রতিটি প্রতিষ্ঠান নিজের যাচাই করা ডোমেইন বা প্ল্যাটফর্ম মেইলে নিজের ঠিকানা থেকে পাঠায়; এক প্রতিষ্ঠানের বাউন্স অন্যকে প্রভাবিত করে না।",
+    "paused": "{{date}} থেকে ইমেইল বন্ধ: {{reason}}। সাইন-ইন কোড তবুও যাবে।",
+    "resumeReason": "কেন আবার চালু হবে (যেমন তালিকা পরিষ্কার করা হয়েছে)",
+    "resume": "ইমেইল আবার চালু",
+    "reputation": "গত ৭ দিন: {{sent}} পাঠানো, {{delivered}} পৌঁছেছে, {{bounced}} বাউন্স, {{complained}} স্প্যাম অভিযোগ",
+    "platformSender": "প্ল্যাটফর্ম মেইল পাঠায় {{from}} থেকে",
+    "noPlatformSender": "এখনো প্ল্যাটফর্ম মেইলের ঠিকানা নেই (একটি ডোমেইন যাচাই করুন বা প্ল্যাটফর্ম মেইল ডোমেইন সেট করুন)।",
+    "providers": {
+      "resend": "Resend",
+      "smtp": "SMTP"
+    },
+    "checked": "{{date}}-এ যাচাই",
+    "notChecked": "এখনো যাচাই হয়নি",
+    "status": {
+      "pending": "DNS-এর অপেক্ষা",
+      "verified": "যাচাই হয়েছে",
+      "failed": "যাচাই হয়নি"
+    },
+    "recordOk": "পাওয়া গেছে",
+    "recordMissing": "পাওয়া যায়নি",
+    "verify": "যাচাই করুন",
+    "verifyFailed": "এখন যাচাই করা গেল না; এক মিনিট পরে আবার চেষ্টা করুন।",
+    "domain": "পাঠানোর ডোমেইন",
+    "domainHelp": "যেমন ideal.edu.bd — নিচের রেকর্ডগুলো ডোমেইনের DNS-এ যোগ করে যাচাই করুন।",
+    "provider": "যার মাধ্যমে পাঠানো",
+    "addDomain": "ডোমেইন যোগ"
   }
 }
